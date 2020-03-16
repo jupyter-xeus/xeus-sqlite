@@ -20,21 +20,6 @@
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <SQLiteCpp/VariadicBind.h>
 
-
-static int callback(void *NotUsed, int argc, char **argv, char **azColName)
-      {
-        int i;
-        cout << "Number of args= " << argc << endl;
-       
-        for(i=0; i<argc; i++)
-        {
-           cout << azColName[i] << " = " << (argv[i] ? argv[i] : "NULL") << endl;
-        }
-        cout << endl;
-        return 0;
-      }
-
-
 namespace xeus_sqlite
 {
     void interpreter::configure_impl()
@@ -49,10 +34,9 @@ namespace xeus_sqlite
                                                bool /*allow_stdin*/)
     {
         nl::json pub_data;
-        std::string result = "Result = ";
+        std::string result = "";
         std::string path_to_db = "/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/chinook.db";
-        SQLite::Database    db(path_to_db, SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
-        cout << db.getFilename().c_str() << endl;
+        SQLite::Database db(path_to_db, SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
 
         SQLite::Statement query(db, code);
         std::stringstream query_result("");
