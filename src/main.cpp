@@ -13,7 +13,7 @@
 #include "xeus/xkernel.hpp"
 #include "xeus/xkernel_configuration.hpp"
 
-#include "xeus-calc/xeus_calc_interpreter.hpp"
+#include "xeus-sqlite/xeus_sqlite_interpreter.hpp"
 
 std::string extract_filename(int& argc, char* argv[])
 {
@@ -40,8 +40,8 @@ int main(int argc, char* argv[])
     std::string file_name = extract_filename(argc, argv);
 
     // Create interpreter instance
-    using interpreter_ptr = std::unique_ptr<xeus_calc::interpreter>;
-    interpreter_ptr interpreter = std::make_unique<xeus_calc::interpreter>();
+    using interpreter_ptr = std::unique_ptr<xeus_sqlite::interpreter>;
+    interpreter_ptr interpreter = std::make_unique<xeus_sqlite::interpreter>();
 
     // Create kernel instance and start it
     // xeus::xkernel kernel(config, xeus::get_user_name(), std::move(interpreter));

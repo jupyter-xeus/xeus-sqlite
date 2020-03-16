@@ -1,6 +1,6 @@
 # Contributing to Xeus-calc
 
-Xeus and xeus-calc are subprojects of Project Jupyter and subject to the [Jupyter governance](https://github.com/jupyter/governance) and [Code of conduct](https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md).
+Xeus and xeus-sqlite are subprojects of Project Jupyter and subject to the [Jupyter governance](https://github.com/jupyter/governance) and [Code of conduct](https://github.com/jupyter/governance/blob/master/conduct/code_of_conduct.md).
 
 ## General Guidelines
 
@@ -16,11 +16,11 @@ First, you need to fork the project. Then setup your environment:
 
 ```bash
 # create a new conda environment
-conda create -n xeus-calc -c conda-forge -c defaults xtl nlohmann_json cppzmq xeus
-conda activate xeus-calc
+conda create -n xeus-sqlite -c conda-forge -c defaults xtl nlohmann_json cppzmq xeus
+conda activate xeus-sqlite
 
-# download xeus-calc from your GitHub fork
-git clone https://github.com/<your-github-username>/xeus-calc.git
+# download xeus-sqlite from your GitHub fork
+git clone https://github.com/<your-github-username>/xeus-sqlite.git
 ```
 
 You may also want to install a C++ compiler, and cmake from conda if they are not available on your system.

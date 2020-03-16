@@ -1,4 +1,4 @@
-name: xeus-calc
+name: xeus-sqlite
 channels:
   - conda-forge
 dependencies:

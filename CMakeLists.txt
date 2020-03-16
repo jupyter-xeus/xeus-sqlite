@@ -8,7 +8,7 @@
 ############################################################################
 
 cmake_minimum_required(VERSION 3.4.3)
-project(xeus-calc)
+project(xeus-sqlite)
 
 set(XEUS_CALC_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
@@ -26,16 +26,16 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 # Versionning
 # ===========
 
-file(STRINGS "${XEUS_CALC_INCLUDE_DIR}/xeus-calc/xeus_calc_config.hpp" xcalc_version_defines
+file(STRINGS "${XEUS_CALC_INCLUDE_DIR}/xeus-sqlite/xeus_sqlite_config.hpp" xsqlite_version_defines
      REGEX "#define XCALC_VERSION_(MAJOR|MINOR|PATCH)")
-foreach(ver ${xcalc_version_defines})
+foreach(ver ${xsqlite_version_defines})
     if(ver MATCHES "#define XCALC_VERSION_(MAJOR|MINOR|PATCH) +([^ ]+)$")
         set(XCALC_VERSION_${CMAKE_MATCH_1} "${CMAKE_MATCH_2}" CACHE INTERNAL "")
     endif()
 endforeach()
 set(${PROJECT_NAME}_VERSION
 ${XCALC_VERSION_MAJOR}.${XPYT_VERSION_MINOR}.${XPYT_VERSION_PATCH})
-message(STATUS "Building xeus-calc v${${PROJECT_NAME}_VERSION}")
+message(STATUS "Building xeus-sqlite v${${PROJECT_NAME}_VERSION}")
 
 # Configuration
 # =============
@@ -44,8 +44,8 @@ include(GNUInstallDirs)
 
 # We generate the kernel.json file, given the installation prefix and the executable name
 configure_file (
-    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xcalc/kernel.json.in"
-    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xcalc/kernel.json"
+    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xsqlite/kernel.json.in"
+    "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xsqlite/kernel.json"
 )
 
 # Dependencies
@@ -83,43 +83,43 @@ endif()
 # Target and link
 # ===============
 
-# xeus-calc source directory
+# xeus-sqlite source directory
 set(XEUS_CALC_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
-# xeus-calc source files
+# xeus-sqlite source files
 set(XEUS_CALC_SRC
-    ${XEUS_CALC_SRC_DIR}/xeus_calc_interpreter.cpp
+    ${XEUS_CALC_SRC_DIR}/xeus_sqlite_interpreter.cpp
 )
 
 set(XEUS_CALC_HEADERS
-    include/xeus-calc/xeus_calc_interpreter.hpp
-    include/xeus-calc/xeus_calc_config.hpp
+    include/xeus-sqlite/xeus_sqlite_interpreter.hpp
+    include/xeus-sqlite/xeus_sqlite_config.hpp
 )
 
-# xeus-calc is the target for the library
-add_library(xeus-calc SHARED ${XEUS_CALC_SRC} ${XEUS_CALC_HEADERS})
+# xeus-sqlite is the target for the library
+add_library(xeus-sqlite SHARED ${XEUS_CALC_SRC} ${XEUS_CALC_HEADERS})
 
 
-# xcalc is the target for the kernel executable
-add_executable(xcalc src/main.cpp)
-set_target_properties(xcalc PROPERTIES ENABLE_EXPORTS 1)
-target_link_libraries(xcalc PRIVATE xeus-calc)
+# xsqlite is the target for the kernel executable
+add_executable(xsqlite src/main.cpp)
+set_target_properties(xsqlite PROPERTIES ENABLE_EXPORTS 1)
+target_link_libraries(xsqlite PRIVATE xeus-sqlite)
 
-target_compile_definitions(xcalc PRIVATE XEUS_CALC_HOME="${XCALC_PREFIX}")
+target_compile_definitions(xsqlite PRIVATE XEUS_CALC_HOME="${XCALC_PREFIX}")
 
 if (APPLE)
-    set_target_properties(xcalc PROPERTIES
+    set_target_properties(xsqlite PROPERTIES
         MACOSX_RPATH ON
     )
 else()
-    set_target_properties(xcalc PROPERTIES
+    set_target_properties(xsqlite PROPERTIES
         BUILD_WITH_INSTALL_RPATH 1
         SKIP_BUILD_RPATH FALSE
     )
 endif()
 
 
-set_target_properties(xcalc xeus-calc PROPERTIES
+set_target_properties(xsqlite xeus-sqlite PROPERTIES
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )
 
@@ -130,35 +130,35 @@ if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
     set(BUILD_TESTS ON)
 endif()
 
-target_link_libraries(xeus-calc PUBLIC 
+target_link_libraries(xeus-sqlite PUBLIC 
   xeus 
   SQLiteCpp
   SQLite::SQLite3
 )
 
-set_target_properties(xcalc PROPERTIES
+set_target_properties(xsqlite PROPERTIES
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )
 
-target_include_directories(xeus-calc
+target_include_directories(xeus-sqlite
                            PUBLIC
                            ${XCALC_INCLUDE_DIRS}
                            $<BUILD_INTERFACE:${XEUS_CALC_INCLUDE_DIR}>
                            $<INSTALL_INTERFACE:include>)
 
-set_target_properties(xeus-calc PROPERTIES
+set_target_properties(xeus-sqlite PROPERTIES
                       PUBLIC_HEADER "${XEUS_CALC_HEADERS}"
                       COMPILE_DEFINITIONS "XEUS_CALC_EXPORTS"
                       PREFIX ""
                       VERSION ${${PROJECT_NAME}_VERSION}
                       SOVERSION ${XCALC_VERSION_MAJOR}
-OUTPUT_NAME "libxeus-calc")
+OUTPUT_NAME "libxeus-sqlite")
 
 
 ## Test ##
 # take into account the CMakeList in test
 
-OPTION(BUILD_TESTS "xeus-calc test suite" OFF)
+OPTION(BUILD_TESTS "xeus-sqlite test suite" OFF)
 OPTION(DOWNLOAD_GTEST "build gtest from downloaded sources" OFF)
 
 if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
@@ -173,18 +173,18 @@ endif()
 # Installation
 # ============
 
-# Install xeus-calc and xcalc
-install(TARGETS xeus-calc
+# Install xeus-sqlite and xsqlite
+install(TARGETS xeus-sqlite
         EXPORT ${PROJECT_NAME}-targets
         ARCHIVE DESTINATION ${CMAKE_INSTALL_LIBDIR}
         LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/xeus-calc)
+        PUBLIC_HEADER DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/xeus-sqlite)
 
-install(TARGETS xcalc
+install(TARGETS xsqlite
         RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
 
-# Configuration and data directories for jupyter and xeus_calc
+# Configuration and data directories for jupyter and xeus_sqlite
 set(XJUPYTER_DATA_DIR "share/jupyter" CACHE STRING "Jupyter data directory")
 
 # Install Jupyter kernelspecs

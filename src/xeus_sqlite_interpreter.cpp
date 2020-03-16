@@ -15,7 +15,7 @@
 
 #include "xeus/xinterpreter.hpp"
 
-#include "xeus-calc/xeus_calc_interpreter.hpp"
+#include "xeus-sqlite/xeus_sqlite_interpreter.hpp"
 
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <SQLiteCpp/VariadicBind.h>
@@ -36,7 +36,7 @@ static int callback(void *NotUsed, int argc, char **argv, char **azColName)
       }
 
 
-namespace xeus_calc
+namespace xeus_sqlite
 {
     void interpreter::configure_impl()
     {
@@ -165,7 +165,7 @@ namespace xeus_calc
     nl::json interpreter::kernel_info_request_impl()
     {
         nl::json result;
-        result["implementation"] = "xcalc";
+        result["implementation"] = "xsqlite";
         result["implementation_version"] = "0.1.0";
         std::string banner = ""
         " **     ** ******** **     **  ********         ******      **     **         ****** \n"

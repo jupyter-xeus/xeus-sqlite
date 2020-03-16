@@ -14,11 +14,11 @@
 
 #include "nlohmann/json.hpp"
 
-#include "xeus_calc_config.hpp"
+#include "xeus_sqlite_config.hpp"
 
 namespace nl = nlohmann;
 
-namespace xeus_calc
+namespace xeus_sqlite
 {
     class XEUS_CALC_API interpreter : public xeus::xinterpreter
     {
