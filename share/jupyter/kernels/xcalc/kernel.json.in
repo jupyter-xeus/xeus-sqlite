@@ -1,0 +1,9 @@
+{
+    "display_name": "xcalc",
+    "argv": [
+        "@CMAKE_INSTALL_PREFIX@/@CMAKE_INSTALL_BINDIR@/xcalc",
+        "-f",
+        "{connection_file}"
+    ],
+    "language": ""
+}

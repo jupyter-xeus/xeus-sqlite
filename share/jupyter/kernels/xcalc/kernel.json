@@ -1,0 +1,9 @@
+{
+    "display_name": "xcalc",
+    "argv": [
+        "/Users/mariana/Development/miniconda/envs/xeus-sqlite/bin/xcalc",
+        "-f",
+        "{connection_file}"
+    ],
+    "language": ""
+}
