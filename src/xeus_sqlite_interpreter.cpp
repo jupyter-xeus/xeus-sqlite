@@ -20,7 +20,6 @@
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <SQLiteCpp/VariadicBind.h>
 
-using namespace std;
 
 static int callback(void *NotUsed, int argc, char **argv, char **azColName)
       {
@@ -42,52 +41,6 @@ namespace xeus_sqlite
     {
     }
 
-    std::string formating_expr(const std::string& expression)
-    {
-        std::string operators = "-+/*^()";
-        std::string spaced_expression;
-        std::string function;
-        for (char itr : expression)
-        {
-            std::istringstream num(std::to_string(itr));
-            size_t op = operators.find(itr);
-            if (op != std::string::npos)
-            {
-                spaced_expression += ' ';
-                spaced_expression += itr;
-                spaced_expression += ' ';
-            }
-            else if (std::isdigit(itr) || std::isdigit(spaced_expression.back()) && itr == '.')
-            {
-                spaced_expression += itr;
-            }
-            // possible implementation for functions using the operators map defined below to check
-            // for the function's existence
-            /*else if (std::isalpha(itr))
-            {
-
-                function += itr;
-                static operators_map_type operators_map = build_operators_map();
-                auto it = operators_map.find(token);
-                if (it != operators_map.end())
-                {
-                    function = "";
-                }
-            }*/
-            else if (itr == ' ')
-            {
-                continue;
-            }
-            else
-            {
-                std::string s = "Syntax error :\none of the characters presents an issue : ";
-                s.push_back(itr);
-                throw std::runtime_error(s);
-            }
-        }
-        return spaced_expression;
-    }
-
     nl::json interpreter::execute_request_impl(int execution_counter,
                                                const std::string& code,
                                                bool /*silent*/,
@@ -97,7 +50,7 @@ namespace xeus_sqlite
     {
         nl::json pub_data;
         std::string result = "Result = ";
-        string path_to_db = "/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/chinook.db";
+        std::string path_to_db = "/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/chinook.db";
         SQLite::Database    db(path_to_db, SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
         cout << db.getFilename().c_str() << endl;
 
@@ -167,19 +120,9 @@ namespace xeus_sqlite
         nl::json result;
         result["implementation"] = "xsqlite";
         result["implementation_version"] = "0.1.0";
-        std::string banner = ""
-        " **     ** ******** **     **  ********         ******      **     **         ****** \n"
-        "//**   ** /**///// /**    /** **//////         **////**    ****   /**        **////** \n"
-        " //** **  /**      /**    /**/**              **    //    **//**  /**       **    // \n"
-        "  //***   /******* /**    /**/********* *****/**         **  //** /**      /**       \n"
-        "   **/**  /**////  /**    /**////////**///// /**        **********/**      /**       \n"
-        "  ** //** /**      /**    /**       /**      //**    **/**//////**/**      //**    ** \n"
-        " **   //**/********//*******  ********        //****** /**     /**/******** //****** \n"
-        "//     // ////////  ///////  ////////          //////  //      // ////////   ////// \n"
-        "\n"
-        " Implementation of a calculator based on RPN through Xeus";
+        std::string banner = "";
         result["banner"] = banner;
-        result["language_info"]["name"] = "calc";
+        result["language_info"]["name"] = "sqlite";
         result["language_info"]["version"] = "";
         result["language_info"]["mimetype"] = "";
         result["language_info"]["file_extension"] = "";
