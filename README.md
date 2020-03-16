@@ -1,22 +1,16 @@
 # xeus-sqlite
 
-[![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyter-xeus/xeus-sqlite/master?filepath=notebooks/Xeus-calc.ipynb)
+[![Binder]()
 [![Travis](https://travis-ci.org/jupyter-xeus/xeus-sqlite.svg?branch=master)](https://travis-ci.org/jupyter-xeus/xeus-sqlite)
 [![Appveyor](https://ci.appveyor.com/api/projects/status/t2u22uaevru2ugm8?svg=true)](https://ci.appveyor.com/project/jupyter-xeus/xeus-sqlite)
 
-Calculator as a Jupyter Kernel implemented with Xeus
 
 ## Usage
 
-Launch the Jupyter notebook with `jupyter notebook` or Jupyter lab with `jupyter lab` and launch a new notebook by selecting the **xeus-sqlite** kernel.
-
-**Code execution**:
-
-![Basic code execution](xeus-sqlite2.gif)
 
 ## Installation
 
-To ensure that the installation works, it is preferable to install `xeus` in a fresh conda environment. It is also needed to use a [miniconda](https://conda.io/miniconda.html) installation because with the full [anaconda](https://www.anaconda.com/) you may have a conflict.
+<!-- To ensure that the installation works, it is preferable to install `xeus` in a fresh conda environment. It is also needed to use a [miniconda](https://conda.io/miniconda.html) installation because with the full [anaconda](https://www.anaconda.com/) you may have a conflict.
 
 The safest usage is to create an environment named `xeus-sqlite-env` within your miniconda installation
 
@@ -35,7 +29,7 @@ cmake -D CMAKE_INSTALL_PREFIX=$CONDA_PREFIX ..
 make
 make install
 ```
-
+ -->
 ## Contributing
 
 See [CONTRIBUTING.md](./CONTRIBUTING.md) to know how to contribute and set up a development environment.
