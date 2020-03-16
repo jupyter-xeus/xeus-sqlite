@@ -88,11 +88,6 @@ namespace xeus_calc
         return spaced_expression;
     }
 
-    void howdoesthisworkfunction()
-    {
-      cout << "🦋🦋🦋" << endl;
-    }
-
     nl::json interpreter::execute_request_impl(int execution_counter,
                                                const std::string& code,
                                                bool /*silent*/,
@@ -106,21 +101,27 @@ namespace xeus_calc
         SQLite::Database    db(path_to_db, SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
         cout << db.getFilename().c_str() << endl;
 
-        if (db.tableExists("test"))
+        SQLite::Statement query(db, code);
+        std::stringstream query_result("");
+
+        //Iterates through the columns and prints the columns
+        while (query.executeStep())
         {
-          cout << "🌈" << endl;
+            for(int column = 0; column < query.getColumnCount(); column++) {
+                std::string name = query.getColumn(column);
+                query_result << name << std::endl;
+            }
         }
 
-          cout << "🌸" << endl;
-          db.exec(code);
-          // result += test;
+        query.reset();
+
+        result += query_result.str();
+
         auto publish = [this](const std::string& name, const std::string& text) {
             this->publish_stream(name, text);
         };
         try
         {
-            // std::string spaced_code = formating_expr(code);
-            // result += std::to_string(compute_rpn(parse_rpn(spaced_code, publish), publish));
             pub_data["text/plain"] = result;
             publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
             nl::json jresult;
@@ -136,10 +137,6 @@ namespace xeus_calc
             jresult["status"] = "error";
             return jresult;
         }
-        // You can also use this method for publishing errors to the client, if the code
-        // failed to execute
-        // publish_execution_error(error_name, error_value, error_traceback);
-        // publish_execution_error("TypeError", "123", {"!@#$", "*(*"});
     }
 
     nl::json interpreter::complete_request_impl(const std::string& /*code*/, int /*cursor_pos*/)
