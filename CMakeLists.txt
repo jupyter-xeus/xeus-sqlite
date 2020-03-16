@@ -1,6 +1,6 @@
 ############################################################################
-# Copyright (c) 2019, Sylvain Corlay, Johan Mabille, Wolf Vollprecht       #
-# Copyright (c) 2019, QuantStack                                           #
+# Copyright (c) 2020, Mariana Meireles                                     #
+# Copyright (c) 2020, QuantStack                                           #
 #                                                                          #
 # Distributed under the terms of the BSD 3-Clause License.                 #
 #                                                                          #
