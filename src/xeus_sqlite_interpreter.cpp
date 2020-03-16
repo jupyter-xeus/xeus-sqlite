@@ -22,6 +22,14 @@
 
 namespace xeus_sqlite
 {
+
+    std::string parse_code(const std::string& code)
+    {
+        //verifys if user wants to create a new db
+        //create a map with the name of the db user is either creating or opening
+        //do operations in this map of dbs
+    }
+
     void interpreter::configure_impl()
     {
     }
@@ -38,6 +46,10 @@ namespace xeus_sqlite
         std::string path_to_db = "/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/chinook.db";
         SQLite::Database db(path_to_db, SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
 
+        //if user wants to open a db or some other specific case
+        // parse_code(code);
+
+        //else execute normal sqlite code
         SQLite::Statement query(db, code);
         std::stringstream query_result("");
 
@@ -45,8 +57,8 @@ namespace xeus_sqlite
         while (query.executeStep())
         {
             for(int column = 0; column < query.getColumnCount(); column++) {
-                std::string name = query.getColumn(column);
-                query_result << name << std::endl;
+                std::string col_content = query.getColumn(column);
+                query_result << col_content << std::endl;
             }
         }
 
