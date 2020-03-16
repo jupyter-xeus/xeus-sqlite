@@ -10,7 +10,7 @@
 cmake_minimum_required(VERSION 3.4.3)
 project(xeus-sqlite)
 
-set(XEUS_CALC_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(XEUS_SQLITE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
 
 set(CMAKE_FIND_ROOT_PATH ${CMAKE_PREFIX_PATH})
@@ -26,15 +26,15 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
 # Versionning
 # ===========
 
-file(STRINGS "${XEUS_CALC_INCLUDE_DIR}/xeus-sqlite/xeus_sqlite_config.hpp" xsqlite_version_defines
-     REGEX "#define XCALC_VERSION_(MAJOR|MINOR|PATCH)")
+file(STRINGS "${XEUS_SQLITE_INCLUDE_DIR}/xeus-sqlite/xeus_sqlite_config.hpp" xsqlite_version_defines
+     REGEX "#define XSQLITE_VERSION_(MAJOR|MINOR|PATCH)")
 foreach(ver ${xsqlite_version_defines})
-    if(ver MATCHES "#define XCALC_VERSION_(MAJOR|MINOR|PATCH) +([^ ]+)$")
-        set(XCALC_VERSION_${CMAKE_MATCH_1} "${CMAKE_MATCH_2}" CACHE INTERNAL "")
+    if(ver MATCHES "#define XSQLITE_VERSION_(MAJOR|MINOR|PATCH) +([^ ]+)$")
+        set(XSQLITE_VERSION_${CMAKE_MATCH_1} "${CMAKE_MATCH_2}" CACHE INTERNAL "")
     endif()
 endforeach()
 set(${PROJECT_NAME}_VERSION
-${XCALC_VERSION_MAJOR}.${XPYT_VERSION_MINOR}.${XPYT_VERSION_PATCH})
+${XSQLITE_VERSION_MAJOR}.${XPYT_VERSION_MINOR}.${XPYT_VERSION_PATCH})
 message(STATUS "Building xeus-sqlite v${${PROJECT_NAME}_VERSION}")
 
 # Configuration
@@ -84,20 +84,20 @@ endif()
 # ===============
 
 # xeus-sqlite source directory
-set(XEUS_CALC_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
+set(XEUS_SQLITE_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 
 # xeus-sqlite source files
-set(XEUS_CALC_SRC
-    ${XEUS_CALC_SRC_DIR}/xeus_sqlite_interpreter.cpp
+set(XEUS_SQLITE_SRC
+    ${XEUS_SQLITE_SRC_DIR}/xeus_sqlite_interpreter.cpp
 )
 
-set(XEUS_CALC_HEADERS
+set(XEUS_SQLITE_HEADERS
     include/xeus-sqlite/xeus_sqlite_interpreter.hpp
     include/xeus-sqlite/xeus_sqlite_config.hpp
 )
 
 # xeus-sqlite is the target for the library
-add_library(xeus-sqlite SHARED ${XEUS_CALC_SRC} ${XEUS_CALC_HEADERS})
+add_library(xeus-sqlite SHARED ${XEUS_SQLITE_SRC} ${XEUS_SQLITE_HEADERS})
 
 
 # xsqlite is the target for the kernel executable
@@ -105,7 +105,7 @@ add_executable(xsqlite src/main.cpp)
 set_target_properties(xsqlite PROPERTIES ENABLE_EXPORTS 1)
 target_link_libraries(xsqlite PRIVATE xeus-sqlite)
 
-target_compile_definitions(xsqlite PRIVATE XEUS_CALC_HOME="${XCALC_PREFIX}")
+target_compile_definitions(xsqlite PRIVATE XEUS_SQLITE_HOME="${XSQLITE_PREFIX}")
 
 if (APPLE)
     set_target_properties(xsqlite PROPERTIES
@@ -142,16 +142,16 @@ set_target_properties(xsqlite PROPERTIES
 
 target_include_directories(xeus-sqlite
                            PUBLIC
-                           ${XCALC_INCLUDE_DIRS}
-                           $<BUILD_INTERFACE:${XEUS_CALC_INCLUDE_DIR}>
+                           ${XSQLITE_INCLUDE_DIRS}
+                           $<BUILD_INTERFACE:${XEUS_SQLITE_INCLUDE_DIR}>
                            $<INSTALL_INTERFACE:include>)
 
 set_target_properties(xeus-sqlite PROPERTIES
-                      PUBLIC_HEADER "${XEUS_CALC_HEADERS}"
-                      COMPILE_DEFINITIONS "XEUS_CALC_EXPORTS"
+                      PUBLIC_HEADER "${XEUS_SQLITE_HEADERS}"
+                      COMPILE_DEFINITIONS "XEUS_SQLITE_EXPORTS"
                       PREFIX ""
                       VERSION ${${PROJECT_NAME}_VERSION}
-                      SOVERSION ${XCALC_VERSION_MAJOR}
+                      SOVERSION ${XSQLITE_VERSION_MAJOR}
 OUTPUT_NAME "libxeus-sqlite")
 
 
