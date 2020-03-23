@@ -51,9 +51,9 @@ private:
 
     std::vector<std::string> tokenizer(const std::string& code);
     bool is_magic(std::vector<std::string>& tokenized_code);
-    void load_db(std::vector<std::string> tokenized_code);
-    void create_db(std::vector<std::string> tokenized_code);
-    void parse_code(std::vector<std::string> tokenized_code);
+    void load_db(const std::vector<std::string> tokenized_code);
+    void create_db(const std::vector<std::string> tokenized_code);
+    void parse_code(const std::vector<std::string>& tokenized_code);
 
 };
 

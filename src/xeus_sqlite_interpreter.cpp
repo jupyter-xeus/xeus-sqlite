@@ -46,9 +46,10 @@ std::vector<std::string> interpreter::tokenizer(const std::string& code)
 
 bool interpreter::is_magic(std::vector<std::string>& tokenized_code)
 {
-    if(tokenized_code[0] == "%") {
+    if(tokenized_code[0] == "%")
+    {
         tokenized_code[1].erase(0, 1);
-        std::transform(tokenized_code[1].begin(), tokenized_code[1].end(),tokenized_code[1].begin(), ::toupper);
+        std::transform(tokenized_code[1].begin(), tokenized_code[1].end(), tokenized_code[1].begin(), ::toupper);
         return true;
     }
     else
@@ -57,7 +58,7 @@ bool interpreter::is_magic(std::vector<std::string>& tokenized_code)
     }
 }
 
-void interpreter::load_db(std::vector<std::string> tokenized_code)
+void interpreter::load_db(const std::vector<std::string> tokenized_code)
 {
     /*
         Loads the a database. If the open mode is not specified it defaults
@@ -89,7 +90,7 @@ void interpreter::load_db(std::vector<std::string> tokenized_code)
     }
 }
 
-void interpreter::create_db(std::vector<std::string> tokenized_code)
+void interpreter::create_db(const std::vector<std::string> tokenized_code)
 {
     /*
         Creates the a database in read and write mode.
@@ -105,7 +106,7 @@ void interpreter::create_db(std::vector<std::string> tokenized_code)
     }
 }
 
-void interpreter::parse_code(std::vector<std::string> tokenized_code)
+void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
 {
     //TODO: maybe add a rename? https://sqlite.org/lang_altertable.html#altertabrename
 
