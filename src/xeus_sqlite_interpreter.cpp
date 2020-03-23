@@ -105,9 +105,13 @@ void interpreter::load_db(const std::vector<std::string> tokenized_code)
         }
         //TODO: treat the case where the user doesn't input anything
     }
-    catch(const std::runtime_error& e)
+    catch (const std::runtime_error& err)
     {
-        std::cout << e.what() << std::endl;
+        nl::json jresult;
+        jresult["status"] = "error";
+        jresult["ename"] = "Error";
+        jresult["evalue"] = err.what();
+        publish_stream("stderr", err.what());
     }
 }
 
@@ -124,7 +128,11 @@ void interpreter::create_db(const std::vector<std::string> tokenized_code)
     }
     catch(const std::runtime_error& e)
     {
-        std::cout << e.what() << std::endl;
+        nl::json jresult;
+        jresult["status"] = "error";
+        jresult["ename"] = "Error";
+        jresult["evalue"] = err.what();
+        publish_stream("stderr", err.what());
     }
 }
 
@@ -163,37 +171,38 @@ nl::json interpreter::execute_request_impl(int execution_counter,
                                            nl::json /*user_expressions*/,
                                            bool /*allow_stdin*/)
 {
+    //TODO: get the second argument from the code and save it as path
+    //once I have the path I do a SQLite::Database::getHeaderInfo(filename_example_db3)
+    //I test it and it'll be the only way of creating queries, etc
+
     nl::json pub_data;
     std::string result = "";
     std::vector<std::string> tokenized_code = tokenizer(code);
 
-    //Runs non-SQLite code
-    if(is_magic(tokenized_code))
-    {
-        parse_code(tokenized_code);
-    }
-    else
-    {
-        SQLite::Statement query(*this->m_db, code);
-        std::stringstream query_result("");
-
-        //Iterates through the columns and prints them
-        while (query.executeStep())
-        {
-            for(int column = 0; column < query.getColumnCount(); column++) {
-                std::string name = query.getColumn(column);
-                query_result << name << std::endl;
-            }
-        }
-        query.reset();
-        result += query_result.str();
-    }
-
-    auto publish = [this](const std::string& name, const std::string& text) {
-        this->publish_stream(name, text);
-    };
     try
     {
+        //Runs non-SQLite code
+        if(is_magic(tokenized_code))
+        {
+            parse_code(tokenized_code);
+        }
+        else
+        {
+            SQLite::Statement query(*this->m_db, code);
+            std::stringstream query_result("");
+
+            //Iterates through the columns and prints them
+            while (query.executeStep())
+            {
+                for(int column = 0; column < query.getColumnCount(); column++) {
+                    std::string name = query.getColumn(column);
+                    query_result << name << std::endl;
+                }
+            }
+            query.reset();
+            result += query_result.str();
+        }
+
         pub_data["text/plain"] = result;
         publish_execution_result(execution_counter, std::move(pub_data),
                                     nl::json::object());
@@ -203,26 +212,16 @@ nl::json interpreter::execute_request_impl(int execution_counter,
         jresult["user_expressions"] = nl::json::object();
         return jresult;
     }
+
     catch (const std::runtime_error& err)
     {
         nl::json jresult;
-        publish_stream("stderr", err.what());
         jresult["status"] = "error";
+        jresult["ename"] = "Error";
+        jresult["evalue"] = err.what();
+        publish_stream("stderr", err.what());
         return jresult;
     }
-    // catch (const std::runtime_error& error)
-    // {
-        //TODO: deal with the error stuff
-        // error = extract_error(error);
-
-        // publish_execution_error(error.m_ename, error.m_evalue, error.m_traceback);
-        // nl::json jresult;
-        // jresult["status"] = "error";
-        // jresult["ename"] = "Error";
-        // jresult["evalue"] = error.what();
-        // jresult["traceback"] = error.m_traceback.push_back(error.what());
-        // return jresult;
-    // }
 }
 
 nl::json interpreter::complete_request_impl(const std::string& /*code*/, int /*cursor_pos*/)

@@ -54,7 +54,7 @@ private:
     void parse_code(const std::vector<std::string>& tokenized_code);
 
     std::unique_ptr<SQLite::Database> m_db = nullptr;
-
+    std::vector<std::string> m_traceback;
 };
 
 }
