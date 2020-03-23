@@ -49,7 +49,8 @@ bool interpreter::is_magic(std::vector<std::string>& tokenized_code)
     if(tokenized_code[0] == "%")
     {
         tokenized_code[1].erase(0, 1);
-        std::transform(tokenized_code[1].begin(), tokenized_code[1].end(), tokenized_code[1].begin(), ::toupper);
+        std::transform(tokenized_code[1].begin(), tokenized_code[1].end(),
+                        tokenized_code[1].begin(), ::toupper);
         return true;
     }
     else
@@ -98,7 +99,8 @@ void interpreter::create_db(const std::vector<std::string> tokenized_code)
 
     try
     {
-        this->m_db = std::make_unique<SQLite::Database>(tokenized_code[2], SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
+        this->m_db = std::make_unique<SQLite::Database>(tokenized_code[2],
+                        SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
     }
     catch(const std::runtime_error& e)
     {
@@ -173,7 +175,8 @@ nl::json interpreter::execute_request_impl(int execution_counter,
     try
     {
         pub_data["text/plain"] = result;
-        publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
+        publish_execution_result(execution_counter, std::move(pub_data),
+                                    nl::json::object());
         nl::json jresult;
         jresult["status"] = "ok";
         jresult["payload"] = nl::json::array();
