@@ -26,6 +26,9 @@ namespace xeus_sqlite
 
 std::string interpreter::sanitize_string(const std::string& code)
 {
+    /*
+        Cleans the code from inputs that are acceptable in a jupyter notebook.
+    */
     std::string aux = code;
     aux.erase(
         std::remove_if(
@@ -40,9 +43,9 @@ std::string interpreter::sanitize_string(const std::string& code)
 
 std::vector<std::string> interpreter::tokenizer(const std::string& code)
 {
-    //TODO: this needs to be more rubust. I need to sanitize the string better
-    //removing spaces and new lines from the begginning of the string, cause
-    //those are valid inputs in a jupyter notebook, everything else can fail
+    /*
+        Separetes the code on spaces so it's easier to execute the commands.
+    */
     std::stringstream input(sanitize_string(code));
     std::string segment;
     std::vector<std::string> tokenized_str;
@@ -60,6 +63,9 @@ std::vector<std::string> interpreter::tokenizer(const std::string& code)
 
 bool interpreter::is_magic(std::vector<std::string>& tokenized_code)
 {
+    /*
+        Returns true if the code input is magic and false if isn't.
+    */
     if(tokenized_code[0] == "%")
     {
         tokenized_code[1].erase(0, 1);
