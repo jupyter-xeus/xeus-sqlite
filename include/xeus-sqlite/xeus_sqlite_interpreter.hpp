@@ -26,10 +26,7 @@ class XEUS_SQLITE_API interpreter : public xeus::xinterpreter
 public:
 
     interpreter() = default;
-
     virtual ~interpreter() = default;
-
-    std::unique_ptr<SQLite::Database> db = nullptr;
 
 private:
 
@@ -54,6 +51,8 @@ private:
     void load_db(const std::vector<std::string> tokenized_code);
     void create_db(const std::vector<std::string> tokenized_code);
     void parse_code(const std::vector<std::string>& tokenized_code);
+
+    std::unique_ptr<SQLite::Database> m_db = nullptr;
 
 };
 
