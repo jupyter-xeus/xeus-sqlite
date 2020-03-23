@@ -1,6 +1,6 @@
 # xeus-sqlite
 
-[![Binder]()
+![Binder]()
 [![Travis](https://travis-ci.org/jupyter-xeus/xeus-sqlite.svg?branch=master)](https://travis-ci.org/jupyter-xeus/xeus-sqlite)
 [![Appveyor](https://ci.appveyor.com/api/projects/status/t2u22uaevru2ugm8?svg=true)](https://ci.appveyor.com/project/jupyter-xeus/xeus-sqlite)
 
