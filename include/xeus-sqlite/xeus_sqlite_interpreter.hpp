@@ -46,6 +46,7 @@ private:
     nl::json kernel_info_request_impl() override;
     void shutdown_request_impl() override;
 
+    std::string sanitize_string(const std::string& code);
     std::vector<std::string> tokenizer(const std::string& code);
     bool is_magic(std::vector<std::string>& tokenized_code);
     void load_db(const std::vector<std::string> tokenized_code);

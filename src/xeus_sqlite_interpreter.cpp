@@ -24,12 +24,26 @@
 namespace xeus_sqlite
 {
 
+std::string interpreter::sanitize_string(const std::string& code)
+{
+    std::string aux = code;
+    aux.erase(
+        std::remove_if(
+            aux.begin(), aux.end(), [](char const c) {
+                return '\n' == c || '\r' == c || '\0' == c || '\x1A' == c;
+            }
+        ),
+        aux.end()
+    );
+    return aux;
+}
+
 std::vector<std::string> interpreter::tokenizer(const std::string& code)
 {
     //TODO: this needs to be more rubust. I need to sanitize the string better
     //removing spaces and new lines from the begginning of the string, cause
     //those are valid inputs in a jupyter notebook, everything else can fail
-    std::stringstream input(code);
+    std::stringstream input(sanitize_string(code));
     std::string segment;
     std::vector<std::string> tokenized_str;
     std::string is_magic(1, input.str()[0]);
