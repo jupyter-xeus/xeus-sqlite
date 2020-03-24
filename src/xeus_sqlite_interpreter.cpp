@@ -24,12 +24,29 @@
 namespace xeus_sqlite
 {
 
+std::string interpreter::sanitize_string(const std::string& code)
+{
+    /*
+        Cleans the code from inputs that are acceptable in a jupyter notebook.
+    */
+    std::string aux = code;
+    aux.erase(
+        std::remove_if(
+            aux.begin(), aux.end(), [](char const c) {
+                return '\n' == c || '\r' == c || '\0' == c || '\x1A' == c;
+            }
+        ),
+        aux.end()
+    );
+    return aux;
+}
+
 std::vector<std::string> interpreter::tokenizer(const std::string& code)
 {
-    //TODO: this needs to be more rubust. I need to sanitize the string better
-    //removing spaces and new lines from the begginning of the string, cause
-    //those are valid inputs in a jupyter notebook, everything else can fail
-    std::stringstream input(code);
+    /*
+        Separetes the code on spaces so it's easier to execute the commands.
+    */
+    std::stringstream input(sanitize_string(code));
     std::string segment;
     std::vector<std::string> tokenized_str;
     std::string is_magic(1, input.str()[0]);
@@ -46,10 +63,14 @@ std::vector<std::string> interpreter::tokenizer(const std::string& code)
 
 bool interpreter::is_magic(std::vector<std::string>& tokenized_code)
 {
+    /*
+        Returns true if the code input is magic and false if isn't.
+    */
     if(tokenized_code[0] == "%")
     {
         tokenized_code[1].erase(0, 1);
-        std::transform(tokenized_code[1].begin(), tokenized_code[1].end(), tokenized_code[1].begin(), ::toupper);
+        std::transform(tokenized_code[1].begin(), tokenized_code[1].end(),
+                        tokenized_code[1].begin(), ::toupper);
         return true;
     }
     else
@@ -69,24 +90,28 @@ void interpreter::load_db(const std::vector<std::string> tokenized_code)
     {
         if (tokenized_code[2] == tokenized_code.back())
         {
-            this->db = std::make_unique<SQLite::Database>(tokenized_code[2],
+            m_db = std::make_unique<SQLite::Database>(tokenized_code[2],
                         SQLite::OPEN_READWRITE);
         }
         else if (tokenized_code.back().find("rw") != std::string::npos)
         {
-            this->db = std::make_unique<SQLite::Database>(tokenized_code[2],
+            m_db = std::make_unique<SQLite::Database>(tokenized_code[2],
                         SQLite::OPEN_READWRITE);
         }
         else if (tokenized_code.back().find("r") != std::string::npos)
         {
-            this->db = std::make_unique<SQLite::Database>(tokenized_code[2],
+            m_db = std::make_unique<SQLite::Database>(tokenized_code[2],
                         SQLite::OPEN_READONLY);
         }
         //TODO: treat the case where the user doesn't input anything
     }
-    catch(const std::runtime_error& e)
+    catch (const std::runtime_error& err)
     {
-        std::cout << e.what() << std::endl;
+        nl::json jresult;
+        jresult["status"] = "error";
+        jresult["ename"] = "Error";
+        jresult["evalue"] = err.what();
+        publish_stream("stderr", err.what());
     }
 }
 
@@ -98,11 +123,16 @@ void interpreter::create_db(const std::vector<std::string> tokenized_code)
 
     try
     {
-        this->db = std::make_unique<SQLite::Database>(tokenized_code[2], SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
+        m_db = std::make_unique<SQLite::Database>(tokenized_code[2],
+                        SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
     }
-    catch(const std::runtime_error& e)
+    catch(const std::runtime_error& err)
     {
-        std::cout << e.what() << std::endl;
+        nl::json jresult;
+        jresult["status"] = "error";
+        jresult["ename"] = "Error";
+        jresult["evalue"] = err.what();
+        publish_stream("stderr", err.what());
     }
 }
 
@@ -141,65 +171,57 @@ nl::json interpreter::execute_request_impl(int execution_counter,
                                            nl::json /*user_expressions*/,
                                            bool /*allow_stdin*/)
 {
+    //TODO: get the second argument from the code and save it as path
+    //once I have the path I do a SQLite::Database::getHeaderInfo(filename_example_db3)
+    //I test it and it'll be the only way of creating queries, etc
+
     nl::json pub_data;
     std::string result = "";
     std::vector<std::string> tokenized_code = tokenizer(code);
 
-    //Runs non-SQLite code
-    if(is_magic(tokenized_code))
-    {
-        parse_code(tokenized_code);
-    }
-    else
-    {
-        SQLite::Statement query(*this->db, code);
-        std::stringstream query_result("");
-
-        //Iterates through the columns and prints them
-        while (query.executeStep())
-        {
-            for(int column = 0; column < query.getColumnCount(); column++) {
-                std::string name = query.getColumn(column);
-                query_result << name << std::endl;
-            }
-        }
-        query.reset();
-        result += query_result.str();
-    }
-
-    auto publish = [this](const std::string& name, const std::string& text) {
-        this->publish_stream(name, text);
-    };
     try
     {
+        //Runs non-SQLite code
+        if(is_magic(tokenized_code))
+        {
+            parse_code(tokenized_code);
+        }
+        else
+        {
+            SQLite::Statement query(*m_db, code);
+            std::stringstream query_result("");
+
+            //Iterates through the columns and prints them
+            while (query.executeStep())
+            {
+                for(int column = 0; column < query.getColumnCount(); column++) {
+                    std::string name = query.getColumn(column);
+                    query_result << name << std::endl;
+                }
+            }
+            query.reset();
+            result += query_result.str();
+        }
+
         pub_data["text/plain"] = result;
-        publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
+        publish_execution_result(execution_counter, std::move(pub_data),
+                                    nl::json::object());
         nl::json jresult;
         jresult["status"] = "ok";
         jresult["payload"] = nl::json::array();
         jresult["user_expressions"] = nl::json::object();
         return jresult;
     }
+
     catch (const std::runtime_error& err)
     {
         nl::json jresult;
-        publish_stream("stderr", err.what());
         jresult["status"] = "error";
+        jresult["ename"] = "Error";
+        jresult["evalue"] = err.what();
+        publish_stream("stderr", err.what());
         return jresult;
     }
-    // catch (const std::runtime_error& error)
-    // {
-        //TODO: deal with the error stuff
-        // error = extract_error(error);
-
-        // publish_execution_error(error.m_ename, error.m_evalue, error.m_traceback);
-        // nl::json jresult;
-        // jresult["status"] = "error";
-        // jresult["ename"] = "Error";
-        // jresult["evalue"] = error.what();
-        // jresult["traceback"] = error.m_traceback.push_back(error.what());
-        // return jresult;
-    // }
 }
 
 nl::json interpreter::complete_request_impl(const std::string& /*code*/, int /*cursor_pos*/)
