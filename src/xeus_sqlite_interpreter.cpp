@@ -156,6 +156,14 @@ void interpreter::delete_db()
     }
 }
 
+void interpreter::table_exists(const std::string table_name)
+{
+    if(m_db->SQLite::Database::tableExists(table_name.c_str()))
+    {
+        publish_stream("stdout", table_name + " exists.\n");
+    }
+}
+
 void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
 {
     std::cout << "You're using magic. " << std::endl;
@@ -180,6 +188,10 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
         else if (tokenized_code[1] == "DELETE")
         {
             delete_db();
+        }
+        else if (tokenized_code[1] == "TABLE EXISTS")
+        {
+            table_exists(tokenized_code[2]);
         }
     }
 }
