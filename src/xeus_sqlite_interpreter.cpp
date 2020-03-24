@@ -89,22 +89,22 @@ void interpreter::load_db(const std::vector<std::string> tokenized_code)
 
     try
     {
-        if (tokenized_code[2] == tokenized_code.back())
+        if (tokenized_code.back().find("rw") != std::string::npos)
         {
-            m_db = std::make_unique<SQLite::Database>(tokenized_code[2],
-                        SQLite::OPEN_READWRITE);
-        }
-        else if (tokenized_code.back().find("rw") != std::string::npos)
-        {
-            m_db = std::make_unique<SQLite::Database>(tokenized_code[2],
+            m_db = std::make_unique<SQLite::Database>(m_db_path,
                         SQLite::OPEN_READWRITE);
         }
         else if (tokenized_code.back().find("r") != std::string::npos)
         {
-            m_db = std::make_unique<SQLite::Database>(tokenized_code[2],
+            m_db = std::make_unique<SQLite::Database>(m_db_path,
                         SQLite::OPEN_READONLY);
         }
-        //TODO: treat the case where the user doesn't input anything
+        //If the user doesn't choose an opening mode opens as read and write
+        else if (tokenized_code.size() < 2)
+        {
+            m_db = std::make_unique<SQLite::Database>(m_db_path,
+                        SQLite::OPEN_READWRITE);
+        }
     }
     catch (const std::runtime_error& err)
     {
@@ -124,9 +124,9 @@ void interpreter::create_db(const std::vector<std::string> tokenized_code)
 
     try
     {
-        std::string path_new_db = tokenized_code[2];
-        path_new_db += tokenized_code[3];
-        m_db = std::make_unique<SQLite::Database>(path_new_db,
+        m_db_path = tokenized_code[2];
+        m_db_path += tokenized_code[3];
+        m_db = std::make_unique<SQLite::Database>(m_db_path,
                         SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
     }
     catch(const std::runtime_error& err)
