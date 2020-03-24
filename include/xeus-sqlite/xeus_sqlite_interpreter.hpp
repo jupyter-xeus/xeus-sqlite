@@ -48,10 +48,11 @@ private:
 
     std::string sanitize_string(const std::string& code);
     std::vector<std::string> tokenizer(const std::string& code);
+    void parse_code(const std::vector<std::string>& tokenized_code);
     bool is_magic(std::vector<std::string>& tokenized_code);
     void load_db(const std::vector<std::string> tokenized_code);
     void create_db(const std::vector<std::string> tokenized_code);
-    void parse_code(const std::vector<std::string>& tokenized_code);
+    void delete_db();
 
     std::unique_ptr<SQLite::Database> m_db = nullptr;
     std::vector<std::string> m_traceback;

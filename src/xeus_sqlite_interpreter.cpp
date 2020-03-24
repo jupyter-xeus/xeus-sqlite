@@ -14,6 +14,7 @@
 #include <memory>
 #include <stack>
 #include <cctype>
+#include <cstdio>
 
 #include "xeus/xinterpreter.hpp"
 
@@ -139,6 +140,22 @@ void interpreter::create_db(const std::vector<std::string> tokenized_code)
     }
 }
 
+void interpreter::delete_db()
+{
+    /*
+        Deletes the database.
+    */
+
+    if(std::remove(m_db_path.c_str()) != 0)
+    {
+        publish_stream("stderr", "Error deleting file.\n");
+    }
+    else
+    {
+        publish_stream("stderr", "File successfully deleted.\n");
+    }
+}
+
 void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
 {
     //TODO: maybe add a rename? https://sqlite.org/lang_altertable.html#altertabrename
@@ -165,6 +182,7 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
         //TODO: implement delete
         else if (tokenized_code[1] == "DELETE")
         {
+            delete_db();
         }
         //TODO: implement attach https://www.tutorialspoint.com/sqlite/sqlite_attach_database.htm
         else if (tokenized_code[1] == "ATTACH")
@@ -184,10 +202,6 @@ nl::json interpreter::execute_request_impl(int execution_counter,
                                            nl::json /*user_expressions*/,
                                            bool /*allow_stdin*/)
 {
-    //TODO: get the second argument from the code and save it as path
-    //once I have the path I do a SQLite::Database::getHeaderInfo(filename_example_db3)
-    //I test it and it'll be the only way of creating queries, etc
-
     nl::json pub_data;
     std::string result = "";
     std::vector<std::string> tokenized_code = tokenizer(code);
@@ -199,6 +213,7 @@ nl::json interpreter::execute_request_impl(int execution_counter,
         {
             parse_code(tokenized_code);
         }
+        //Runs SQLite code
         else
         {
             SQLite::Statement query(*m_db, code);
