@@ -8,6 +8,7 @@
 ****************************************************************************/
 
 #include <iostream>
+#include <fstream>
 #include <vector>
 #include <sstream>
 #include <memory>
@@ -123,7 +124,9 @@ void interpreter::create_db(const std::vector<std::string> tokenized_code)
 
     try
     {
-        m_db = std::make_unique<SQLite::Database>(tokenized_code[2],
+        std::string path_new_db = tokenized_code[2];
+        path_new_db += tokenized_code[3];
+        m_db = std::make_unique<SQLite::Database>(path_new_db,
                         SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
     }
     catch(const std::runtime_error& err)
@@ -142,21 +145,31 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
 
     std::cout << "You're using magic. " << std::endl;
 
-    if (tokenized_code[1] == "LOAD")
+    m_db_path = tokenized_code[2];
+
+    std::ifstream path_is_valid(m_db_path); 
+    if (!path_is_valid)
     {
-        load_db(tokenized_code);
+      publish_stream("stderr", "The path doesn't exist.\n");
     }
-    else if (tokenized_code[1] == "CREATE")
+    else
     {
-        create_db(tokenized_code);
-    }
-    //TODO: implement delete
-    else if (tokenized_code[1] == "DELETE")
-    {
-    }
-    //TODO: implement attach https://www.tutorialspoint.com/sqlite/sqlite_attach_database.htm
-    else if (tokenized_code[1] == "ATTACH")
-    {
+        if (tokenized_code[1] == "LOAD")
+        {
+            load_db(tokenized_code);
+        }
+        else if (tokenized_code[1] == "CREATE")
+        {
+            create_db(tokenized_code);
+        }
+        //TODO: implement delete
+        else if (tokenized_code[1] == "DELETE")
+        {
+        }
+        //TODO: implement attach https://www.tutorialspoint.com/sqlite/sqlite_attach_database.htm
+        else if (tokenized_code[1] == "ATTACH")
+        {
+        }
     }
 }
 

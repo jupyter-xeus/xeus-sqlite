@@ -55,6 +55,7 @@ private:
 
     std::unique_ptr<SQLite::Database> m_db = nullptr;
     std::vector<std::string> m_traceback;
+    std::string m_db_path;
 };
 
 }
