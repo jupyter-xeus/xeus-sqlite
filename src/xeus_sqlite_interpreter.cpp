@@ -100,7 +100,7 @@ void interpreter::load_db(const std::vector<std::string> tokenized_code)
             m_db = std::make_unique<SQLite::Database>(m_db_path,
                         SQLite::OPEN_READONLY);
         }
-        //If the user doesn't choose an opening mode opens as read and write
+        //Opening as read and write because mode is unspecified
         else if (tokenized_code.size() < 2)
         {
             m_db = std::make_unique<SQLite::Database>(m_db_path,
@@ -158,8 +158,6 @@ void interpreter::delete_db()
 
 void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
 {
-    //TODO: maybe add a rename? https://sqlite.org/lang_altertable.html#altertabrename
-
     std::cout << "You're using magic. " << std::endl;
 
     m_db_path = tokenized_code[2];
@@ -179,14 +177,9 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
         {
             create_db(tokenized_code);
         }
-        //TODO: implement delete
         else if (tokenized_code[1] == "DELETE")
         {
             delete_db();
-        }
-        //TODO: implement attach https://www.tutorialspoint.com/sqlite/sqlite_attach_database.htm
-        else if (tokenized_code[1] == "ATTACH")
-        {
         }
     }
 }
@@ -202,6 +195,10 @@ nl::json interpreter::execute_request_impl(int execution_counter,
                                            nl::json /*user_expressions*/,
                                            bool /*allow_stdin*/)
 {
+    /*
+        Executes either SQLite code or Jupyter Magic.
+    */
+
     nl::json pub_data;
     std::string result = "";
     std::vector<std::string> tokenized_code = tokenizer(code);
