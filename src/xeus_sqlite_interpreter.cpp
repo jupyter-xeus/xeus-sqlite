@@ -90,17 +90,17 @@ void interpreter::load_db(const std::vector<std::string> tokenized_code)
     {
         if (tokenized_code[2] == tokenized_code.back())
         {
-            this->m_db = std::make_unique<SQLite::Database>(tokenized_code[2],
+            m_db = std::make_unique<SQLite::Database>(tokenized_code[2],
                         SQLite::OPEN_READWRITE);
         }
         else if (tokenized_code.back().find("rw") != std::string::npos)
         {
-            this->m_db = std::make_unique<SQLite::Database>(tokenized_code[2],
+            m_db = std::make_unique<SQLite::Database>(tokenized_code[2],
                         SQLite::OPEN_READWRITE);
         }
         else if (tokenized_code.back().find("r") != std::string::npos)
         {
-            this->m_db = std::make_unique<SQLite::Database>(tokenized_code[2],
+            m_db = std::make_unique<SQLite::Database>(tokenized_code[2],
                         SQLite::OPEN_READONLY);
         }
         //TODO: treat the case where the user doesn't input anything
@@ -123,10 +123,10 @@ void interpreter::create_db(const std::vector<std::string> tokenized_code)
 
     try
     {
-        this->m_db = std::make_unique<SQLite::Database>(tokenized_code[2],
+        m_db = std::make_unique<SQLite::Database>(tokenized_code[2],
                         SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
     }
-    catch(const std::runtime_error& e)
+    catch(const std::runtime_error& err)
     {
         nl::json jresult;
         jresult["status"] = "error";
@@ -188,7 +188,7 @@ nl::json interpreter::execute_request_impl(int execution_counter,
         }
         else
         {
-            SQLite::Statement query(*this->m_db, code);
+            SQLite::Statement query(*m_db, code);
             std::stringstream query_result("");
 
             //Iterates through the columns and prints them
