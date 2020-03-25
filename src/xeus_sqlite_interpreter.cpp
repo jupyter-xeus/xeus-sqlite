@@ -158,43 +158,84 @@ void interpreter::delete_db()
 
 void interpreter::table_exists(const std::string table_name)
 {
+    try
+    {
     if(m_db->SQLite::Database::tableExists(table_name.c_str()))
     {
         publish_stream("stdout", table_name + " exists.\n");
     }
+    }
+    catch (const std::runtime_error& err)
+    {
+        nl::json jresult;
+        jresult["status"] = "error";
+        jresult["ename"] = "Error";
+        jresult["evalue"] = err.what();
+        publish_stream("stderr", err.what());
+    }
 }
+
+void interpreter::set_key(const std::string& aKey) const
+{
+    m_db->SQLite::Database::key(aKey);
+}
+
 
 void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
 {
     std::cout << "You're using magic. " << std::endl;
 
-    m_db_path = tokenized_code[2];
+    if (tokenized_code[1] == "LOAD" || tokenized_code[1] == "CREATE")
+    {
+        m_db_path = tokenized_code[2];
 
-    std::ifstream path_is_valid(m_db_path); 
-    if (!path_is_valid)
-    {
-      publish_stream("stderr", "The path doesn't exist.\n");
+        std::ifstream path_is_valid(m_db_path);
+        if (!path_is_valid.is_open())
+        {
+          publish_stream("stderr", "The path doesn't exist.\n");
+        }
+        else
+        {
+            if (tokenized_code[1] == "LOAD")
+            {
+                load_db(tokenized_code);
+            }
+            else if (tokenized_code[1] == "CREATE")
+            {
+                create_db(tokenized_code);
+            }
+        }
     }
-    else
+
+    else if (tokenized_code[1] == "DELETE")
     {
-        if (tokenized_code[1] == "LOAD")
-        {
-            load_db(tokenized_code);
-        }
-        else if (tokenized_code[1] == "CREATE")
-        {
-            create_db(tokenized_code);
-        }
-        else if (tokenized_code[1] == "DELETE")
-        {
-            delete_db();
-        }
-        else if (tokenized_code[1] == "TABLE EXISTS")
-        {
-            table_exists(tokenized_code[2]);
-        }
+        delete_db();
+    }
+    else if (tokenized_code[1] == "TABLE_EXISTS")
+    {
+        table_exists(tokenized_code[2]);
+    }
+    else if (tokenized_code[1] == "LOAD_EXTENSION")
+    {
+        m_db->SQLite::Database::loadExtension(tokenized_code[2].c_str(),
+                tokenized_code[3].c_str());
+    }
+    else if (tokenized_code[1] == "SET_KEY")
+    {
+        m_db->SQLite::Database::key(tokenized_code[2]);
     }
 }
+
+
+/*
+TODO:
+[x] - loadExtension
+[] - key
+[] - rekey
+[] - isUnencrypted
+[] - getHeaderInfo
+[] - backup
+*/
 
 void interpreter::configure_impl()
 {

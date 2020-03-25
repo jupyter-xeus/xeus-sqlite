@@ -56,6 +56,7 @@ private:
     void create_db(const std::vector<std::string> tokenized_code);
     void delete_db();
     void table_exists(const std::string table_name);
+    void set_key(const std::string& aKey) const;
 
     std::unique_ptr<SQLite::Database> m_db = nullptr;
     std::string m_db_path;
