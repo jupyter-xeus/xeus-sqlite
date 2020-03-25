@@ -59,6 +59,7 @@ private:
     void set_key(const std::string& aKey) const;
     void is_unencrypted();
     void get_header_info();
+    void backup(std::string backup_type);
 
     std::unique_ptr<SQLite::Database> m_db = nullptr;
     bool m_bd_is_loaded = false;

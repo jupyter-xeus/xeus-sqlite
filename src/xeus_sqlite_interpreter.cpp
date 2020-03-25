@@ -189,30 +189,43 @@ void interpreter::get_header_info()
     header = SQLite::Database::getHeaderInfo(m_db_path);
 
    // Official documentation for fields can be found here: https://www.sqlite.org/fileformat.html#the_database_header
-    std::string str(header.headerStr);
-    std::cout << header.headerStr << std::endl;
-    // publish_stream("stdout", "Magic header string: " + (str)header.headerStr + "\n");
-    // publish_stream("stdout", "Page size bytes: " + header.pageSizeBytes + "\n");
-    // publish_stream("stdout", "File format write version: " + (int)header.fileFormatWriteVersion + "\n");
-    // publish_stream("stdout", "File format read version: " + (int)header.fileFormatReadVersion + "\n");
-    // publish_stream("stdout", "Reserved space bytes: " + (int)header.reservedSpaceBytes + "\n");
-    // publish_stream("stdout", "Max embedded payload fraction " + (int)header.maxEmbeddedPayloadFrac + "\n");
-    // publish_stream("stdout", "Min embedded payload fraction: " + (int)header.minEmbeddedPayloadFrac + "\n");
-    // publish_stream("stdout", "Leaf payload fraction: " << (int)header.leafPayloadFrac + "\n");
-    // publish_stream("stdout", "File change counter: " + header.fileChangeCounter + "\n");
-    // publish_stream("stdout", "Database size pages: " + header.databaseSizePages + "\n");
-    // publish_stream("stdout", "First freelist trunk page: " + header.firstFreelistTrunkPage + "\n");
-    // publish_stream("stdout", "Total freelist trunk pages: " + header.totalFreelistPages + "\n");
-    // publish_stream("stdout", "Schema cookie: " + header.schemaCookie + "\n");
-    // publish_stream("stdout", "Schema format number: " + header.schemaFormatNumber + "\n");
-    // publish_stream("stdout", "Default page cache size bytes: " + header.defaultPageCacheSizeBytes + "\n");
-    // publish_stream("stdout", "Largest B tree page number: " + header.largestBTreePageNumber + "\n");
-    // publish_stream("stdout", "Database text encoding: " + header.databaseTextEncoding + "\n");
-    // publish_stream("stdout", "User version: " + header.userVersion + "\n");
-    // publish_stream("stdout", "Incremental vaccum mode: " + header.incrementalVaccumMode + "\n");
-    // publish_stream("stdout", "Application ID: " + header.applicationId + "\n");
-    // publish_stream("stdout", "Version valid for: " + header.versionValidFor + "\n");
-    // publish_stream("stdout", "SQLite version: " + header.sqliteVersion + "\n");
+    publish_stream(
+        "stdout", "Magic header string: " + std::string(&header.headerStr[0], &header.headerStr[15]) + "\n"
+        "Page size bytes: " + std::to_string(header.pageSizeBytes) + "\n" +
+        "File format write version: " + std::to_string(header.fileFormatWriteVersion) + "\n" +
+        "File format read version: " + std::to_string(header.fileFormatReadVersion) + "\n" +
+        "Reserved space bytes: " + std::to_string(header.reservedSpaceBytes) + "\n" +
+        "Max embedded payload fraction " + std::to_string(header.maxEmbeddedPayloadFrac) + "\n" +
+        "Min embedded payload fraction: " + std::to_string(header.minEmbeddedPayloadFrac) + "\n" +
+        "Leaf payload fraction: " + std::to_string(header.leafPayloadFrac) + "\n" +
+        "File change counter: " + std::to_string(header.fileChangeCounter) + "\n" +
+        "Database size pages: " + std::to_string(header.databaseSizePages) + "\n" +
+        "First freelist trunk page: " + std::to_string(header.firstFreelistTrunkPage) + "\n" +
+        "Total freelist trunk pages: " + std::to_string(header.totalFreelistPages) + "\n" +
+        "Schema cookie: " + std::to_string(header.schemaCookie) + "\n" +
+        "Schema format number: " + std::to_string(header.schemaFormatNumber) + "\n" +
+        "Default page cache size bytes: " + std::to_string(header.defaultPageCacheSizeBytes) + "\n" +
+        "Largest B tree page number: " + std::to_string(header.largestBTreePageNumber) + "\n" +
+        "Database text encoding: " + std::to_string(header.databaseTextEncoding) + "\n" +
+        "User version: " + std::to_string(header.userVersion) + "\n" +
+        "Incremental vaccum mode: " + std::to_string(header.incrementalVaccumMode) + "\n" +
+        "Application ID: " + std::to_string(header.applicationId) + "\n" +
+        "Version valid for: " + std::to_string(header.versionValidFor) + "\n" +
+        "SQLite version: " + std::to_string(header.sqliteVersion) + "\n"
+    );
+}
+
+void interpreter::backup(std::string backup_type)
+{
+    if (backup_type.size() > 1 && (int)backup_type[0] <= 1)
+    {
+        publish_stream("stderr", "This is not a valid backup type.\n");
+    }
+    else
+    {
+        m_db->SQLite::Database::backup(m_db_path.c_str(), 
+            (SQLite::Database::BackupType)backup_type[0]);
+    }
 }
 
 void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
@@ -253,6 +266,7 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
         }
         else if (tokenized_code[1] == "LOAD_EXTENSION")
         {
+            //TODO: add a try catch to treat all void functions
             m_db->SQLite::Database::loadExtension(tokenized_code[2].c_str(),
                     tokenized_code[3].c_str());
         }
@@ -272,6 +286,10 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
         {
             get_header_info();
         }
+        else if (tokenized_code[1] == "BACKUP")
+        {
+
+        }
     }
 
     else
@@ -279,15 +297,6 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
         publish_stream("stdout", "Load a database to run this command.\n");
     }
 }
-/*
-TODO:
-[x] - loadExtension
-[x] - key
-[x] - rekey
-[x] - isUnencrypted
-[] - getHeaderInfo
-[] - backup
-*/
 
 void interpreter::configure_impl()
 {
