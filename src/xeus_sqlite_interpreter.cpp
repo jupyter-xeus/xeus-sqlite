@@ -161,7 +161,7 @@ void interpreter::delete_db()
 
 void interpreter::table_exists(const std::string table_name)
 {
-    if(m_db->SQLite::Database::tableExists(table_name.c_str()))
+    if (m_db->SQLite::Database::tableExists(table_name.c_str()))
     {
         publish_stream("stdout", "The table " + table_name + " exists.\n");
     }
@@ -171,11 +171,17 @@ void interpreter::table_exists(const std::string table_name)
     }
 }
 
-void interpreter::set_key(const std::string& aKey) const
+void interpreter::is_unencrypted()
 {
-    m_db->SQLite::Database::key(aKey);
+    if (SQLite::Database::isUnencrypted(m_db_path))
+    {
+        publish_stream("stdout", "The database is unencrypted.\n");
+    }
+    else
+    {
+        publish_stream("stdout", "The database is encrypted.\n");
+    }
 }
-
 
 void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
 {
@@ -222,6 +228,14 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
         {
             m_db->SQLite::Database::key(tokenized_code[2]);
         }
+        else if (tokenized_code[1] == "REKEY")
+        {
+            m_db->SQLite::Database::rekey(tokenized_code[2]);
+        }
+        else if (tokenized_code[1] == "IS_UNENCRYPTED")
+        {
+            is_unencrypted();
+        }
     }
 
     else
@@ -234,8 +248,8 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
 /*
 TODO:
 [x] - loadExtension
-[] - key
-[] - rekey
+[x] - key
+[x] - rekey
 [] - isUnencrypted
 [] - getHeaderInfo
 [] - backup
