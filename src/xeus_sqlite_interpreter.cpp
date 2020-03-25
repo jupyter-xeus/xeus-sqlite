@@ -183,6 +183,38 @@ void interpreter::is_unencrypted()
     }
 }
 
+void interpreter::get_header_info()
+{
+    SQLite::Header header;
+    header = SQLite::Database::getHeaderInfo(m_db_path);
+
+   // Official documentation for fields can be found here: https://www.sqlite.org/fileformat.html#the_database_header
+    std::string str(header.headerStr);
+    std::cout << header.headerStr << std::endl;
+    // publish_stream("stdout", "Magic header string: " + (str)header.headerStr + "\n");
+    // publish_stream("stdout", "Page size bytes: " + header.pageSizeBytes + "\n");
+    // publish_stream("stdout", "File format write version: " + (int)header.fileFormatWriteVersion + "\n");
+    // publish_stream("stdout", "File format read version: " + (int)header.fileFormatReadVersion + "\n");
+    // publish_stream("stdout", "Reserved space bytes: " + (int)header.reservedSpaceBytes + "\n");
+    // publish_stream("stdout", "Max embedded payload fraction " + (int)header.maxEmbeddedPayloadFrac + "\n");
+    // publish_stream("stdout", "Min embedded payload fraction: " + (int)header.minEmbeddedPayloadFrac + "\n");
+    // publish_stream("stdout", "Leaf payload fraction: " << (int)header.leafPayloadFrac + "\n");
+    // publish_stream("stdout", "File change counter: " + header.fileChangeCounter + "\n");
+    // publish_stream("stdout", "Database size pages: " + header.databaseSizePages + "\n");
+    // publish_stream("stdout", "First freelist trunk page: " + header.firstFreelistTrunkPage + "\n");
+    // publish_stream("stdout", "Total freelist trunk pages: " + header.totalFreelistPages + "\n");
+    // publish_stream("stdout", "Schema cookie: " + header.schemaCookie + "\n");
+    // publish_stream("stdout", "Schema format number: " + header.schemaFormatNumber + "\n");
+    // publish_stream("stdout", "Default page cache size bytes: " + header.defaultPageCacheSizeBytes + "\n");
+    // publish_stream("stdout", "Largest B tree page number: " + header.largestBTreePageNumber + "\n");
+    // publish_stream("stdout", "Database text encoding: " + header.databaseTextEncoding + "\n");
+    // publish_stream("stdout", "User version: " + header.userVersion + "\n");
+    // publish_stream("stdout", "Incremental vaccum mode: " + header.incrementalVaccumMode + "\n");
+    // publish_stream("stdout", "Application ID: " + header.applicationId + "\n");
+    // publish_stream("stdout", "Version valid for: " + header.versionValidFor + "\n");
+    // publish_stream("stdout", "SQLite version: " + header.sqliteVersion + "\n");
+}
+
 void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
 {
     std::cout << "You're using magic. " << std::endl;
@@ -236,6 +268,10 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
         {
             is_unencrypted();
         }
+        else if (tokenized_code[1] == "GET_INFO")
+        {
+            get_header_info();
+        }
     }
 
     else
@@ -243,14 +279,12 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
         publish_stream("stdout", "Load a database to run this command.\n");
     }
 }
-
-
 /*
 TODO:
 [x] - loadExtension
 [x] - key
 [x] - rekey
-[] - isUnencrypted
+[x] - isUnencrypted
 [] - getHeaderInfo
 [] - backup
 */
