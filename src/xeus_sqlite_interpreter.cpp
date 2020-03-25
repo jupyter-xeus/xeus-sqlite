@@ -190,7 +190,7 @@ void interpreter::get_header_info()
 
    // Official documentation for fields can be found here: https://www.sqlite.org/fileformat.html#the_database_header
     publish_stream(
-        "stdout", "Magic header string: " + std::string(&header.headerStr[0], &header.headerStr[15]) + "\n"
+        "stdout", "Magic header string: " + std::string(&header.headerStr[0], &header.headerStr[15]) + "\n" +
         "Page size bytes: " + std::to_string(header.pageSizeBytes) + "\n" +
         "File format write version: " + std::to_string(header.fileFormatWriteVersion) + "\n" +
         "File format read version: " + std::to_string(header.fileFormatReadVersion) + "\n" +
@@ -403,4 +403,5 @@ nl::json interpreter::kernel_info_request_impl()
 void interpreter::shutdown_request_impl()
 {
 }
+
 }
