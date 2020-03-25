@@ -87,6 +87,7 @@ void interpreter::load_db(const std::vector<std::string> tokenized_code)
         Loads the a database. If the open mode is not specified it defaults
         to read and write mode.
     */
+    m_bd_is_loaded = true;
 
     try
     {
@@ -122,6 +123,7 @@ void interpreter::create_db(const std::vector<std::string> tokenized_code)
     /*
         Creates the a database in read and write mode.
     */
+    m_bd_is_loaded = true;
 
     try
     {
@@ -145,6 +147,7 @@ void interpreter::delete_db()
     /*
         Deletes the database.
     */
+    m_bd_is_loaded = false;
 
     if(std::remove(m_db_path.c_str()) != 0)
     {
@@ -158,20 +161,13 @@ void interpreter::delete_db()
 
 void interpreter::table_exists(const std::string table_name)
 {
-    try
-    {
     if(m_db->SQLite::Database::tableExists(table_name.c_str()))
     {
-        publish_stream("stdout", table_name + " exists.\n");
+        publish_stream("stdout", "The table " + table_name + " exists.\n");
     }
-    }
-    catch (const std::runtime_error& err)
+    else
     {
-        nl::json jresult;
-        jresult["status"] = "error";
-        jresult["ename"] = "Error";
-        jresult["evalue"] = err.what();
-        publish_stream("stderr", err.what());
+        publish_stream("stdout", "The table " + table_name + " doesn't exist.\n");
     }
 }
 
@@ -207,22 +203,30 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
         }
     }
 
-    else if (tokenized_code[1] == "DELETE")
+    else if (m_bd_is_loaded)
     {
-        delete_db();
+        if (tokenized_code[1] == "DELETE")
+        {
+            delete_db();
+        }
+        else if (tokenized_code[1] == "TABLE_EXISTS")
+        {
+            table_exists(tokenized_code[2]);
+        }
+        else if (tokenized_code[1] == "LOAD_EXTENSION")
+        {
+            m_db->SQLite::Database::loadExtension(tokenized_code[2].c_str(),
+                    tokenized_code[3].c_str());
+        }
+        else if (tokenized_code[1] == "SET_KEY")
+        {
+            m_db->SQLite::Database::key(tokenized_code[2]);
+        }
     }
-    else if (tokenized_code[1] == "TABLE_EXISTS")
+
+    else
     {
-        table_exists(tokenized_code[2]);
-    }
-    else if (tokenized_code[1] == "LOAD_EXTENSION")
-    {
-        m_db->SQLite::Database::loadExtension(tokenized_code[2].c_str(),
-                tokenized_code[3].c_str());
-    }
-    else if (tokenized_code[1] == "SET_KEY")
-    {
-        m_db->SQLite::Database::key(tokenized_code[2]);
+        publish_stream("stdout", "Load a database to run this command.\n");
     }
 }
 

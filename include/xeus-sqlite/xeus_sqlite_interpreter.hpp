@@ -59,6 +59,7 @@ private:
     void set_key(const std::string& aKey) const;
 
     std::unique_ptr<SQLite::Database> m_db = nullptr;
+    bool m_bd_is_loaded = false;
     std::string m_db_path;
 };
 
