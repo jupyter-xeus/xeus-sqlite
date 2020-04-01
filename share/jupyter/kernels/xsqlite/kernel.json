@@ -1,9 +1,0 @@
-{
-    "display_name": "xsqlite",
-    "argv": [
-        "/Users/mariana/Development/miniconda/envs/xeus-sqlite/bin/xsqlite",
-        "-f",
-        "{connection_file}"
-    ],
-    "language": ""
-}

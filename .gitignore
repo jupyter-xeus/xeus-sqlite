@@ -33,5 +33,5 @@
 
 build/*
 notebooks/.ipynb_checkpoints/*
-share/jupyter/kernels/xeus-sqlite/kernel.json
+share/jupyter/kernels/xsqlite/kernel.json
 
