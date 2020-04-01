@@ -23,6 +23,8 @@ namespace xeus_sqlite
 {
 class XEUS_SQLITE_API interpreter : public xeus::xinterpreter
 {
+    friend class SQLite::Database;
+
 public:
 
     interpreter() = default;
@@ -48,13 +50,20 @@ private:
 
     std::string sanitize_string(const std::string& code);
     std::vector<std::string> tokenizer(const std::string& code);
+    void parse_code(const std::vector<std::string>& tokenized_code);
     bool is_magic(std::vector<std::string>& tokenized_code);
     void load_db(const std::vector<std::string> tokenized_code);
     void create_db(const std::vector<std::string> tokenized_code);
-    void parse_code(const std::vector<std::string>& tokenized_code);
+    void delete_db();
+    void table_exists(const std::string table_name);
+    void set_key(const std::string& aKey) const;
+    void is_unencrypted();
+    void get_header_info();
+    void backup(std::string backup_type);
 
     std::unique_ptr<SQLite::Database> m_db = nullptr;
-    std::vector<std::string> m_traceback;
+    bool m_bd_is_loaded = false;
+    std::string m_db_path;
 };
 
 }
