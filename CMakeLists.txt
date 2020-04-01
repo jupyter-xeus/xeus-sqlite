@@ -22,7 +22,8 @@ set(CMAKE_FIND_FRAMEWORK NEVER)
 set(CMAKE_FIND_APPBUNDLE NEVER)
 set(CMAKE_PROGRAM_PATH ${CMAKE_PREFIX_PATH})
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+
 # Versionning
 # ===========
 
@@ -47,16 +48,19 @@ configure_file (
     "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xsqlite/kernel.json.in"
     "${CMAKE_CURRENT_SOURCE_DIR}/share/jupyter/kernels/xsqlite/kernel.json"
 )
+# Build options
+# =============
+
+OPTION(XSQL_DOWNLOAD_GTEST "build gtest from downloaded sources" OFF)
+OPTION(XSQL_BUILD_TESTS "xeus-sqlite test suite" OFF)
 
 # Dependencies
 # ============
 
 # Be sure to use recent versions
-set(xeus_REQUIRED_VERSION 0.19.1)
-set(cppzmq_REQUIRED_VERSION 4.3.0)
+set(xeus_REQUIRED_VERSION 0.23.10)
 
 find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
-find_package(cppzmq ${cppzmq_REQUIRED_VERSION} REQUIRED)
 find_package(SQLite3 REQUIRED)
 find_package(SQLiteCpp REQUIRED)
 find_package(Threads REQUIRED)
@@ -123,13 +127,6 @@ set_target_properties(xsqlite xeus-sqlite PROPERTIES
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )
 
-OPTION(DOWNLOAD_GTEST "build gtest from downloaded sources" OFF)
-
-#Option for GTest
-if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
-    set(BUILD_TESTS ON)
-endif()
-
 target_link_libraries(xeus-sqlite PUBLIC 
   xeus 
   SQLiteCpp
@@ -152,21 +149,18 @@ set_target_properties(xeus-sqlite PROPERTIES
                       PREFIX ""
                       VERSION ${${PROJECT_NAME}_VERSION}
                       SOVERSION ${XSQLITE_VERSION_MAJOR}
-OUTPUT_NAME "libxeus-sqlite")
+                      OUTPUT_NAME "libxeus-sqlite")
 
 
-## Test ##
-# take into account the CMakeList in test
+# Tests
+# =====
 
-OPTION(BUILD_TESTS "xeus-sqlite test suite" OFF)
-OPTION(DOWNLOAD_GTEST "build gtest from downloaded sources" OFF)
-
-if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
-    set(BUILD_TESTS ON)
+if(XSQL_DOWNLOAD_GTEST OR GTEST_SRC_DIR)
+    set(XSQL_BUILD_TESTS ON)
 endif()
 
 
-if(BUILD_TESTS)
+if(XSQL_BUILD_TESTS)
     add_subdirectory(test)
 endif()
 
