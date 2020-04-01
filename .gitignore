@@ -31,6 +31,7 @@
 *.out
 *.app
 
+*.DS_Store
 build/*
 notebooks/.ipynb_checkpoints/*
 share/jupyter/kernels/xsqlite/kernel.json

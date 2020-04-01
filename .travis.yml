@@ -48,5 +48,5 @@ install:
     - cmake -D CMAKE_INSTALL_PREFIX=$HOME/miniconda -D CMAKE_INSTALL_LIBDIR=lib -D CMAKE_C_COMPILER=$CC -D CMAKE_CXX_COMPILER=$CXX ..
     - make -j2 install
 script:
-    - cd ../test
+    - cd ../
     # - cd ../../test && py.test . -v;
