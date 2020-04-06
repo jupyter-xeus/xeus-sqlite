@@ -129,10 +129,10 @@ void interpreter::create_db(const std::vector<std::string> tokenized_code)
     /*
         Creates the a database in read and write mode.
     */
-    m_bd_is_loaded = true;
 
     try
     {
+        m_bd_is_loaded = true;
         m_db_path = tokenized_code[2] + "/";
         m_db_path += tokenized_code[3];
         m_db = std::make_unique<SQLite::Database>(m_db_path,
@@ -253,7 +253,6 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
         {
             if (tokenized_code[1] == "LOAD")
             {
-                std::cout << "💀\n";
                 load_db(tokenized_code);
             }
             else if (tokenized_code[1] == "CREATE")
