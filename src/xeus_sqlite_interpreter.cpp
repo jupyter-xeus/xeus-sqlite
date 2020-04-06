@@ -107,6 +107,7 @@ void interpreter::load_db(const std::vector<std::string> tokenized_code)
             m_db = std::make_unique<SQLite::Database>(m_db_path,
                         SQLite::OPEN_READWRITE);
         }
+        publish_stream("stdout", << "Database " + m_db_path + " is open.\n");
     }
     catch (const std::runtime_error& err)
     {
@@ -131,6 +132,7 @@ void interpreter::create_db(const std::vector<std::string> tokenized_code)
         m_db_path += tokenized_code[3];
         m_db = std::make_unique<SQLite::Database>(m_db_path,
                         SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
+        publish_stream("stdout", "Database " + m_db_path + " was created.\n");
     }
     catch(const std::runtime_error& err)
     {
@@ -288,7 +290,7 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
         }
         else if (tokenized_code[1] == "BACKUP")
         {
-
+            backup(tokenized_code[2]);
         }
     }
 
