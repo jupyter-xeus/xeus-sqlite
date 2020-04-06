@@ -155,7 +155,6 @@ void interpreter::delete_db()
     /*
         Deletes the database.
     */
-    m_bd_is_loaded = false;
 
     if(std::remove(m_db_path.c_str()) != 0)
     {
@@ -163,6 +162,7 @@ void interpreter::delete_db()
     }
     else
     {
+        m_bd_is_loaded = false;
         publish_stream("stderr", "File successfully deleted.\n");
     }
 }
