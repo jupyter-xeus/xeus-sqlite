@@ -7,14 +7,14 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#include <iostream>
-#include <fstream>
-#include <vector>
-#include <sstream>
-#include <memory>
-#include <stack>
 #include <cctype>
 #include <cstdio>
+#include <iostream>
+#include <fstream>
+#include <memory>
+#include <sstream>
+#include <stack>
+#include <vector>
 
 #include "xeus/xinterpreter.hpp"
 
@@ -107,7 +107,7 @@ void interpreter::load_db(const std::vector<std::string> tokenized_code)
             m_db = std::make_unique<SQLite::Database>(m_db_path,
                         SQLite::OPEN_READWRITE);
         }
-        publish_stream("stdout", << "Database " + m_db_path + " is open.\n");
+        publish_stream("stdout", "Database " + m_db_path + " is open.\n");
     }
     catch (const std::runtime_error& err)
     {
@@ -128,10 +128,12 @@ void interpreter::create_db(const std::vector<std::string> tokenized_code)
 
     try
     {
-        m_db_path = tokenized_code[2];
+        std::cout << "🌈\n";
+        m_db_path = tokenized_code[2] + "/";
         m_db_path += tokenized_code[3];
         m_db = std::make_unique<SQLite::Database>(m_db_path,
                         SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
+        std::ofstream outfile(m_db_path.c_str());
         publish_stream("stdout", "Database " + m_db_path + " was created.\n");
     }
     catch(const std::runtime_error& err)
