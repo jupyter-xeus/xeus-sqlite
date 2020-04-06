@@ -87,27 +87,32 @@ void interpreter::load_db(const std::vector<std::string> tokenized_code)
         Loads the a database. If the open mode is not specified it defaults
         to read and write mode.
     */
-    m_bd_is_loaded = true;
 
     try
     {
         if (tokenized_code.back().find("rw") != std::string::npos)
         {
+            m_bd_is_loaded = true;
             m_db = std::make_unique<SQLite::Database>(m_db_path,
                         SQLite::OPEN_READWRITE);
         }
         else if (tokenized_code.back().find("r") != std::string::npos)
         {
+            m_bd_is_loaded = true;
             m_db = std::make_unique<SQLite::Database>(m_db_path,
                         SQLite::OPEN_READONLY);
         }
         //Opening as read and write because mode is unspecified
-        else if (tokenized_code.size() < 2)
+        else if (tokenized_code.size() < 4)
         {
+            m_bd_is_loaded = true;
             m_db = std::make_unique<SQLite::Database>(m_db_path,
                         SQLite::OPEN_READWRITE);
         }
-        publish_stream("stdout", "Database " + m_db_path + " is open.\n");
+        else
+        {
+            publish_stream("stdout", "Wasn't able to load the database correctly.");
+        }
     }
     catch (const std::runtime_error& err)
     {
@@ -128,7 +133,6 @@ void interpreter::create_db(const std::vector<std::string> tokenized_code)
 
     try
     {
-        std::cout << "🌈\n";
         m_db_path = tokenized_code[2] + "/";
         m_db_path += tokenized_code[3];
         m_db = std::make_unique<SQLite::Database>(m_db_path,
@@ -249,6 +253,7 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
         {
             if (tokenized_code[1] == "LOAD")
             {
+                std::cout << "💀\n";
                 load_db(tokenized_code);
             }
             else if (tokenized_code[1] == "CREATE")
