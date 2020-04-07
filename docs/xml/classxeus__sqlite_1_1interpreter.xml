@@ -1,0 +1,522 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.16">
+  <compounddef id="classxeus__sqlite_1_1interpreter" kind="class" language="C++" prot="public">
+    <compoundname>xeus_sqlite::interpreter</compoundname>
+    <basecompoundref prot="public" virt="non-virtual">xinterpreter</basecompoundref>
+      <sectiondef kind="friend">
+      <memberdef kind="friend" id="classxeus__sqlite_1_1interpreter_1a72d80f4729ec1d756d3d39dd806cc4a7" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>friend class</type>
+        <definition>friend class SQLite::Database</definition>
+        <argsstring></argsstring>
+        <name>SQLite::Database</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="38" column="5" bodyfile="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" bodystart="38" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-attrib">
+      <memberdef kind="variable" id="classxeus__sqlite_1_1interpreter_1a75a34db3091db037570b5cf08b810de4" prot="private" static="no" mutable="no">
+        <type>std::unique_ptr&lt; SQLite::Database &gt;</type>
+        <definition>std::unique_ptr&lt;SQLite::Database&gt; xeus_sqlite::interpreter::m_db</definition>
+        <argsstring></argsstring>
+        <name>m_db</name>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="185" column="21" bodyfile="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" bodystart="185" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classxeus__sqlite_1_1interpreter_1a5c2a0b89f2bcf0c7b5731737b09a2318" prot="private" static="no" mutable="no">
+        <type>std::unique_ptr&lt; SQLite::Database &gt;</type>
+        <definition>std::unique_ptr&lt;SQLite::Database&gt; xeus_sqlite::interpreter::m_backup_db</definition>
+        <argsstring></argsstring>
+        <name>m_backup_db</name>
+        <initializer>= nullptr</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="186" column="21" bodyfile="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" bodystart="186" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classxeus__sqlite_1_1interpreter_1ac1c8ba944ade24bc7866ce0c6288bfd7" prot="private" static="no" mutable="no">
+        <type>bool</type>
+        <definition>bool xeus_sqlite::interpreter::m_bd_is_loaded</definition>
+        <argsstring></argsstring>
+        <name>m_bd_is_loaded</name>
+        <initializer>= false</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="187" column="10" bodyfile="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" bodystart="187" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="variable" id="classxeus__sqlite_1_1interpreter_1a9bea953f19f88f693b74d4a1fcc3e78a" prot="private" static="no" mutable="no">
+        <type>std::string</type>
+        <definition>std::string xeus_sqlite::interpreter::m_db_path</definition>
+        <argsstring></argsstring>
+        <name>m_db_path</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="188" column="17" bodyfile="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" bodystart="188" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="public-func">
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1af6746e96896b2c98bb94d20ce46f9b5b" prot="public" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type></type>
+        <definition>xeus_sqlite::interpreter::interpreter</definition>
+        <argsstring>()=default</argsstring>
+        <name>interpreter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="42" column="5"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1a4d0c4a7a84aacc792f26725009203713" prot="public" static="no" const="no" explicit="no" inline="no" virt="virtual">
+        <type></type>
+        <definition>virtual xeus_sqlite::interpreter::~interpreter</definition>
+        <argsstring>()=default</argsstring>
+        <name>~interpreter</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="43" column="13"/>
+      </memberdef>
+      </sectiondef>
+      <sectiondef kind="private-func">
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1a5ed7870fa43d8ffa32106c9cce0c8945" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void xeus_sqlite::interpreter::configure_impl</definition>
+        <argsstring>() override</argsstring>
+        <name>configure_impl</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="47" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1aef41940d263959f97644f9a2af530a54" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>nl::json</type>
+        <definition>nl::json xeus_sqlite::interpreter::execute_request_impl</definition>
+        <argsstring>(int execution_counter, const std::string &amp;code, bool silent, bool store_history, nl::json user_expressions, bool allow_stdin) override</argsstring>
+        <name>execute_request_impl</name>
+        <param>
+          <type>int</type>
+          <declname>execution_counter</declname>
+        </param>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>code</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>silent</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>store_history</declname>
+        </param>
+        <param>
+          <type>nl::json</type>
+          <declname>user_expressions</declname>
+        </param>
+        <param>
+          <type>bool</type>
+          <declname>allow_stdin</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="48" column="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1ae084cf793879e9abf064e734910c8d2a" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>nl::json</type>
+        <definition>nl::json xeus_sqlite::interpreter::complete_request_impl</definition>
+        <argsstring>(const std::string &amp;code, int cursor_pos) override</argsstring>
+        <name>complete_request_impl</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>code</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>cursor_pos</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="54" column="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1abcc6d1ebb401b063c5a5a4c6a308849c" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>nl::json</type>
+        <definition>nl::json xeus_sqlite::interpreter::inspect_request_impl</definition>
+        <argsstring>(const std::string &amp;code, int cursor_pos, int detail_level) override</argsstring>
+        <name>inspect_request_impl</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>code</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>cursor_pos</declname>
+        </param>
+        <param>
+          <type>int</type>
+          <declname>detail_level</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="56" column="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1a8fbf675a54cebce04251d5b91ae86eb8" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>nl::json</type>
+        <definition>nl::json xeus_sqlite::interpreter::is_complete_request_impl</definition>
+        <argsstring>(const std::string &amp;code) override</argsstring>
+        <name>is_complete_request_impl</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="59" column="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1a6402b00902278d4a48b20c6d113b5efc" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>nl::json</type>
+        <definition>nl::json xeus_sqlite::interpreter::kernel_info_request_impl</definition>
+        <argsstring>() override</argsstring>
+        <name>kernel_info_request_impl</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="60" column="14"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1a43dc756f3dc72c0a0c818ffb522999cc" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void xeus_sqlite::interpreter::shutdown_request_impl</definition>
+        <argsstring>() override</argsstring>
+        <name>shutdown_request_impl</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="61" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1adce15b7ee5ca780134d67f058f7ca494" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::string</type>
+        <definition>std::string xeus_sqlite::interpreter::sanitize_string</definition>
+        <argsstring>(const std::string &amp;code)</argsstring>
+        <name>sanitize_string</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+<para>Cleans the code from inputs that are acceptable in a jupyter notebook. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="66" column="17"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1a042e7a4ef503b3cb4392ab29e09c1704" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>std::vector&lt; std::string &gt;</type>
+        <definition>std::vector&lt;std::string&gt; xeus_sqlite::interpreter::tokenizer</definition>
+        <argsstring>(const std::string &amp;code)</argsstring>
+        <name>tokenizer</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>code</declname>
+        </param>
+        <briefdescription>
+<para>Separetes the code on spaces so it&apos;s easier to execute the commands. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="71" column="17"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1a8b9d16cc3b6a55fc1e21e76f4527e55e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>bool</type>
+        <definition>bool xeus_sqlite::interpreter::is_magic</definition>
+        <argsstring>(std::vector&lt; std::string &gt; &amp;tokenized_code)</argsstring>
+        <name>is_magic</name>
+        <param>
+          <type>std::vector&lt; std::string &gt; &amp;</type>
+          <declname>tokenized_code</declname>
+        </param>
+        <briefdescription>
+<para>Returns true if the code input is magic and false if isn&apos;t. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="76" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1aca5b9d8936c11bf5718c5a6531a7cd1c" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void xeus_sqlite::interpreter::parse_code</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; &amp;tokenized_code)</argsstring>
+        <name>parse_code</name>
+        <param>
+          <type>const std::vector&lt; std::string &gt; &amp;</type>
+          <declname>tokenized_code</declname>
+        </param>
+        <briefdescription>
+<para>Parse magic and calls the correct function. </para>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="81" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1a777e5eac33e8eb6ae8f5bff0dc2e8dcf" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void xeus_sqlite::interpreter::load_db</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; tokenized_code)</argsstring>
+        <name>load_db</name>
+        <param>
+          <type>const std::vector&lt; std::string &gt;</type>
+          <declname>tokenized_code</declname>
+        </param>
+        <briefdescription>
+<para>load_db - loads a database. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Receives three arguments: the command LOAD, the path of the database location and a third optional parameter that might be RW or R to set the read and write or the read mode, respectively. If no third arguments are passed to this method, it will default to read and write mode.</para>
+<para>param accList std::vector&lt;std::string&gt;&amp; tokenized_code return void </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="94" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1a2c9e20bbb425bf6aaef5d3168ad61a1e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void xeus_sqlite::interpreter::create_db</definition>
+        <argsstring>(const std::vector&lt; std::string &gt; tokenized_code)</argsstring>
+        <name>create_db</name>
+        <param>
+          <type>const std::vector&lt; std::string &gt;</type>
+          <declname>tokenized_code</declname>
+        </param>
+        <briefdescription>
+<para>create_db - creates a database. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Creates the a database in read and write mode. Receives three arguments: the command CREATE, the path to where the database will be created and the name of the database.</para>
+<para>param accList std::vector&lt;std::string&gt;&amp; tokenized_code return void </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="105" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1aaa4927687a902a6c37fb84663253f0e1" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void xeus_sqlite::interpreter::delete_db</definition>
+        <argsstring>()</argsstring>
+        <name>delete_db</name>
+        <briefdescription>
+<para>delete_db - deletes a database. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Deletes the last database that was either loaded or created.</para>
+<para>param accList std::vector&lt;std::string&gt;&amp; tokenized_code return void </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="114" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1af9ed50a3a95475bcfe3d7b2102ffba5e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void xeus_sqlite::interpreter::table_exists</definition>
+        <argsstring>(const std::string table_name)</argsstring>
+        <name>table_exists</name>
+        <param>
+          <type>const std::string</type>
+          <declname>table_name</declname>
+        </param>
+        <briefdescription>
+<para>table_exists - checks if a table exists in a database. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Outputs a message in the Jupyter interface if the table exists in the latest created or loaded database.</para>
+<para>param accList const std::string table_name return void </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="124" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1a6f5323d419361c724ff8cbeb1674d659" prot="private" static="no" const="yes" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void xeus_sqlite::interpreter::set_key</definition>
+        <argsstring>(const std::string &amp;aKey) const</argsstring>
+        <name>set_key</name>
+        <param>
+          <type>const std::string &amp;</type>
+          <declname>aKey</declname>
+        </param>
+        <briefdescription>
+<para>set_key - set or create primary key. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>param accList const std::string&amp; aKey return void </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="131" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1a81c4a9dd2941d4cbcbb5ba23197b6149" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void xeus_sqlite::interpreter::is_unencrypted</definition>
+        <argsstring>()</argsstring>
+        <name>is_unencrypted</name>
+        <briefdescription>
+<para>is_unencrypted - checks if a database is unencrypted. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Outputs a message in the Jupyter interface if the latest database created or loaded is encrypted or not.</para>
+<para>return void </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="140" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1a0cff8dc17bf0d3d5c44df8a23b94d44e" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void xeus_sqlite::interpreter::get_header_info</definition>
+        <argsstring>()</argsstring>
+        <name>get_header_info</name>
+        <briefdescription>
+<para>get_header_info - returns information about the database. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>Outputs a message in the Jupyter interface containing information about the database. This method outputs the following: Magic header string Page size bytes File format write version File format read version Reserved space bytes Max embedded payload fraction Min embedded payload fraction Leaf payload fraction File change counter Database size pages First freelist trunk page Total freelist trunk pages Schema cookie Schema format number Default page cache size bytes Largest B tree page number Database text encoding User version Incremental vaccum mode Application ID Version valid for SQLite version</para>
+<para>return void </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="171" column="10"/>
+      </memberdef>
+      <memberdef kind="function" id="classxeus__sqlite_1_1interpreter_1a50a33ed466d301871ce34f14f22e5ca1" prot="private" static="no" const="no" explicit="no" inline="no" virt="non-virtual">
+        <type>void</type>
+        <definition>void xeus_sqlite::interpreter::backup</definition>
+        <argsstring>(std::string backup_type)</argsstring>
+        <name>backup</name>
+        <param>
+          <type>std::string</type>
+          <declname>backup_type</declname>
+        </param>
+        <briefdescription>
+<para>get_header_info - backups a database. </para>
+        </briefdescription>
+        <detaileddescription>
+<para>This function is used to load the contents of a database file on disk into the &quot;main&quot; database of open database connection pInMemory, or to save the current contents of the database opened by pInMemory into a database file on disk.</para>
+<para>param accList std::string backup_type return void </para>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="183" column="10"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <inheritancegraph>
+      <node id="1">
+        <label>xeus_sqlite::interpreter</label>
+        <link refid="classxeus__sqlite_1_1interpreter"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>xeus::xinterpreter</label>
+      </node>
+    </inheritancegraph>
+    <collaborationgraph>
+      <node id="1">
+        <label>xeus_sqlite::interpreter</label>
+        <link refid="classxeus__sqlite_1_1interpreter"/>
+        <childnode refid="2" relation="public-inheritance">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>xeus::xinterpreter</label>
+      </node>
+    </collaborationgraph>
+    <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" line="31" column="1" bodyfile="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp" bodystart="30" bodyend="183"/>
+    <listofallmembers>
+      <member refid="classxeus__sqlite_1_1interpreter_1a50a33ed466d301871ce34f14f22e5ca1" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>backup</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1ae084cf793879e9abf064e734910c8d2a" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>complete_request_impl</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1a5ed7870fa43d8ffa32106c9cce0c8945" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>configure_impl</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1a2c9e20bbb425bf6aaef5d3168ad61a1e" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>create_db</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1aaa4927687a902a6c37fb84663253f0e1" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>delete_db</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1aef41940d263959f97644f9a2af530a54" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>execute_request_impl</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1a0cff8dc17bf0d3d5c44df8a23b94d44e" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>get_header_info</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1abcc6d1ebb401b063c5a5a4c6a308849c" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>inspect_request_impl</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1af6746e96896b2c98bb94d20ce46f9b5b" prot="public" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>interpreter</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1a8fbf675a54cebce04251d5b91ae86eb8" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>is_complete_request_impl</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1a8b9d16cc3b6a55fc1e21e76f4527e55e" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>is_magic</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1a81c4a9dd2941d4cbcbb5ba23197b6149" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>is_unencrypted</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1a6402b00902278d4a48b20c6d113b5efc" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>kernel_info_request_impl</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1a777e5eac33e8eb6ae8f5bff0dc2e8dcf" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>load_db</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1a5c2a0b89f2bcf0c7b5731737b09a2318" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>m_backup_db</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1ac1c8ba944ade24bc7866ce0c6288bfd7" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>m_bd_is_loaded</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1a75a34db3091db037570b5cf08b810de4" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>m_db</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1a9bea953f19f88f693b74d4a1fcc3e78a" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>m_db_path</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1aca5b9d8936c11bf5718c5a6531a7cd1c" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>parse_code</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1adce15b7ee5ca780134d67f058f7ca494" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>sanitize_string</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1a6f5323d419361c724ff8cbeb1674d659" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>set_key</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1a43dc756f3dc72c0a0c818ffb522999cc" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>shutdown_request_impl</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1a72d80f4729ec1d756d3d39dd806cc4a7" prot="public" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>SQLite::Database</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1af9ed50a3a95475bcfe3d7b2102ffba5e" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>table_exists</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1a042e7a4ef503b3cb4392ab29e09c1704" prot="private" virt="non-virtual"><scope>xeus_sqlite::interpreter</scope><name>tokenizer</name></member>
+      <member refid="classxeus__sqlite_1_1interpreter_1a4d0c4a7a84aacc792f26725009203713" prot="public" virt="virtual"><scope>xeus_sqlite::interpreter</scope><name>~interpreter</name></member>
+    </listofallmembers>
+  </compounddef>
+</doxygen>
