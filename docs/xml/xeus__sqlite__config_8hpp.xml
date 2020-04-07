@@ -1,0 +1,172 @@
+<?xml version='1.0' encoding='UTF-8' standalone='no'?>
+<doxygen xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="compound.xsd" version="1.8.16">
+  <compounddef id="xeus__sqlite__config_8hpp" kind="file" language="C++">
+    <compoundname>xeus_sqlite_config.hpp</compoundname>
+    <includedby refid="xeus__sqlite__interpreter_8hpp" local="yes">/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp</includedby>
+    <invincdepgraph>
+      <node id="1">
+        <label>/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp</label>
+        <link refid="xeus__sqlite__config_8hpp"/>
+        <childnode refid="2" relation="include">
+        </childnode>
+      </node>
+      <node id="2">
+        <label>/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_interpreter.hpp</label>
+        <link refid="xeus__sqlite__interpreter_8hpp_source"/>
+      </node>
+    </invincdepgraph>
+      <sectiondef kind="define">
+      <memberdef kind="define" id="xeus__sqlite__config_8hpp_1af412591d9e3e90b85298d03679e49541" prot="public" static="no">
+        <name>XSQLITE_VERSION_MAJOR</name>
+        <initializer>0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" line="14" column="9" bodyfile="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" bodystart="13" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="xeus__sqlite__config_8hpp_1a4294045b478cd765a01a2c878a021cec" prot="public" static="no">
+        <name>XSQLITE_VERSION_MINOR</name>
+        <initializer>1</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" line="15" column="9" bodyfile="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" bodystart="14" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="xeus__sqlite__config_8hpp_1aedfde868d45a1e92f54f0fba9a84d40e" prot="public" static="no">
+        <name>XSQLITE_VERSION_PATCH</name>
+        <initializer>0</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" line="16" column="9" bodyfile="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" bodystart="15" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="xeus__sqlite__config_8hpp_1afbf4847bc2f340d298ce1af0b6174597" prot="public" static="no">
+        <name>XSQLITE_CONCATENATE</name>
+        <param><defname>A</defname></param>
+        <param><defname>B</defname></param>
+        <initializer>XSQLITE_CONCATENATE_IMPL(A, B)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" line="19" column="9" bodyfile="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" bodystart="18" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="xeus__sqlite__config_8hpp_1a1774746cdc499b8b4a1215a3ac2b8c90" prot="public" static="no">
+        <name>XSQLITE_CONCATENATE_IMPL</name>
+        <param><defname>A</defname></param>
+        <param><defname>B</defname></param>
+        <initializer>A##B</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" line="20" column="9" bodyfile="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" bodystart="19" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="xeus__sqlite__config_8hpp_1a0f4f94cf3ebb7efeb7c22670c336fd48" prot="public" static="no">
+        <name>XSQLITE_STRINGIFY</name>
+        <param><defname>a</defname></param>
+        <initializer>XSQLITE_STRINGIFY_IMPL(a)</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" line="21" column="9" bodyfile="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" bodystart="20" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="xeus__sqlite__config_8hpp_1a241937ccef6efa53a3995e9b2eaebd4e" prot="public" static="no">
+        <name>XSQLITE_STRINGIFY_IMPL</name>
+        <param><defname>a</defname></param>
+        <initializer>#a</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" line="22" column="9" bodyfile="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" bodystart="21" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="xeus__sqlite__config_8hpp_1acefc885670601d6093ca0f868bf1c6fe" prot="public" static="no">
+        <name>XSQLITE_VERSION</name>
+        <initializer>XSQLITE_STRINGIFY(XSQLITE_CONCATENATE(XSQLITE_VERSION_MAJOR,   \
+                 XSQLITE_CONCATENATE(.,XSQLITE_CONCATENATE(XSQLITE_VERSION_MINOR,   \
+                                  XSQLITE_CONCATENATE(.,XSQLITE_VERSION_PATCH)))))</initializer>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" line="24" column="9" bodyfile="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" bodystart="23" bodyend="-1"/>
+      </memberdef>
+      <memberdef kind="define" id="xeus__sqlite__config_8hpp_1afc0369751b9aa5cd0c1c9488ce5fd824" prot="public" static="no">
+        <name>XEUS_SQLITE_API</name>
+        <briefdescription>
+        </briefdescription>
+        <detaileddescription>
+        </detaileddescription>
+        <inbodydescription>
+        </inbodydescription>
+        <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" line="35" column="14" bodyfile="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp" bodystart="34" bodyend="-1"/>
+      </memberdef>
+      </sectiondef>
+    <briefdescription>
+    </briefdescription>
+    <detaileddescription>
+    </detaileddescription>
+    <programlisting>
+<codeline lineno="1"><highlight class="comment">/***************************************************************************</highlight></codeline>
+<codeline lineno="2"><highlight class="comment">*<sp/>Copyright<sp/>(c)<sp/>2020,<sp/>Mariana<sp/>Meireles<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="3"><highlight class="comment">*<sp/>Copyright<sp/>(c)<sp/>2020,<sp/>QuantStack<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="4"><highlight class="comment">*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="5"><highlight class="comment">*<sp/>Distributed<sp/>under<sp/>the<sp/>terms<sp/>of<sp/>the<sp/>BSD<sp/>3-Clause<sp/>License.<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="6"><highlight class="comment">*<sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>*</highlight></codeline>
+<codeline lineno="7"><highlight class="comment">*<sp/>The<sp/>full<sp/>license<sp/>is<sp/>in<sp/>the<sp/>file<sp/>LICENSE,<sp/>distributed<sp/>with<sp/>this<sp/>software.<sp/>*</highlight></codeline>
+<codeline lineno="8"><highlight class="comment">****************************************************************************/</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="9"><highlight class="normal"></highlight></codeline>
+<codeline lineno="10"><highlight class="normal"></highlight><highlight class="preprocessor">#ifndef<sp/>XSQLITE_CONFIG_HPP</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="11"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>XSQLITE_CONFIG_HPP</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="12"><highlight class="normal"></highlight></codeline>
+<codeline lineno="13"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Project<sp/>version</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="14"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>XSQLITE_VERSION_MAJOR<sp/>0</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="15"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>XSQLITE_VERSION_MINOR<sp/>1</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="16"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>XSQLITE_VERSION_PATCH<sp/>0</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="17"><highlight class="normal"></highlight></codeline>
+<codeline lineno="18"><highlight class="normal"></highlight><highlight class="comment">//<sp/>Composing<sp/>the<sp/>version<sp/>string<sp/>from<sp/>major,<sp/>minor<sp/>and<sp/>patch</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="19"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>XSQLITE_CONCATENATE(A,<sp/>B)<sp/>XSQLITE_CONCATENATE_IMPL(A,<sp/>B)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="20"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>XSQLITE_CONCATENATE_IMPL(A,<sp/>B)<sp/>A##B</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="21"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>XSQLITE_STRINGIFY(a)<sp/>XSQLITE_STRINGIFY_IMPL(a)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="22"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>XSQLITE_STRINGIFY_IMPL(a)<sp/>#a</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="23"><highlight class="normal"></highlight></codeline>
+<codeline lineno="24"><highlight class="normal"></highlight><highlight class="preprocessor">#define<sp/>XSQLITE_VERSION<sp/>XSQLITE_STRINGIFY(XSQLITE_CONCATENATE(XSQLITE_VERSION_MAJOR,<sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="25"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>XSQLITE_CONCATENATE(.,XSQLITE_CONCATENATE(XSQLITE_VERSION_MINOR,<sp/><sp/><sp/>\</highlight></codeline>
+<codeline lineno="26"><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>XSQLITE_CONCATENATE(.,XSQLITE_VERSION_PATCH)))))</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="27"><highlight class="normal"></highlight></codeline>
+<codeline lineno="28"><highlight class="normal"></highlight><highlight class="preprocessor">#ifdef<sp/>_WIN32</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="29"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#ifdef<sp/>XEUS_SQLITE_EXPORTS</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="30"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#define<sp/>XEUS_SQLITE_API<sp/>__declspec(dllexport)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="31"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="32"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/><sp/><sp/><sp/><sp/>#define<sp/>XEUS_SQLITE_API<sp/>__declspec(dllimport)</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="33"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="34"><highlight class="normal"></highlight><highlight class="preprocessor">#else</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="35"><highlight class="normal"></highlight><highlight class="preprocessor"><sp/><sp/><sp/><sp/>#define<sp/>XEUS_SQLITE_API</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="36"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight><highlight class="normal"></highlight></codeline>
+<codeline lineno="37"><highlight class="normal"></highlight></codeline>
+<codeline lineno="38"><highlight class="normal"></highlight><highlight class="preprocessor">#endif</highlight></codeline>
+    </programlisting>
+    <location file="/Users/mariana/Development/jupyter-ecosystem/xeus-sqlite/include/xeus-sqlite/xeus_sqlite_config.hpp"/>
+  </compounddef>
+</doxygen>

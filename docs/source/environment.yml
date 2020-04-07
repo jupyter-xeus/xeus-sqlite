@@ -1,0 +1,7 @@
+name: xeus-sqlite-docs
+
+channels:
+  - QuantStack
+
+dependencies:
+  - breathe
