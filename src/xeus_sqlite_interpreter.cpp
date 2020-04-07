@@ -126,10 +126,6 @@ void interpreter::load_db(const std::vector<std::string> tokenized_code)
 
 void interpreter::create_db(const std::vector<std::string> tokenized_code)
 {
-    /*
-        Creates the a database in read and write mode.
-    */
-
     try
     {
         m_bd_is_loaded = true;
@@ -231,7 +227,7 @@ void interpreter::backup(std::string backup_type)
     }
     else
     {
-        m_db->SQLite::Database::backup(m_db_path.c_str(), 
+        m_backup_db->SQLite::Database::backup(m_db_path.c_str(), 
             (SQLite::Database::BackupType)backup_type[0]);
     }
 }
