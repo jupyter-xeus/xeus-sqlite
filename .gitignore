@@ -31,6 +31,11 @@
 *.out
 *.app
 
+# Documentation build artefacts
+docs/CMakeCache.txt
+docs/xml/
+docs/build/
+
 *.DS_Store
 build/*
 notebooks/.ipynb_checkpoints/*
