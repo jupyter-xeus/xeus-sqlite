@@ -227,7 +227,7 @@ void interpreter::backup(std::string backup_type)
     }
     else
     {
-        m_backup_db->SQLite::Database::backup(m_db_path.c_str(), 
+        m_backup_db->SQLite::Database::backup(m_db_path.c_str(),
             (SQLite::Database::BackupType)backup_type[0]);
     }
 }
@@ -346,9 +346,12 @@ nl::json interpreter::execute_request_impl(int execution_counter,
             result += query_result.str();
         }
 
-        pub_data["text/plain"] = result;
-        publish_execution_result(execution_counter, std::move(pub_data),
-                                    nl::json::object());
+        if (result.size())
+        {
+            pub_data["text/plain"] = result;
+            publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
+        }
+
         nl::json jresult;
         jresult["status"] = "ok";
         jresult["payload"] = nl::json::array();
