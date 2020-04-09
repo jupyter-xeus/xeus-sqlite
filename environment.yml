@@ -2,10 +2,10 @@ name: xeus-sqlite
 channels:
   - conda-forge
 dependencies:
-  - xeus=0.19.2
+  - xeus
 # host Dependencies
-  - cppzmq=4.3.0
-  - xtl=0.6.4
-  - nlohmann_json=3.6.1
+  - cppzmq
+  - xtl
+  - nlohmann_json
 # build dependencies
   - cmake
