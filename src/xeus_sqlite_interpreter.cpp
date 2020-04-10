@@ -159,7 +159,7 @@ void interpreter::delete_db()
     else
     {
         m_bd_is_loaded = false;
-        publish_stream("stderr", "File successfully deleted.\n");
+        publish_stream("stdout", "File successfully deleted.\n");
     }
 }
 
