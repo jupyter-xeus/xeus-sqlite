@@ -5,6 +5,8 @@ dependencies:
   - xeus
 # host Dependencies
   - cppzmq
+  - sqlitecpp
+  - sqlite
   - xtl
   - nlohmann_json
 # build dependencies
