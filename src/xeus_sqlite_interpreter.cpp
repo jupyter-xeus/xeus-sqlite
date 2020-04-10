@@ -9,7 +9,6 @@
 
 #include <cctype>
 #include <cstdio>
-#include <iostream>
 #include <fstream>
 #include <memory>
 #include <sstream>
@@ -234,8 +233,6 @@ void interpreter::backup(std::string backup_type)
 
 void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
 {
-    std::cout << "You're using magic. " << std::endl;
-
     if (tokenized_code[1] == "LOAD" || tokenized_code[1] == "CREATE")
     {
         m_db_path = tokenized_code[2];
