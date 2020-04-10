@@ -128,11 +128,14 @@ void interpreter::create_db(const std::vector<std::string> tokenized_code)
     try
     {
         m_bd_is_loaded = true;
-        m_db_path = tokenized_code[2] + "/";
-        m_db_path += tokenized_code[3];
-        m_db = std::make_unique<SQLite::Database>(m_db_path,
-                        SQLite::OPEN_READWRITE|SQLite::OPEN_CREATE);
-        std::ofstream outfile(m_db_path.c_str());
+        m_db_path = tokenized_code[2];
+
+        // Create the file
+        std::ofstream(m_db_path.c_str()).close();
+
+        // Create the database
+        m_db = std::make_unique<SQLite::Database>(m_db_path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
+
         publish_stream("stdout", "Database " + m_db_path + " was created.\n");
     }
     catch(const std::runtime_error& err)
@@ -233,29 +236,27 @@ void interpreter::backup(std::string backup_type)
 
 void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
 {
-    if (tokenized_code[1] == "LOAD" || tokenized_code[1] == "CREATE")
+    if (tokenized_code[1] == "LOAD")
     {
         m_db_path = tokenized_code[2];
 
         std::ifstream path_is_valid(m_db_path);
         if (!path_is_valid.is_open())
         {
-          publish_stream("stderr", "The path doesn't exist.\n");
+            return publish_stream("stderr", "The path doesn't exist.\n");
         }
         else
         {
-            if (tokenized_code[1] == "LOAD")
-            {
-                load_db(tokenized_code);
-            }
-            else if (tokenized_code[1] == "CREATE")
-            {
-                create_db(tokenized_code);
-            }
+            return load_db(tokenized_code);
         }
     }
 
-    else if (m_bd_is_loaded)
+    if (tokenized_code[1] == "CREATE")
+    {
+        return create_db(tokenized_code);
+    }
+
+    if (m_bd_is_loaded)
     {
         if (tokenized_code[1] == "DELETE")
         {
@@ -292,7 +293,6 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
             backup(tokenized_code[2]);
         }
     }
-
     else
     {
         publish_stream("stdout", "Load a database to run this command.\n");
