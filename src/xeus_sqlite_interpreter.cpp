@@ -116,10 +116,6 @@ void interpreter::load_db(const std::vector<std::string> tokenized_code)
     }
     catch (const std::runtime_error& err)
     {
-        nl::json jresult;
-        jresult["status"] = "error";
-        jresult["ename"] = "Error";
-        jresult["evalue"] = err.what();
         publish_stream("stderr", err.what());
     }
 }
@@ -138,10 +134,6 @@ void interpreter::create_db(const std::vector<std::string> tokenized_code)
     }
     catch(const std::runtime_error& err)
     {
-        nl::json jresult;
-        jresult["status"] = "error";
-        jresult["ename"] = "Error";
-        jresult["evalue"] = err.what();
         publish_stream("stderr", err.what());
     }
 }
