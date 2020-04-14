@@ -11,6 +11,7 @@ cmake_minimum_required(VERSION 3.4.3)
 project(xeus-sqlite)
 
 set(XEUS_SQLITE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
+set(XEUS_TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
 
 
 set(CMAKE_FIND_ROOT_PATH ${CMAKE_PREFIX_PATH})
