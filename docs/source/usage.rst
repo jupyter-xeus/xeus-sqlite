@@ -8,5 +8,5 @@ Usage
 =====
 
 Launch the Jupyter notebook with `jupyter notebook` or Jupyter lab with
-`jupyter lab` and launch a new Python notebook by selecting the **xsqlite**
+`jupyter lab` and launch a new SQLite notebook by selecting the **xsqlite**
 kernel.
