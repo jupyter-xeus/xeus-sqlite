@@ -4,14 +4,10 @@
 
    The full license is in the file LICENSE, distributed with this software.
 
-.. image:: xeus-python.svg
-   :alt: xeus-python
-
-
 Introduction
 ------------
 
-``xeus-python`` is a Jupyter kernel for SQLite based on the native implementation of the Jupyter protocol 
+``xeus-sqlite`` is a Jupyter kernel for SQLite based on the native implementation of the Jupyter protocol
 xeus_.
 
 Licensing
@@ -34,11 +30,5 @@ This software is licensed under the BSD-3-Clause license. See the LICENSE file f
    :maxdepth: 2
 
    usage
-
-.. toctree::
-   :caption: DEVELOPER ZONE
-   :maxdepth: 2
-
-   dev-build-options
 
 .. _xeus: https://github.com/jupyter-xeus/xeus

@@ -21,7 +21,6 @@ def setup(app):
 extensions = ['breathe']
 breathe_projects = { 'xeus-sqlite': '../xml' }
 templates_path = ['_templates']
-html_static_path = ['_static']
 source_suffix = '.rst'
 master_doc = 'index'
 project = 'xeus-sqlite'
@@ -31,7 +30,6 @@ author = 'Mariana Meireles'
 html_logo = 'quantstack-white.svg'
 
 exclude_patterns = []
-highlight_language = 'c++'
 pygments_style = 'sphinx'
 todo_include_todos = False
 htmlhelp_basename = 'xeus-sqlitedoc'
