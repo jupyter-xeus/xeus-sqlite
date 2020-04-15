@@ -1,27 +1,19 @@
-############################################################################
-# Copyright (c) 2020 Mariana Meireles                                      #
-# Copyright (c) 2020, QuantStack                                           #
-#                                                                          #
-# Distributed under the terms of the BSD 3-Clause License.                 #
-#                                                                          #
-# The full license is in the file LICENSE, distributed with this software. #
-############################################################################
-
-# Unit tests
-# ==========
-
 cmake_minimum_required(VERSION 3.1)
 
 if (CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
-    project(xeus-sqlite-test)
+    project(xeus_sqlite-test)
 
-    enable_testing()
-
-    find_package(xeus-sqlite REQUIRED CONFIG)
+    find_package(xeus REQUIRED CONFIG)
+    set(XEUS_SQLITE_INCLUDE_DIR ${xeus_sqlite_INCLUDE_DIRS})
 endif ()
 
-message(STATUS "Forcing tests build type to Release")
-set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+if(NOT CMAKE_BUILD_TYPE)
+    message(STATUS "Setting tests build type to Release")
+    set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
+else()
+    message(STATUS "Tests build type is ${CMAKE_BUILD_TYPE}")
+endif()
+
 
 include(CheckCXXCompilerFlag)
 
@@ -36,13 +28,15 @@ if(CMAKE_CXX_COMPILER_ID MATCHES Clang OR CMAKE_CXX_COMPILER_ID MATCHES GNU OR C
     endif()
 endif()
 
+
 if(CMAKE_CXX_COMPILER_ID MATCHES MSVC)
     add_compile_options(/EHsc /MP /bigobj)
     set(CMAKE_EXE_LINKER_FLAGS /MANIFEST:NO)
 endif()
 
-if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
-    if(DOWNLOAD_GTEST)
+
+if(XSQL_DOWNLOAD_GTEST OR GTEST_SRC_DIR)
+    if(XSQL_DOWNLOAD_GTEST)
         # Download and unpack googletest at configure time
         configure_file(downloadGTest.cmake.in googletest-download/CMakeLists.txt)
     else()
@@ -68,7 +62,7 @@ if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
                      ${CMAKE_CURRENT_BINARY_DIR}/googletest-build EXCLUDE_FROM_ALL)
 
     set(GTEST_INCLUDE_DIRS "${gtest_SOURCE_DIR}/include")
-    set(GTEST_BOTH_LIBRARIES  gtest_main gtest)
+    set(GTEST_BOTH_LIBRARIES gtest_main gtest)
 else()
     find_package(GTest REQUIRED)
 endif()
@@ -77,12 +71,18 @@ find_package(Threads)
 
 include_directories(${GTEST_INCLUDE_DIRS} SYSTEM)
 
+
+set(COMMON_BASE
+    main.cpp
+)
+
 set(XEUS_SQLITE_TESTS
     test_db.cpp
 )
 
-add_executable(test_xeus_sqlite ${XEUS_SQLITE_TESTS})
-if(DOWNLOAD_GTEST OR GTEST_SRC_DIR)
+add_executable(test_xeus_sqlite  ${XEUS_SQLITE_TESTS})
+
+if(XSQL_DOWNLOAD_GTEST OR GTEST_SRC_DIR)
     add_dependencies(test_xeus_sqlite gtest_main)
 endif()
 
@@ -101,7 +101,13 @@ set_target_properties(test_xeus_sqlite PROPERTIES
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )
 
-target_link_libraries(test_xeus_sqlite ${GTEST_BOTH_LIBRARIES} Threads::Threads)
-target_include_directories(test_xeus_sqlite PRIVATE ${XEUS_SQLITE_INCLUDE_DIR})
 
-add_custom_target(xtest COMMAND test_xeus_sqlite DEPENDS test_xeus_sqlite)
+include_directories(${XSQLITE_INCLUDE_DIRS})
+target_link_libraries(test_xeus_sqlite PRIVATE xeus-sqlite xeus ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_compile_definitions(test_xeus_sqlite PRIVATE XEUS_SQLITE_HOME="${XSQLITE_PREFIX}")
+target_include_directories(test_xeus_sqlite PRIVATE ${XEUS_SQLITE_SRC_DIR})
+
+add_custom_target(
+    xtest
+    COMMAND test_xeus_sqlite
+    DEPENDS test_xeus_sqlite)

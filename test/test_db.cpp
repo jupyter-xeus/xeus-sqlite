@@ -7,12 +7,13 @@
 
 namespace xeus_sqlite
 {
+
 TEST(xeus_sqlite_interpreter, sanitize_string_check)
 {
     std::string code = "\n\n Some inp\nut\n";
     std::string sanitized_string;
     sanitized_string = sanitize_string(code);
-    EXPECT_EQ(sanitized_string, "Some input");
+    EXPECT_EQ(sanitized_string, " Some input");
 }
 
 // TEST(xeus_sqlite_interpreter, tokenizer_check)

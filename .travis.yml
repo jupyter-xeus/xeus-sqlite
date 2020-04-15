@@ -35,17 +35,14 @@ install:
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
         conda install gxx_linux-64 libgcc -c conda-forge;
       fi
-    # Test dependencies
-    - conda install pytest jupyter_kernel_test -c conda-forge;
     # Activate root environment
     - source activate root
-    # For debugging
-    - which python
-    - python --version
-    # Build and install xeus-python
+# Test dependencies
+    - conda install pytest jupyter_kernel_test -c conda-forge;
+    # Build and install xeus-sqlite
     - mkdir build
     - cd build
-    - cmake -D CMAKE_INSTALL_PREFIX=$HOME/miniconda -D CMAKE_INSTALL_LIBDIR=lib -D CMAKE_C_COMPILER=$CC -D CMAKE_CXX_COMPILER=$CXX ..
+    - cmake -DCMAKE_INSTALL_PREFIX=$HOME/miniconda -DXSQL_DOWNLOAD_GTEST=ON  -DCMAKE_PREFIX_PATH=$HOME/miniconda ..
     - make -j2 install
 script:
-    - cd ./test/test_db.cpp
+    - ./test/test_xeus_sqlite

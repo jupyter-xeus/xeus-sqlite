@@ -25,7 +25,7 @@
 namespace xeus_sqlite
 {
 
-std::string interpreter::sanitize_string(const std::string& code)
+std::string sanitize_string(const std::string& code)
 {
     /*
         Cleans the code from inputs that are acceptable in a jupyter notebook.
