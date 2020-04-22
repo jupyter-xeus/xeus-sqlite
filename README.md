@@ -41,7 +41,7 @@ make install
 
 ## Documentation
 
-Documentation is not available yet.
+https://xeus-sqlite.readthedocs.io/en/latest/
 
 ## Dependencies
 
@@ -50,10 +50,11 @@ Documentation is not available yet.
 - [xeus](https://github.com/jupyter-xeus/xeus)
 - [SQLite](https://github.com/sqlite/sqlite)
 - [SQLiteCPP](https://github.com/SRombauts/SQLiteCpp)
+- [Tabulate](https://github.com/p-ranav/tabulate)
 
-| `xeus-sqlite`|      `xeus`     |     `SQLite`    |   `SQLiteCPP`   |
-|--------------|-----------------|-----------------|-----------------|
-|    master    | >=0.23.9, <0.24 | >=3.30.1, <4    | >=3.0.0, <4     |
+| `xeus-sqlite`|      `xeus`     |     `SQLite`    |   `SQLiteCPP`   |   `tabulate`    |
+|--------------|-----------------|-----------------|-----------------|-----------------|
+|    master    | >=0.23.9, <0.24 | >=3.30.1, <4    | >=3.0.0, <4     | =1.0.0          |
 
 ## Contributing
 
