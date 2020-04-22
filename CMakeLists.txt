@@ -23,8 +23,6 @@ set(CMAKE_FIND_FRAMEWORK NEVER)
 set(CMAKE_FIND_APPBUNDLE NEVER)
 set(CMAKE_PROGRAM_PATH ${CMAKE_PREFIX_PATH})
 
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
-
 # Versionning
 # ===========
 
@@ -64,6 +62,7 @@ set(xeus_REQUIRED_VERSION 0.23.10)
 find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
 find_package(SQLite3 REQUIRED)
 find_package(SQLiteCpp REQUIRED)
+find_package(tabulate REQUIRED)
 find_package(Threads REQUIRED)
 
 add_definitions(-DSQLITE_ENABLE_EXPLAIN_COMMENTS=1 -DSQLITE_DEBUG=1 -DSQLITE_MEMDEBUG=1)
@@ -76,12 +75,12 @@ include(CheckCXXCompilerFlag)
 set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
 
 if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Intel")
-    CHECK_CXX_COMPILER_FLAG("-std=c++14" HAS_CPP14_FLAG)
+    CHECK_CXX_COMPILER_FLAG("-std=c++17" HAS_CPP17_FLAG)
 
-    if (HAS_CPP14_FLAG)
-        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++14")
+    if (HAS_CPP17_FLAG)
+        set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
     else()
-        message(FATAL_ERROR "Unsupported compiler -- xeus requires C++14 support!")
+        message(FATAL_ERROR "Unsupported compiler -- xeus-sqlite requires C++17 support!")
     endif()
 endif()
 
@@ -129,7 +128,7 @@ set_target_properties(xsqlite xeus-sqlite PROPERTIES
 )
 
 target_link_libraries(xeus-sqlite PUBLIC 
-  xeus 
+  xeus
   SQLiteCpp
   SQLite::SQLite3
 )
