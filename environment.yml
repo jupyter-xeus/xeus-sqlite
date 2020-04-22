@@ -8,6 +8,7 @@ dependencies:
   - sqlitecpp
   - sqlite
   - xtl
+  - cpp-tabulate
   - nlohmann_json
 # build dependencies
   - cmake
