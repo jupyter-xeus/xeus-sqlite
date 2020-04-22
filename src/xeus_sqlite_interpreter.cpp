@@ -16,6 +16,7 @@
 #include <vector>
 
 #include "xeus/xinterpreter.hpp"
+#include "tabulate/table.hpp"
 
 #include "xeus-sqlite/xeus_sqlite_interpreter.hpp"
 
@@ -322,17 +323,24 @@ nl::json interpreter::execute_request_impl(int execution_counter,
         {
             SQLite::Statement query(*m_db, code);
             std::stringstream query_result("");
+            tabulate::Table query_table;
+
+            std::vector<std::variant<std::string, tabulate::Table>> column_names;
+            for (int column = 0; column < query.getColumnCount(); column++) {
+                column_names.push_back(query.getColumnName(column));
+            }
+            query_table.add_row(column_names);
 
             //Iterates through the columns and prints them
             while (query.executeStep())
             {
-                for(int column = 0; column < query.getColumnCount(); column++) {
-                    std::string name = query.getColumn(column);
-                    query_result << name << std::endl;
+                std::vector<std::variant<std::string, tabulate::Table>> row_contents;
+                for (int column = 0; column < query.getColumnCount(); column++) {
+                    row_contents.push_back(query.getColumn(column));
                 }
+                query_table.add_row(row_contents);
             }
-            query.reset();
-            result += query_result.str();
+            result += query_table.str();
         }
 
         if (result.size())
