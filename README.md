@@ -25,7 +25,7 @@ The safest usage is to create an environment named `xeus-sqlite-env` within your
 ```bash
 conda create -n xeus-sqlite-env
 conda activate xeus-sqlite-env
-conda install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp -c conda-forge
+conda install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate -c conda-forge
 ```
 
 Once you have installed the depndencies, the `xeus-sqlite` project is quite easy to install, you have to clone the repository,
