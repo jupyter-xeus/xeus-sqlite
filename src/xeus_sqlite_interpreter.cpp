@@ -309,6 +309,7 @@ nl::json interpreter::execute_request_impl(int execution_counter,
 
     nl::json pub_data;
     std::string result = "";
+    std::stringstream html_table("");
     std::vector<std::string> tokenized_code = tokenizer(code);
 
     try
@@ -322,30 +323,39 @@ nl::json interpreter::execute_request_impl(int execution_counter,
         else
         {
             SQLite::Statement query(*m_db, code);
-            std::stringstream query_result("");
-            tabulate::Table query_table;
+            tabulate::Table plain_table;
 
             std::vector<std::variant<std::string, tabulate::Table>> column_names;
+            html_table << "<table>\n<tr>\n";
             for (int column = 0; column < query.getColumnCount(); column++) {
-                column_names.push_back(query.getColumnName(column));
+                std::string name = query.getColumnName(column);
+                column_names.push_back(name);
+                html_table << "<th>" << name << "</th>\n";
             }
-            query_table.add_row(column_names);
+            plain_table.add_row(column_names);
+            html_table << "</tr>\n";
 
             //Iterates through the columns and prints them
             while (query.executeStep())
             {
-                std::vector<std::variant<std::string, tabulate::Table>> row_contents;
+                html_table << "<tr>\n";
+                std::vector<std::variant<std::string, tabulate::Table>> row;
                 for (int column = 0; column < query.getColumnCount(); column++) {
-                    row_contents.push_back(query.getColumn(column));
+                    std::string cell = query.getColumn(column);
+                    row.push_back(cell);
+                    html_table << "<td>" << cell << "</td>\n";
                 }
-                query_table.add_row(row_contents);
+                html_table << "</tr>\n";
+                plain_table.add_row(row);
             }
-            result += query_table.str();
+            result += plain_table.str();
+            html_table << "</table>";
         }
 
         if (result.size())
         {
             pub_data["text/plain"] = result;
+            pub_data["text/html"] = html_table.str();
             publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
         }
 
