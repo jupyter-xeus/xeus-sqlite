@@ -79,7 +79,7 @@ namespace xeus_sqlite
         /*! \brief create_db - creates a database.
          *
          * Creates the a database in read and write mode.
-         * Receives three arguments: the command %CREATE, the path to where the
+         * Receives two arguments: the command %CREATE, the path to where the
          * database will be created and the name of the database.
          *
          * param accList std::vector<std::string>& tokenized_code

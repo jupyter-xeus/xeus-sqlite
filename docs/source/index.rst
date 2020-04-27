@@ -31,4 +31,6 @@ This software is licensed under the BSD-3-Clause license. See the LICENSE file f
 
    usage
 
+   api
+
 .. _xeus: https://github.com/jupyter-xeus/xeus
