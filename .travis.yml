@@ -29,7 +29,7 @@ install:
     - conda config --set always_yes yes --set changeps1 no
     - conda update -q conda
     # Host dependencies
-    - conda install xeus=0.23.10 xtl nlohmann_json cppzmq sqlite sqlitecpp cpp-tabulate==1.0.0 -c conda-forge
+    - conda install xeus=0.23.10 xtl nlohmann_json cppzmq sqlite sqlitecpp cpp-tabulate==1.2 -c conda-forge
     # Build dependencies
     - conda install cmake -c conda-forge
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
