@@ -352,7 +352,7 @@ nl::json interpreter::execute_request_impl(int execution_counter,
             html_table << "</table>";
         }
 
-        if (result.size())
+        if (result.size() > 2)
         {
             pub_data["text/plain"] = result;
             pub_data["text/html"] = html_table.str();
