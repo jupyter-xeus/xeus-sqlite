@@ -38,6 +38,6 @@ docs/build/
 
 *.DS_Store
 build/*
-notebooks/.ipynb_checkpoints/*
+examples/.ipynb_checkpoints/*
 share/jupyter/kernels/xsqlite/kernel.json
 

@@ -408,10 +408,28 @@ nl::json interpreter::kernel_info_request_impl()
     nl::json result;
     result["implementation"] = "xsqlite";
     result["implementation_version"] = "0.1.0";
-    std::string banner = "";
+
+    /* The jupyter-console banner for xeus-sqlite is the following:
+      __  _____ _   _ ___
+      \ \/ / _ \ | | / __|
+       >  <  __/ |_| \__ \
+      /_/\_\___|\__,_|___/
+      xeus-sqlite: a Jupyter lernel for SQLite
+    */
+
+    std::string banner = ""
+          "  __  _____ _   _ ___\n"
+          "  \\ \\/ / _ \\ | | / __|\n"
+          "   >  <  __/ |_| \\__ \\\n"
+          "  /_/\\_\\___|\\__,_|___/\n"
+          "\n"
+          "  xeus-sqlite: a Jupyter kernel for SQLite\n"
+          "  SQLite ";
+    banner.append(SQLite::VERSION);
+
     result["banner"] = banner;
     result["language_info"]["name"] = "sqlite";
-    result["language_info"]["version"] = "";
+    result["language_info"]["version"] = SQLite::VERSION;
     result["language_info"]["mimetype"] = "";
     result["language_info"]["file_extension"] = "";
     return result;
