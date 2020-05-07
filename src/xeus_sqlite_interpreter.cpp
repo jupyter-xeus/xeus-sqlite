@@ -428,7 +428,7 @@ nl::json interpreter::kernel_info_request_impl()
     banner.append(SQLite::VERSION);
 
     result["banner"] = banner;
-    result["language_info"]["name"] = "sqlite";
+    result["language_info"]["name"] = "sqlite3";
     result["language_info"]["version"] = SQLite::VERSION;
     result["language_info"]["mimetype"] = "";
     result["language_info"]["file_extension"] = "";

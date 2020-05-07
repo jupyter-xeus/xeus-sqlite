@@ -62,7 +62,7 @@ int main(int argc, char* argv[])
                              xeus::make_xserver_shell_main);
 
         std::clog <<
-            "Starting xeus-python kernel...\n\n"
+            "Starting xeus-sqlite kernel...\n\n"
             "If you want to connect to this kernel from an other client, you can use"
             " the " + file_name + " file."
             << std::endl;
@@ -79,7 +79,7 @@ int main(int argc, char* argv[])
 
         const auto& config = kernel.get_config();
         std::clog <<
-            "Starting xeus-python kernel...\n\n"
+            "Starting xeus-sqlite kernel...\n\n"
             "If you want to connect to this kernel from an other client, just copy"
             " and paste the following content inside of a `kernel.json` file. And then run for example:\n\n"
             "# jupyter console --existing kernel.json\n\n"
