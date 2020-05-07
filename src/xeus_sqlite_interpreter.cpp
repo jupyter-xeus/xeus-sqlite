@@ -414,7 +414,7 @@ nl::json interpreter::kernel_info_request_impl()
       \ \/ / _ \ | | / __|
        >  <  __/ |_| \__ \
       /_/\_\___|\__,_|___/
-      xeus-sqlite: a Jupyter lernel for SQLite
+      xeus-sqlite: a Jupyter kernel for SQLite
     */
 
     std::string banner = ""
