@@ -88,35 +88,28 @@ void interpreter::load_db(const std::vector<std::string> tokenized_code)
         to read and write mode.
     */
 
-    try
+    if (tokenized_code.back().find("rw") != std::string::npos)
     {
-        if (tokenized_code.back().find("rw") != std::string::npos)
-        {
-            m_bd_is_loaded = true;
-            m_db = std::make_unique<SQLite::Database>(m_db_path,
-                        SQLite::OPEN_READWRITE);
-        }
-        else if (tokenized_code.back().find("r") != std::string::npos)
-        {
-            m_bd_is_loaded = true;
-            m_db = std::make_unique<SQLite::Database>(m_db_path,
-                        SQLite::OPEN_READONLY);
-        }
-        //Opening as read and write because mode is unspecified
-        else if (tokenized_code.size() < 4)
-        {
-            m_bd_is_loaded = true;
-            m_db = std::make_unique<SQLite::Database>(m_db_path,
-                        SQLite::OPEN_READWRITE);
-        }
-        else
-        {
-            throw std::runtime_error("Wasn't able to load the database correctly.");
-        }
+        m_bd_is_loaded = true;
+        m_db = std::make_unique<SQLite::Database>(m_db_path,
+                    SQLite::OPEN_READWRITE);
     }
-    catch (const std::runtime_error& err)
+    else if (tokenized_code.back().find("r") != std::string::npos)
     {
-        throw std::runtime_error("Error: " + (std::string)err.what());
+        m_bd_is_loaded = true;
+        m_db = std::make_unique<SQLite::Database>(m_db_path,
+                    SQLite::OPEN_READONLY);
+    }
+    //Opening as read and write because mode is unspecified
+    else if (tokenized_code.size() < 4)
+    {
+        m_bd_is_loaded = true;
+        m_db = std::make_unique<SQLite::Database>(m_db_path,
+                    SQLite::OPEN_READWRITE);
+    }
+    else
+    {
+        throw std::runtime_error("Wasn't able to load the database correctly.");
     }
 }
 
@@ -229,7 +222,6 @@ void interpreter::backup(std::string backup_type)
 
 void interpreter::parse_code(int execution_counter, const std::vector<std::string>& tokenized_code)
 {
-    std::cout << "here" << std::endl;
     if (tokenized_code[1] == "LOAD")
     {
         m_db_path = tokenized_code[2];
@@ -251,7 +243,6 @@ void interpreter::parse_code(int execution_counter, const std::vector<std::strin
     }
         if (m_bd_is_loaded)
         {
-            std::cout << "******************" << std::endl;
             if (tokenized_code[1] == "DELETE")
             {
                 delete_db();
@@ -316,6 +307,7 @@ nl::json interpreter::execute_request_impl(int execution_counter,
 
     nl::json pub_data;
     std::string result = "";
+    std::vector<std::string> traceback;
     std::stringstream html_table("");
     std::vector<std::string> tokenized_code = tokenizer(code);
 
@@ -379,9 +371,9 @@ nl::json interpreter::execute_request_impl(int execution_counter,
         jresult["status"] = "error";
         jresult["ename"] = "Error";
         jresult["evalue"] = err.what();
-        m_traceback.push_back((std::string)jresult["ename"] + ": " + (std::string)err.what());
-        publish_execution_error(jresult["ename"], jresult["evalue"], m_traceback);
-        m_traceback.clear();
+        traceback.push_back((std::string)jresult["ename"] + ": " + (std::string)err.what());
+        publish_execution_error(jresult["ename"], jresult["evalue"], traceback);
+        traceback.clear();
         return jresult;
     }
 }

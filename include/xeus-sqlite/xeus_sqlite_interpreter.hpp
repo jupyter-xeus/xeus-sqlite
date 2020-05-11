@@ -160,7 +160,6 @@ namespace xeus_sqlite
          * to save the current contents of the database opened by pInMemory into
          * a database file on disk.
          *
-         * param accList std::string backup_type
          * return void
          */
         void backup(std::string backup_type);
@@ -169,7 +168,6 @@ namespace xeus_sqlite
         std::unique_ptr<SQLite::Database> m_backup_db = nullptr;
         bool m_bd_is_loaded = false;
         std::string m_db_path;
-        std::vector<std::string> m_traceback;
     };
 
     /**
