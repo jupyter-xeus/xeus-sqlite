@@ -304,7 +304,7 @@ nl::json interpreter::execute_request_impl(int execution_counter,
     /*
         Executes either SQLite code or Jupyter Magic.
     */
-
+  
     nl::json pub_data;
     std::string result = "";
     std::vector<std::string> traceback;
@@ -321,41 +321,48 @@ nl::json interpreter::execute_request_impl(int execution_counter,
         //Runs SQLite code
         else
         {
-            SQLite::Statement query(*m_db, code);
+            nl::json pub_data;
+
             tabulate::Table plain_table;
+            std::stringstream html_table("");
 
-            std::vector<std::variant<std::string, tabulate::Table>> column_names;
-            html_table << "<table>\n<tr>\n";
-            for (int column = 0; column < query.getColumnCount(); column++) {
-                std::string name = query.getColumnName(column);
-                column_names.push_back(name);
-                html_table << "<th>" << name << "</th>\n";
-            }
-            plain_table.add_row(column_names);
-            html_table << "</tr>\n";
+            SQLite::Statement query(*m_db, code);
 
-            //Iterates through the columns and prints them
-            while (query.executeStep())
+            if (query.getColumnCount() != 0)
             {
-                html_table << "<tr>\n";
-                std::vector<std::variant<std::string, tabulate::Table>> row;
+                std::vector<std::variant<std::string, tabulate::Table>> column_names;
+                html_table << "<table>\n<tr>\n";
                 for (int column = 0; column < query.getColumnCount(); column++) {
-                    std::string cell = query.getColumn(column);
-                    row.push_back(cell);
-                    html_table << "<td>" << cell << "</td>\n";
+                    std::string name = query.getColumnName(column);
+                    column_names.push_back(name);
+                    html_table << "<th>" << name << "</th>\n";
                 }
+                plain_table.add_row(column_names);
                 html_table << "</tr>\n";
-                plain_table.add_row(row);
-            }
-            result += plain_table.str();
-            html_table << "</table>";
-        }
 
-        if (result.size())
-        {
-            pub_data["text/plain"] = result;
-            pub_data["text/html"] = html_table.str();
-            publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
+                //Iterates through the columns and prints them
+                while (query.executeStep())
+                {
+                    html_table << "<tr>\n";
+                    std::vector<std::variant<std::string, tabulate::Table>> row;
+                    for (int column = 0; column < query.getColumnCount(); column++) {
+                        std::string cell = query.getColumn(column);
+                        row.push_back(cell);
+                        html_table << "<td>" << cell << "</td>\n";
+                    }
+                    html_table << "</tr>\n";
+                    plain_table.add_row(row);
+                }
+                html_table << "</table>";
+
+                pub_data["text/plain"] = plain_table.str();
+                pub_data["text/html"] = html_table.str();
+                publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
+            }
+            else
+            {
+                query.exec();
+            }
         }
 
         nl::json jresult;
@@ -406,10 +413,28 @@ nl::json interpreter::kernel_info_request_impl()
     nl::json result;
     result["implementation"] = "xsqlite";
     result["implementation_version"] = "0.1.0";
-    std::string banner = "";
+
+    /* The jupyter-console banner for xeus-sqlite is the following:
+      __  _____ _   _ ___
+      \ \/ / _ \ | | / __|
+       >  <  __/ |_| \__ \
+      /_/\_\___|\__,_|___/
+      xeus-sqlite: a Jupyter kernel for SQLite
+    */
+
+    std::string banner = ""
+          "  __  _____ _   _ ___\n"
+          "  \\ \\/ / _ \\ | | / __|\n"
+          "   >  <  __/ |_| \\__ \\\n"
+          "  /_/\\_\\___|\\__,_|___/\n"
+          "\n"
+          "  xeus-sqlite: a Jupyter kernel for SQLite\n"
+          "  SQLite ";
+    banner.append(SQLite::VERSION);
+
     result["banner"] = banner;
-    result["language_info"]["name"] = "sqlite";
-    result["language_info"]["version"] = "";
+    result["language_info"]["name"] = "sqlite3";
+    result["language_info"]["version"] = SQLite::VERSION;
     result["language_info"]["mimetype"] = "";
     result["language_info"]["file_extension"] = "";
     return result;
