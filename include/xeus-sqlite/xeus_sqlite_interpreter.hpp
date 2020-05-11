@@ -104,7 +104,7 @@ namespace xeus_sqlite
          * param accList const std::string table_name
          * return void
          */
-        void table_exists(int execution_counter, const std::string table_name);
+        nl::json table_exists(const std::string table_name);
 
         /*! \brief set_key - set or create primary key.
          *
@@ -120,7 +120,7 @@ namespace xeus_sqlite
          *
          * return void
          */
-        void is_unencrypted(int execution_counter);
+        nl::json is_unencrypted();
 
         /*! \brief get_header_info - returns information about the database.
          *
@@ -151,7 +151,7 @@ namespace xeus_sqlite
          *
          * return void
          */
-        void get_header_info(int execution_counter);
+        nl::json get_header_info();
 
         /*! \brief get_header_info - backups a database.
          *

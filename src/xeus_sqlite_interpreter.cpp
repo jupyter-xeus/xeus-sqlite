@@ -111,17 +111,12 @@ void interpreter::load_db(const std::vector<std::string> tokenized_code)
         }
         else
         {
-            std::string error = "Wasn't able to load the database correctly.";
-            m_traceback.push_back("Error: " + error);
-            publish_execution_error("Error", error, m_traceback);
-            m_traceback.clear();
+            throw std::runtime_error("Wasn't able to load the database correctly.");
         }
     }
     catch (const std::runtime_error& err)
     {
-        m_traceback.push_back("Error: " + (std::string)err.what());
-        publish_execution_error("Error", err.what(), m_traceback);
-        m_traceback.clear();
+        throw std::runtime_error("Error: " + (std::string)err.what());
     }
 }
 
@@ -140,9 +135,7 @@ void interpreter::create_db(const std::vector<std::string> tokenized_code)
     }
     catch(const std::runtime_error& err)
     {
-        m_traceback.push_back("Error: " + (std::string)err.what());
-        publish_execution_error("Error", err.what(), m_traceback);
-        m_traceback.clear();
+        throw std::runtime_error("Error: " + (std::string)err.what());
     }
 }
 
@@ -154,46 +147,41 @@ void interpreter::delete_db()
 
     if(std::remove(m_db_path.c_str()) != 0)
     {
-        std::string error = "Error deleting file.";
-        m_traceback.push_back("Error: " + error);
-        publish_execution_error("Error", error, m_traceback);
-        m_traceback.clear();
+        throw std::runtime_error("Error deleting file.");
     }
 }
 
-void interpreter::table_exists(int execution_counter, const std::string table_name)
+nl::json interpreter::table_exists(const std::string table_name)
 {
+    nl::json pub_data;
     if (m_db->SQLite::Database::tableExists(table_name.c_str()))
     {
-        nl::json pub_data;
         pub_data["text/plain"] = "The table " + table_name + " exists.";
-        publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
+        return pub_data;
     }
     else
     {
-        nl::json pub_data;
         pub_data["text/plain"] = "The table " + table_name + " doesn't exist.";
-        publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
+        return pub_data;
     }
 }
 
-void interpreter::is_unencrypted(int execution_counter)
+nl::json interpreter::is_unencrypted()
 {
+    nl::json pub_data;
     if (SQLite::Database::isUnencrypted(m_db_path))
     {
-        nl::json pub_data;
         pub_data["text/plain"] = "The database is unencrypted.";
-        publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
+        return pub_data;
     }
     else
     {
-        nl::json pub_data;
         pub_data["text/plain"] = "The database is encrypted.";
-        publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
+        return pub_data;
     }
 }
 
-void interpreter::get_header_info(int execution_counter)
+nl::json interpreter::get_header_info()
 {
     SQLite::Header header;
     header = SQLite::Database::getHeaderInfo(m_db_path);
@@ -223,17 +211,14 @@ void interpreter::get_header_info(int execution_counter)
         "Application ID: " + std::to_string(header.applicationId) + "\n" +
         "Version valid for: " + std::to_string(header.versionValidFor) + "\n" +
         "SQLite version: " + std::to_string(header.sqliteVersion) + "\n";
-    publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
+    return pub_data;
 }
 
 void interpreter::backup(std::string backup_type)
 {
     if (backup_type.size() > 1 && (int)backup_type[0] <= 1)
     {
-        std::string error = "This is not a valid backup type.";
-        m_traceback.push_back("Error: " + error);
-        publish_execution_error("Error", error, m_traceback);
-        m_traceback.clear();
+        throw std::runtime_error("This is not a valid backup type.");
     }
     else
     {
@@ -244,6 +229,7 @@ void interpreter::backup(std::string backup_type)
 
 void interpreter::parse_code(int execution_counter, const std::vector<std::string>& tokenized_code)
 {
+    std::cout << "here" << std::endl;
     if (tokenized_code[1] == "LOAD")
     {
         m_db_path = tokenized_code[2];
@@ -251,10 +237,7 @@ void interpreter::parse_code(int execution_counter, const std::vector<std::strin
         std::ifstream path_is_valid(m_db_path);
         if (!path_is_valid.is_open())
         {
-            std::string error = "The path doesn't exist.";
-            m_traceback.push_back("Error: " + error);
-            publish_execution_error("Error", error, m_traceback);
-            m_traceback.clear();
+            throw std::runtime_error("The path doesn't exist.");
         }
         else
         {
@@ -262,54 +245,57 @@ void interpreter::parse_code(int execution_counter, const std::vector<std::strin
         }
     }
 
-    if (tokenized_code[1] == "CREATE")
+    else if (tokenized_code[1] == "CREATE")
     {
         return create_db(tokenized_code);
     }
-
-    if (m_bd_is_loaded)
-    {
-        if (tokenized_code[1] == "DELETE")
+        if (m_bd_is_loaded)
         {
-            delete_db();
+            std::cout << "******************" << std::endl;
+            if (tokenized_code[1] == "DELETE")
+            {
+                delete_db();
+            }
+            else if (tokenized_code[1] == "TABLE_EXISTS")
+            {
+                publish_execution_result(execution_counter,
+                    std::move(table_exists(tokenized_code[2])),
+                    nl::json::object());
+            }
+            else if (tokenized_code[1] == "LOAD_EXTENSION")
+            {
+                //TODO: add a try catch to treat all void functions
+                m_db->SQLite::Database::loadExtension(tokenized_code[2].c_str(),
+                        tokenized_code[3].c_str());
+            }
+            else if (tokenized_code[1] == "SET_KEY")
+            {
+                m_db->SQLite::Database::key(tokenized_code[2]);
+            }
+            else if (tokenized_code[1] == "REKEY")
+            {
+                m_db->SQLite::Database::rekey(tokenized_code[2]);
+            }
+            else if (tokenized_code[1] == "IS_UNENCRYPTED")
+            {
+                publish_execution_result(execution_counter,
+                    std::move(is_unencrypted()),
+                    nl::json::object());
+            }
+            else if (tokenized_code[1] == "GET_INFO")
+            {
+                publish_execution_result(execution_counter,
+                    std::move(get_header_info()),
+                    nl::json::object());
+            }
+            else if (tokenized_code[1] == "BACKUP")
+            {
+                backup(tokenized_code[2]);
+            }
         }
-        else if (tokenized_code[1] == "TABLE_EXISTS")
-        {
-            table_exists(execution_counter, tokenized_code[2]);
-        }
-        else if (tokenized_code[1] == "LOAD_EXTENSION")
-        {
-            //TODO: add a try catch to treat all void functions
-            m_db->SQLite::Database::loadExtension(tokenized_code[2].c_str(),
-                    tokenized_code[3].c_str());
-        }
-        else if (tokenized_code[1] == "SET_KEY")
-        {
-            m_db->SQLite::Database::key(tokenized_code[2]);
-        }
-        else if (tokenized_code[1] == "REKEY")
-        {
-            m_db->SQLite::Database::rekey(tokenized_code[2]);
-        }
-        else if (tokenized_code[1] == "IS_UNENCRYPTED")
-        {
-            is_unencrypted(execution_counter);
-        }
-        else if (tokenized_code[1] == "GET_INFO")
-        {
-            get_header_info(execution_counter);
-        }
-        else if (tokenized_code[1] == "BACKUP")
-        {
-            backup(tokenized_code[2]);
-        }
-    }
     else
     {
-        std::string error = "Load a database to run this command.";
-        m_traceback.push_back("Error: " + error);
-        publish_execution_error("Error", error, m_traceback);
-        m_traceback.clear();
+        throw std::runtime_error("Load a database to run this command.");
     }
 }
 
