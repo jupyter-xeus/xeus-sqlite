@@ -61,7 +61,7 @@ namespace xeus_sqlite
         /**
          * Parse magic and calls the correct function.
          */
-        void parse_code(const std::vector<std::string>& tokenized_code);
+        void parse_code(int execution_counter, const std::vector<std::string>& tokenized_code);
 
         /*! \brief load_db - loads a database.
          *
@@ -104,7 +104,7 @@ namespace xeus_sqlite
          * param accList const std::string table_name
          * return void
          */
-        void table_exists(const std::string table_name);
+        void table_exists(int execution_counter, const std::string table_name);
 
         /*! \brief set_key - set or create primary key.
          *
@@ -120,7 +120,7 @@ namespace xeus_sqlite
          *
          * return void
          */
-        void is_unencrypted();
+        void is_unencrypted(int execution_counter);
 
         /*! \brief get_header_info - returns information about the database.
          *
@@ -151,7 +151,7 @@ namespace xeus_sqlite
          *
          * return void
          */
-        void get_header_info();
+        void get_header_info(int execution_counter);
 
         /*! \brief get_header_info - backups a database.
          *
@@ -169,6 +169,7 @@ namespace xeus_sqlite
         std::unique_ptr<SQLite::Database> m_backup_db = nullptr;
         bool m_bd_is_loaded = false;
         std::string m_db_path;
+        std::vector<std::string> m_traceback;
     };
 
     /**
