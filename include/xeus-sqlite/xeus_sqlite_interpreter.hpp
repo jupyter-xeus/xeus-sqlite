@@ -61,7 +61,7 @@ namespace xeus_sqlite
         /**
          * Parse magic and calls the correct function.
          */
-        void parse_code(const std::vector<std::string>& tokenized_code);
+        void parse_code(int execution_counter, const std::vector<std::string>& tokenized_code);
 
         /*! \brief load_db - loads a database.
          *
@@ -104,7 +104,7 @@ namespace xeus_sqlite
          * param accList const std::string table_name
          * return void
          */
-        void table_exists(const std::string table_name);
+        nl::json table_exists(const std::string table_name);
 
         /*! \brief set_key - set or create primary key.
          *
@@ -120,7 +120,7 @@ namespace xeus_sqlite
          *
          * return void
          */
-        void is_unencrypted();
+        nl::json is_unencrypted();
 
         /*! \brief get_header_info - returns information about the database.
          *
@@ -151,7 +151,7 @@ namespace xeus_sqlite
          *
          * return void
          */
-        void get_header_info();
+        nl::json get_header_info();
 
         /*! \brief get_header_info - backups a database.
          *
@@ -160,7 +160,6 @@ namespace xeus_sqlite
          * to save the current contents of the database opened by pInMemory into
          * a database file on disk.
          *
-         * param accList std::string backup_type
          * return void
          */
         void backup(std::string backup_type);

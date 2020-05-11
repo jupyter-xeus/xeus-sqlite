@@ -88,35 +88,28 @@ void interpreter::load_db(const std::vector<std::string> tokenized_code)
         to read and write mode.
     */
 
-    try
+    if (tokenized_code.back().find("rw") != std::string::npos)
     {
-        if (tokenized_code.back().find("rw") != std::string::npos)
-        {
-            m_bd_is_loaded = true;
-            m_db = std::make_unique<SQLite::Database>(m_db_path,
-                        SQLite::OPEN_READWRITE);
-        }
-        else if (tokenized_code.back().find("r") != std::string::npos)
-        {
-            m_bd_is_loaded = true;
-            m_db = std::make_unique<SQLite::Database>(m_db_path,
-                        SQLite::OPEN_READONLY);
-        }
-        //Opening as read and write because mode is unspecified
-        else if (tokenized_code.size() < 4)
-        {
-            m_bd_is_loaded = true;
-            m_db = std::make_unique<SQLite::Database>(m_db_path,
-                        SQLite::OPEN_READWRITE);
-        }
-        else
-        {
-            publish_stream("stdout", "Wasn't able to load the database correctly.");
-        }
+        m_bd_is_loaded = true;
+        m_db = std::make_unique<SQLite::Database>(m_db_path,
+                    SQLite::OPEN_READWRITE);
     }
-    catch (const std::runtime_error& err)
+    else if (tokenized_code.back().find("r") != std::string::npos)
     {
-        publish_stream("stderr", err.what());
+        m_bd_is_loaded = true;
+        m_db = std::make_unique<SQLite::Database>(m_db_path,
+                    SQLite::OPEN_READONLY);
+    }
+    //Opening as read and write because mode is unspecified
+    else if (tokenized_code.size() < 4)
+    {
+        m_bd_is_loaded = true;
+        m_db = std::make_unique<SQLite::Database>(m_db_path,
+                    SQLite::OPEN_READWRITE);
+    }
+    else
+    {
+        throw std::runtime_error("Wasn't able to load the database correctly.");
     }
 }
 
@@ -132,12 +125,10 @@ void interpreter::create_db(const std::vector<std::string> tokenized_code)
 
         // Create the database
         m_db = std::make_unique<SQLite::Database>(m_db_path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
-
-        publish_stream("stdout", "Database " + m_db_path + " was created.\n");
     }
     catch(const std::runtime_error& err)
     {
-        publish_stream("stderr", err.what());
+        throw std::runtime_error("Error: " + (std::string)err.what());
     }
 }
 
@@ -149,47 +140,49 @@ void interpreter::delete_db()
 
     if(std::remove(m_db_path.c_str()) != 0)
     {
-        publish_stream("stderr", "Error deleting file.\n");
-    }
-    else
-    {
-        m_bd_is_loaded = false;
-        publish_stream("stdout", "File successfully deleted.\n");
+        throw std::runtime_error("Error deleting file.");
     }
 }
 
-void interpreter::table_exists(const std::string table_name)
+nl::json interpreter::table_exists(const std::string table_name)
 {
+    nl::json pub_data;
     if (m_db->SQLite::Database::tableExists(table_name.c_str()))
     {
-        publish_stream("stdout", "The table " + table_name + " exists.\n");
+        pub_data["text/plain"] = "The table " + table_name + " exists.";
+        return pub_data;
     }
     else
     {
-        publish_stream("stdout", "The table " + table_name + " doesn't exist.\n");
+        pub_data["text/plain"] = "The table " + table_name + " doesn't exist.";
+        return pub_data;
     }
 }
 
-void interpreter::is_unencrypted()
+nl::json interpreter::is_unencrypted()
 {
+    nl::json pub_data;
     if (SQLite::Database::isUnencrypted(m_db_path))
     {
-        publish_stream("stdout", "The database is unencrypted.\n");
+        pub_data["text/plain"] = "The database is unencrypted.";
+        return pub_data;
     }
     else
     {
-        publish_stream("stdout", "The database is encrypted.\n");
+        pub_data["text/plain"] = "The database is encrypted.";
+        return pub_data;
     }
 }
 
-void interpreter::get_header_info()
+nl::json interpreter::get_header_info()
 {
     SQLite::Header header;
     header = SQLite::Database::getHeaderInfo(m_db_path);
 
    // Official documentation for fields can be found here: https://www.sqlite.org/fileformat.html#the_database_header
-    publish_stream(
-        "stdout", "Magic header string: " + std::string(&header.headerStr[0], &header.headerStr[15]) + "\n" +
+    nl::json pub_data;
+    pub_data["text/plain"] =
+        "Magic header string: " + std::string(&header.headerStr[0], &header.headerStr[15]) + "\n" +
         "Page size bytes: " + std::to_string(header.pageSizeBytes) + "\n" +
         "File format write version: " + std::to_string(header.fileFormatWriteVersion) + "\n" +
         "File format read version: " + std::to_string(header.fileFormatReadVersion) + "\n" +
@@ -210,15 +203,15 @@ void interpreter::get_header_info()
         "Incremental vaccum mode: " + std::to_string(header.incrementalVaccumMode) + "\n" +
         "Application ID: " + std::to_string(header.applicationId) + "\n" +
         "Version valid for: " + std::to_string(header.versionValidFor) + "\n" +
-        "SQLite version: " + std::to_string(header.sqliteVersion) + "\n"
-    );
+        "SQLite version: " + std::to_string(header.sqliteVersion) + "\n";
+    return pub_data;
 }
 
 void interpreter::backup(std::string backup_type)
 {
     if (backup_type.size() > 1 && (int)backup_type[0] <= 1)
     {
-        publish_stream("stderr", "This is not a valid backup type.\n");
+        throw std::runtime_error("This is not a valid backup type.");
     }
     else
     {
@@ -227,7 +220,7 @@ void interpreter::backup(std::string backup_type)
     }
 }
 
-void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
+void interpreter::parse_code(int execution_counter, const std::vector<std::string>& tokenized_code)
 {
     if (tokenized_code[1] == "LOAD")
     {
@@ -236,7 +229,7 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
         std::ifstream path_is_valid(m_db_path);
         if (!path_is_valid.is_open())
         {
-            return publish_stream("stderr", "The path doesn't exist.\n");
+            throw std::runtime_error("The path doesn't exist.");
         }
         else
         {
@@ -244,51 +237,56 @@ void interpreter::parse_code(const std::vector<std::string>& tokenized_code)
         }
     }
 
-    if (tokenized_code[1] == "CREATE")
+    else if (tokenized_code[1] == "CREATE")
     {
         return create_db(tokenized_code);
     }
-
-    if (m_bd_is_loaded)
-    {
-        if (tokenized_code[1] == "DELETE")
+        if (m_bd_is_loaded)
         {
-            delete_db();
+            if (tokenized_code[1] == "DELETE")
+            {
+                delete_db();
+            }
+            else if (tokenized_code[1] == "TABLE_EXISTS")
+            {
+                publish_execution_result(execution_counter,
+                    std::move(table_exists(tokenized_code[2])),
+                    nl::json::object());
+            }
+            else if (tokenized_code[1] == "LOAD_EXTENSION")
+            {
+                //TODO: add a try catch to treat all void functions
+                m_db->SQLite::Database::loadExtension(tokenized_code[2].c_str(),
+                        tokenized_code[3].c_str());
+            }
+            else if (tokenized_code[1] == "SET_KEY")
+            {
+                m_db->SQLite::Database::key(tokenized_code[2]);
+            }
+            else if (tokenized_code[1] == "REKEY")
+            {
+                m_db->SQLite::Database::rekey(tokenized_code[2]);
+            }
+            else if (tokenized_code[1] == "IS_UNENCRYPTED")
+            {
+                publish_execution_result(execution_counter,
+                    std::move(is_unencrypted()),
+                    nl::json::object());
+            }
+            else if (tokenized_code[1] == "GET_INFO")
+            {
+                publish_execution_result(execution_counter,
+                    std::move(get_header_info()),
+                    nl::json::object());
+            }
+            else if (tokenized_code[1] == "BACKUP")
+            {
+                backup(tokenized_code[2]);
+            }
         }
-        else if (tokenized_code[1] == "TABLE_EXISTS")
-        {
-            table_exists(tokenized_code[2]);
-        }
-        else if (tokenized_code[1] == "LOAD_EXTENSION")
-        {
-            //TODO: add a try catch to treat all void functions
-            m_db->SQLite::Database::loadExtension(tokenized_code[2].c_str(),
-                    tokenized_code[3].c_str());
-        }
-        else if (tokenized_code[1] == "SET_KEY")
-        {
-            m_db->SQLite::Database::key(tokenized_code[2]);
-        }
-        else if (tokenized_code[1] == "REKEY")
-        {
-            m_db->SQLite::Database::rekey(tokenized_code[2]);
-        }
-        else if (tokenized_code[1] == "IS_UNENCRYPTED")
-        {
-            is_unencrypted();
-        }
-        else if (tokenized_code[1] == "GET_INFO")
-        {
-            get_header_info();
-        }
-        else if (tokenized_code[1] == "BACKUP")
-        {
-            backup(tokenized_code[2]);
-        }
-    }
     else
     {
-        publish_stream("stdout", "Load a database to run this command.\n");
+        throw std::runtime_error("Load a database to run this command.");
     }
 }
 
@@ -306,6 +304,11 @@ nl::json interpreter::execute_request_impl(int execution_counter,
     /*
         Executes either SQLite code or Jupyter Magic.
     */
+  
+    nl::json pub_data;
+    std::string result = "";
+    std::vector<std::string> traceback;
+    std::stringstream html_table("");
     std::vector<std::string> tokenized_code = tokenizer(code);
 
     try
@@ -313,7 +316,7 @@ nl::json interpreter::execute_request_impl(int execution_counter,
         //Runs non-SQLite code
         if(is_magic(tokenized_code))
         {
-            parse_code(tokenized_code);
+            parse_code(execution_counter, tokenized_code);
         }
         //Runs SQLite code
         else
@@ -375,7 +378,9 @@ nl::json interpreter::execute_request_impl(int execution_counter,
         jresult["status"] = "error";
         jresult["ename"] = "Error";
         jresult["evalue"] = err.what();
-        publish_stream("stderr", err.what());
+        traceback.push_back((std::string)jresult["ename"] + ": " + (std::string)err.what());
+        publish_execution_error(jresult["ename"], jresult["evalue"], traceback);
+        traceback.clear();
         return jresult;
     }
 }
