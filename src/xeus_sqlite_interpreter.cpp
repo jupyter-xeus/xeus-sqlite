@@ -115,18 +115,14 @@ void interpreter::load_db(const std::vector<std::string> tokenized_code)
 
 void interpreter::create_db(const std::vector<std::string> tokenized_code)
 {
-    if (std::ofstream(tokenized_code[2].c_str()))
-    {
-        m_bd_is_loaded = true;
-        m_db_path = tokenized_code[2];
+    m_bd_is_loaded = true;
+    m_db_path = tokenized_code[2];
 
-        // Create the database
-        m_db = std::make_unique<SQLite::Database>(m_db_path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
-    }
-    else
-    {
-        throw std::runtime_error("Couldn't open file.");
-    }
+    // Create the file
+    std::ofstream(m_db_path.c_str()).close();
+
+    // Create the database
+    m_db = std::make_unique<SQLite::Database>(m_db_path, SQLite::OPEN_READWRITE | SQLite::OPEN_CREATE);
 }
 
 void interpreter::delete_db()
