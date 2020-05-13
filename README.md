@@ -14,22 +14,38 @@ Launch the Jupyter notebook with `jupyter notebook` or Jupyter lab with `jupyter
 
 ## Installation
 
-Currently, only installation from source is available.
+xeus-sqlite has been packaged for the conda package manager.
+
+To ensure that the installation works, it is preferable to install xeus-sqlite in a fresh conda environment.
 
 To ensure that the installation works, it is preferable to install `xeus` in a fresh conda environment. It is also needed to use
 a [miniconda](https://conda.io/miniconda.html) installation because with the full [anaconda](https://www.anaconda.com/)
 you may have a conflict.
 
-The safest usage is to create an environment named `xeus-sqlite-env` within your miniconda installation
+The safest usage is to create an environment named xeus-sqlite with your miniconda installation
 
-```bash
-conda create -n xeus-sqlite-env
-conda activate xeus-sqlite-env
-conda install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate -c conda-forge
+```
+conda create -n xeus-sqlite
+conda activate xeus-sqlite
 ```
 
-Once you have installed the depndencies, the `xeus-sqlite` project is quite easy to install, you have to clone the repository,
-and run the following command lines:
+### Installing from conda
+
+To install xeus-sqlite with the conda package manager
+
+```
+conda install xeus-sqlite notebook -c conda-forge
+```
+
+### Installing from source
+
+To install the xeus-sqlite dependencies
+
+```bash
+conda install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.2 -c conda-forge
+```
+
+Then you can compile the sources
 
 ```bash
 mkdir build
@@ -54,7 +70,7 @@ https://xeus-sqlite.readthedocs.io/en/latest/
 
 | `xeus-sqlite`|      `xeus`     |     `SQLite`    |   `SQLiteCPP`   |   `tabulate`    |
 |--------------|-----------------|-----------------|-----------------|-----------------|
-|    master    | >=0.23.9, <0.24 | >=3.30.1, <4    | >=3.0.0, <4     | =1.0.0          |
+|    master    | >=0.23.9, <0.24 | >=3.30.1, <4    | >=3.0.0, <4     | =1.2.0          |
 |    0.1.0     | >=0.23.9, <0.24 | >=3.30.1, <4    | >=3.0.0, <4     | =1.2.0          |
 
 
