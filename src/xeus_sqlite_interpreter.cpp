@@ -287,6 +287,53 @@ void interpreter::configure_impl()
 {
 }
 
+void interpreter::execute_SQLite(int execution_counter, const std::string& code)
+{
+    nl::json pub_data;
+
+    tabulate::Table plain_table;
+    std::stringstream html_table("");
+
+    SQLite::Statement query(*m_db, code);
+
+    if (query.getColumnCount() != 0)
+    {
+        std::vector<std::variant<std::string, tabulate::Table>> column_names;
+        html_table << "<table>\n<tr>\n";
+        for (int column = 0; column < query.getColumnCount(); column++) {
+            std::string name = query.getColumnName(column);
+            column_names.push_back(name);
+            html_table << "<th>" << name << "</th>\n";
+        }
+        plain_table.add_row(column_names);
+        html_table << "</tr>\n";
+
+        //Iterates through the columns and prints them
+        while (query.executeStep())
+        {
+            html_table << "<tr>\n";
+            std::vector<std::variant<std::string, tabulate::Table>> row;
+            for (int column = 0; column < query.getColumnCount(); column++) {
+                std::string cell = query.getColumn(column);
+                row.push_back(cell);
+                html_table << "<td>" << cell << "</td>\n";
+            }
+            html_table << "</tr>\n";
+            plain_table.add_row(row);
+        }
+        html_table << "</table>";
+
+        pub_data["text/plain"] = plain_table.str();
+        pub_data["text/html"] = html_table.str();
+
+        publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
+    }
+    else
+    {
+        query.exec();
+    }
+}
+
 nl::json interpreter::execute_request_impl(int execution_counter,
                                            const std::string& code,
                                            bool /*silent*/,
@@ -314,48 +361,7 @@ nl::json interpreter::execute_request_impl(int execution_counter,
         //Runs SQLite code
         else
         {
-            nl::json pub_data;
-
-            tabulate::Table plain_table;
-            std::stringstream html_table("");
-
-            SQLite::Statement query(*m_db, code);
-
-            if (query.getColumnCount() != 0)
-            {
-                std::vector<std::variant<std::string, tabulate::Table>> column_names;
-                html_table << "<table>\n<tr>\n";
-                for (int column = 0; column < query.getColumnCount(); column++) {
-                    std::string name = query.getColumnName(column);
-                    column_names.push_back(name);
-                    html_table << "<th>" << name << "</th>\n";
-                }
-                plain_table.add_row(column_names);
-                html_table << "</tr>\n";
-
-                //Iterates through the columns and prints them
-                while (query.executeStep())
-                {
-                    html_table << "<tr>\n";
-                    std::vector<std::variant<std::string, tabulate::Table>> row;
-                    for (int column = 0; column < query.getColumnCount(); column++) {
-                        std::string cell = query.getColumn(column);
-                        row.push_back(cell);
-                        html_table << "<td>" << cell << "</td>\n";
-                    }
-                    html_table << "</tr>\n";
-                    plain_table.add_row(row);
-                }
-                html_table << "</table>";
-
-                pub_data["text/plain"] = plain_table.str();
-                pub_data["text/html"] = html_table.str();
-                publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
-            }
-            else
-            {
-                query.exec();
-            }
+            execute_SQLite(execution_counter, code);
         }
 
         nl::json jresult;

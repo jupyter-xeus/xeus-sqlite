@@ -63,6 +63,8 @@ namespace xeus_sqlite
          */
         void parse_code(int execution_counter, const std::vector<std::string>& tokenized_code);
 
+        void execute_SQLite(int execution_counter, const std::string& code);
+
         /*! \brief load_db - loads a database.
          *
          * Receives three arguments: the command %LOAD, the path of the database
