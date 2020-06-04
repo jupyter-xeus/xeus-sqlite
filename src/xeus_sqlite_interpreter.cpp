@@ -306,102 +306,102 @@ void interpreter::parse_code(int execution_counter, std::vector<std::string>& to
 
 nl::json interpreter::create_vega_plot_bar(std::string& code)
 {
-    nl::json pub_data                 = R"({
-  "$schema": "https://vega.github.io/schema/vega/v5.json",
-  "description": "A basic bar chart example, with value labels shown upon mouse hover.",
-  "width": 400,
-  "height": 200,
-  "padding": 5,
+    nl::json pub_data = R"(
+    {
+      "$schema": "https://vega.github.io/schema/vega/v5.json",
+      "width": 400,
+      "height": 200,
+      "padding": 5,
 
-  "data": [
-    {
-      "name": "table",
-      "values": [
-        {"category": "A", "amount": 28},
-        {"category": "B", "amount": 55},
-        {"category": "C", "amount": 43},
-        {"category": "D", "amount": 91},
-        {"category": "E", "amount": 81},
-        {"category": "F", "amount": 53},
-        {"category": "G", "amount": 19},
-        {"category": "H", "amount": 87}
-      ]
-    }
-  ],
-
-  "signals": [
-    {
-      "name": "tooltip",
-      "value": {},
-      "on": [
-        {"events": "rect:mouseover", "update": "datum"},
-        {"events": "rect:mouseout",  "update": "{}"}
-      ]
-    }
-  ],
-
-  "scales": [
-    {
-      "name": "xscale",
-      "type": "band",
-      "domain": {"data": "table", "field": "category"},
-      "range": "width",
-      "padding": 0.05,
-      "round": true
-    },
-    {
-      "name": "yscale",
-      "domain": {"data": "table", "field": "amount"},
-      "nice": true,
-      "range": "height"
-    }
-  ],
-
-  "axes": [
-    { "orient": "bottom", "scale": "xscale" },
-    { "orient": "left", "scale": "yscale" }
-  ],
-
-  "marks": [
-    {
-      "type": "rect",
-      "from": {"data":"table"},
-      "encode": {
-        "enter": {
-          "x": {"scale": "xscale", "field": "category"},
-          "width": {"scale": "xscale", "band": 1},
-          "y": {"scale": "yscale", "field": "amount"},
-          "y2": {"scale": "yscale", "value": 0}
-        },
-        "update": {
-          "fill": {"value": "steelblue"}
-        },
-        "hover": {
-          "fill": {"value": "red"}
-        }
-      }
-    },
-    {
-      "type": "text",
-      "encode": {
-        "enter": {
-          "align": {"value": "center"},
-          "baseline": {"value": "bottom"},
-          "fill": {"value": "#333"}
-        },
-        "update": {
-          "x": {"scale": "xscale", "signal": "tooltip.category", "band": 0.5},
-          "y": {"scale": "yscale", "signal": "tooltip.amount", "offset": -2},
-          "text": {"signal": "tooltip.amount"},
-          "fillOpacity": [
-            {"test": "datum === tooltip", "value": 0},
-            {"value": 1}
+      "data": [
+        {
+          "name": "table",
+          "values": [
+            {"category": "F", "amount": 53},
+            {"category": "G", "amount": 19},
+            {"category": "H", "amount": 87}
           ]
         }
-      }
+      ],
+
+      "signals": [
+        {
+          "name": "tooltip",
+          "value": {},
+          "on": [
+            {"events": "rect:mouseover", "update": "datum"},
+            {"events": "rect:mouseout",  "update": "{}"}
+          ]
+        }
+      ],
+
+      "scales": [
+        {
+          "name": "xscale",
+          "type": "band",
+          "domain": {"data": "table", "field": "category"},
+          "range": "width",
+          "padding": 0.05,
+          "round": true
+        },
+        {
+          "name": "yscale",
+          "domain": {"data": "table", "field": "amount"},
+          "nice": true,
+          "range": "height"
+        }
+      ],
+
+      "axes": [
+        { "orient": "bottom", "scale": "xscale" },
+        { "orient": "left", "scale": "yscale" }
+      ],
+
+      "marks": [
+        {
+          "type": "rect",
+          "from": {"data":"table"},
+          "encode": {
+            "enter": {
+              "x": {"scale": "xscale", "field": "category"},
+              "width": {"scale": "xscale", "band": 1},
+              "y": {"scale": "yscale", "field": "amount"},
+              "y2": {"scale": "yscale", "value": 0}
+            },
+            "update": {
+              "fill": {"value": "steelblue"}
+            },
+            "hover": {
+              "fill": {"value": "red"}
+            }
+          }
+        },
+        {
+          "type": "text",
+          "encode": {
+            "enter": {
+              "align": {"value": "center"},
+              "baseline": {"value": "bottom"},
+              "fill": {"value": "#333"}
+            },
+            "update": {
+              "x": {"scale": "xscale", "signal": "tooltip.category", "band": 0.5},
+              "y": {"scale": "yscale", "signal": "tooltip.amount", "offset": -2},
+              "text": {"signal": "tooltip.amount"},
+              "fillOpacity": [
+                {"test": "datum === tooltip", "value": 0},
+                {"value": 1}
+              ]
+            }
+          }
+        }
+      ]
     }
-  ]
-})"_json;
+    )"_json;
+    //you want to iterate on the db and add the data in some way here, think of what'd be the best
+    //dont think its worth it to making it super personalizible
+    std::cout << "🍅🍅🍅" << pub_data["data"] << std::endl;
+
     SQLite::Statement query(*m_db, code);
 
     if (query.getColumnCount() != 0)
@@ -429,7 +429,7 @@ void interpreter::configure_impl()
 TODO: I particularly don't like the way the code is organized now, in the same way that vega pub_data
 is encapsulated, the html and text should be, having their own methods.
 */
-void interpreter::execute_SQLite(const std::string& code)
+void interpreter::execute_SQLite(int execution_counter, const std::string& code)
 {
     nl::json pub_data;
 
@@ -465,8 +465,10 @@ void interpreter::execute_SQLite(const std::string& code)
         }
         html_table << "</table>";
 
-        // pub_data["text/plain"] = plain_table.str();
-        // pub_data["text/html"] = html_table.str();
+        pub_data["text/plain"] = plain_table.str();
+        pub_data["text/html"] = html_table.str();
+
+        publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
     }
     else
     {
@@ -501,7 +503,7 @@ nl::json interpreter::execute_request_impl(int execution_counter,
         //Runs SQLite code
         else
         {
-            execute_SQLite(code);
+            execute_SQLite(execution_counter, code);
         }
 
         nl::json jresult;

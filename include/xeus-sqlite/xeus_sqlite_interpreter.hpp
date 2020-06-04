@@ -66,7 +66,7 @@ namespace xeus_sqlite
         /**
          * Executes SQLite code and returns either HTML or text based data.
          */
-        void execute_SQLite(const std::string& code);
+        void execute_SQLite(int execution_counter, const std::string& code);
 
         /*! \brief load_db - loads a database.
          *
