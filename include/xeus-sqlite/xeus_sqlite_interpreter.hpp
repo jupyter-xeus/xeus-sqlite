@@ -61,9 +61,12 @@ namespace xeus_sqlite
         /**
          * Parse magic and calls the correct function.
          */
-        void parse_code(int execution_counter, const std::vector<std::string>& tokenized_code);
+        void parse_code(int execution_counter, std::vector<std::string>& tokenized_code);
 
-        void execute_SQLite(int execution_counter, const std::string& code);
+        /**
+         * Executes SQLite code and returns either HTML or text based data.
+         */
+        void execute_SQLite(const std::string& code);
 
         /*! \brief load_db - loads a database.
          *
@@ -166,6 +169,8 @@ namespace xeus_sqlite
          */
         void backup(std::string backup_type);
 
+        nl::json create_vega_plot_bar(std::string& code);
+
         std::unique_ptr<SQLite::Database> m_db = nullptr;
         std::unique_ptr<SQLite::Database> m_backup_db = nullptr;
         bool m_bd_is_loaded = false;
@@ -176,6 +181,7 @@ namespace xeus_sqlite
      * Cleans the code from inputs that are acceptable in a jupyter notebook.
      */
     std::string sanitize_string(const std::string& code);
+    std::string stringfy_tokenized_code(std::vector<std::string>& tokenized_code);
 }
 
 #endif

@@ -43,6 +43,18 @@ std::string sanitize_string(const std::string& code)
     return aux;
 }
 
+std::string stringfy_tokenized_code(std::vector<std::string>& tokenized_code)
+{
+    std::vector<std::string>& aux = tokenized_code;
+    aux.erase(aux.begin(), aux.begin()+2);
+    std::string s;
+    for (const auto &piece : aux) 
+    {
+        s += " " + piece;
+    }
+    return s;
+}
+
 std::vector<std::string> interpreter::tokenizer(const std::string& code)
 {
     /*
@@ -81,7 +93,7 @@ bool interpreter::is_magic(std::vector<std::string>& tokenized_code)
     }
 }
 
-void interpreter::load_db(const std::vector<std::string> tokenized_code)
+void interpreter::load_db(std::vector<std::string> tokenized_code)
 {
     /*
         Loads the a database. If the open mode is not specified it defaults
@@ -172,7 +184,8 @@ nl::json interpreter::get_header_info()
     SQLite::Header header;
     header = SQLite::Database::getHeaderInfo(m_db_path);
 
-   // Official documentation for fields can be found here: https://www.sqlite.org/fileformat.html#the_database_header
+   // Official documentation for fields can be found here:
+   // https://www.sqlite.org/fileformat.html#the_database_header
     nl::json pub_data;
     pub_data["text/plain"] =
         "Magic header string: " + std::string(&header.headerStr[0], &header.headerStr[15]) + "\n" +
@@ -213,7 +226,7 @@ void interpreter::backup(std::string backup_type)
     }
 }
 
-void interpreter::parse_code(int execution_counter, const std::vector<std::string>& tokenized_code)
+void interpreter::parse_code(int execution_counter, std::vector<std::string>& tokenized_code)
 {
     if (tokenized_code[1] == "LOAD")
     {
@@ -276,6 +289,14 @@ void interpreter::parse_code(int execution_counter, const std::vector<std::strin
             {
                 backup(tokenized_code[2]);
             }
+            else if (tokenized_code[1] == "VEGA_PLOT_BAR")
+            {
+                nl::json pub_data;
+                std::string code = stringfy_tokenized_code(tokenized_code);
+                pub_data["application/vnd.vega.v5+json"] = create_vega_plot_bar(code);
+                publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
+                std::cout << "🥑🥑🥑🥑" << std::endl;
+            }
         }
     else
     {
@@ -283,11 +304,132 @@ void interpreter::parse_code(int execution_counter, const std::vector<std::strin
     }
 }
 
+nl::json interpreter::create_vega_plot_bar(std::string& code)
+{
+    nl::json pub_data                 = R"({
+  "$schema": "https://vega.github.io/schema/vega/v5.json",
+  "description": "A basic bar chart example, with value labels shown upon mouse hover.",
+  "width": 400,
+  "height": 200,
+  "padding": 5,
+
+  "data": [
+    {
+      "name": "table",
+      "values": [
+        {"category": "A", "amount": 28},
+        {"category": "B", "amount": 55},
+        {"category": "C", "amount": 43},
+        {"category": "D", "amount": 91},
+        {"category": "E", "amount": 81},
+        {"category": "F", "amount": 53},
+        {"category": "G", "amount": 19},
+        {"category": "H", "amount": 87}
+      ]
+    }
+  ],
+
+  "signals": [
+    {
+      "name": "tooltip",
+      "value": {},
+      "on": [
+        {"events": "rect:mouseover", "update": "datum"},
+        {"events": "rect:mouseout",  "update": "{}"}
+      ]
+    }
+  ],
+
+  "scales": [
+    {
+      "name": "xscale",
+      "type": "band",
+      "domain": {"data": "table", "field": "category"},
+      "range": "width",
+      "padding": 0.05,
+      "round": true
+    },
+    {
+      "name": "yscale",
+      "domain": {"data": "table", "field": "amount"},
+      "nice": true,
+      "range": "height"
+    }
+  ],
+
+  "axes": [
+    { "orient": "bottom", "scale": "xscale" },
+    { "orient": "left", "scale": "yscale" }
+  ],
+
+  "marks": [
+    {
+      "type": "rect",
+      "from": {"data":"table"},
+      "encode": {
+        "enter": {
+          "x": {"scale": "xscale", "field": "category"},
+          "width": {"scale": "xscale", "band": 1},
+          "y": {"scale": "yscale", "field": "amount"},
+          "y2": {"scale": "yscale", "value": 0}
+        },
+        "update": {
+          "fill": {"value": "steelblue"}
+        },
+        "hover": {
+          "fill": {"value": "red"}
+        }
+      }
+    },
+    {
+      "type": "text",
+      "encode": {
+        "enter": {
+          "align": {"value": "center"},
+          "baseline": {"value": "bottom"},
+          "fill": {"value": "#333"}
+        },
+        "update": {
+          "x": {"scale": "xscale", "signal": "tooltip.category", "band": 0.5},
+          "y": {"scale": "yscale", "signal": "tooltip.amount", "offset": -2},
+          "text": {"signal": "tooltip.amount"},
+          "fillOpacity": [
+            {"test": "datum === tooltip", "value": 0},
+            {"value": 1}
+          ]
+        }
+      }
+    }
+  ]
+})"_json;
+    SQLite::Statement query(*m_db, code);
+
+    if (query.getColumnCount() != 0)
+    {
+        for (int column = 0; column < query.getColumnCount(); column++) {
+            std::string name = query.getColumnName(column);
+        }
+
+        //Iterates through the columns and prints them
+        while (query.executeStep())
+        {
+            for (int column = 0; column < query.getColumnCount(); column++) {
+                std::string cell = query.getColumn(column);
+            }
+        }
+    }
+    return pub_data;
+}
+
 void interpreter::configure_impl()
 {
 }
 
-void interpreter::execute_SQLite(int execution_counter, const std::string& code)
+/*
+TODO: I particularly don't like the way the code is organized now, in the same way that vega pub_data
+is encapsulated, the html and text should be, having their own methods.
+*/
+void interpreter::execute_SQLite(const std::string& code)
 {
     nl::json pub_data;
 
@@ -323,10 +465,8 @@ void interpreter::execute_SQLite(int execution_counter, const std::string& code)
         }
         html_table << "</table>";
 
-        pub_data["text/plain"] = plain_table.str();
-        pub_data["text/html"] = html_table.str();
-
-        publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
+        // pub_data["text/plain"] = plain_table.str();
+        // pub_data["text/html"] = html_table.str();
     }
     else
     {
@@ -361,7 +501,7 @@ nl::json interpreter::execute_request_impl(int execution_counter,
         //Runs SQLite code
         else
         {
-            execute_SQLite(execution_counter, code);
+            execute_SQLite(code);
         }
 
         nl::json jresult;
@@ -377,7 +517,8 @@ nl::json interpreter::execute_request_impl(int execution_counter,
         jresult["status"] = "error";
         jresult["ename"] = "Error";
         jresult["evalue"] = err.what();
-        traceback.push_back((std::string)jresult["ename"] + ": " + (std::string)err.what());
+        traceback.push_back((std::string)jresult["ename"] + ": " +
+                            (std::string)err.what());
         publish_execution_error(jresult["ename"], jresult["evalue"], traceback);
         traceback.clear();
         return jresult;
