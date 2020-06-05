@@ -295,7 +295,6 @@ void interpreter::parse_code(int execution_counter, std::vector<std::string>& to
                 std::string code = stringfy_tokenized_code(tokenized_code);
                 pub_data["application/vnd.vega.v5+json"] = create_vega_plot_bar(code);
                 publish_execution_result(execution_counter, std::move(pub_data), nl::json::object());
-                std::cout << "🥑🥑🥑🥑" << std::endl;
             }
         }
     else
@@ -307,101 +306,21 @@ void interpreter::parse_code(int execution_counter, std::vector<std::string>& to
 nl::json interpreter::create_vega_plot_bar(std::string& code)
 {
     nl::json pub_data = R"(
-    {
-      "$schema": "https://vega.github.io/schema/vega/v5.json",
-      "width": 400,
-      "height": 200,
-      "padding": 5,
-
-      "data": [
         {
-          "name": "table",
-          "values": [
-            {"category": "F", "amount": 53},
-            {"category": "G", "amount": 19},
-            {"category": "H", "amount": 87}
-          ]
-        }
-      ],
-
-      "signals": [
-        {
-          "name": "tooltip",
-          "value": {},
-          "on": [
-            {"events": "rect:mouseover", "update": "datum"},
-            {"events": "rect:mouseout",  "update": "{}"}
-          ]
-        }
-      ],
-
-      "scales": [
-        {
-          "name": "xscale",
-          "type": "band",
-          "domain": {"data": "table", "field": "category"},
-          "range": "width",
-          "padding": 0.05,
-          "round": true
-        },
-        {
-          "name": "yscale",
-          "domain": {"data": "table", "field": "amount"},
-          "nice": true,
-          "range": "height"
-        }
-      ],
-
-      "axes": [
-        { "orient": "bottom", "scale": "xscale" },
-        { "orient": "left", "scale": "yscale" }
-      ],
-
-      "marks": [
-        {
-          "type": "rect",
-          "from": {"data":"table"},
-          "encode": {
-            "enter": {
-              "x": {"scale": "xscale", "field": "category"},
-              "width": {"scale": "xscale", "band": 1},
-              "y": {"scale": "yscale", "field": "amount"},
-              "y2": {"scale": "yscale", "value": 0}
-            },
-            "update": {
-              "fill": {"value": "steelblue"}
-            },
-            "hover": {
-              "fill": {"value": "red"}
-            }
-          }
-        },
-        {
-          "type": "text",
-          "encode": {
-            "enter": {
-              "align": {"value": "center"},
-              "baseline": {"value": "bottom"},
-              "fill": {"value": "#333"}
-            },
-            "update": {
-              "x": {"scale": "xscale", "signal": "tooltip.category", "band": 0.5},
-              "y": {"scale": "yscale", "signal": "tooltip.amount", "offset": -2},
-              "text": {"signal": "tooltip.amount"},
-              "fillOpacity": [
-                {"test": "datum === tooltip", "value": 0},
-                {"value": 1}
-              ]
-            }
+          "$schema": "https://vega.github.io/schema/vega-lite/v4.json",
+          "width":800,
+          "height": 600,
+          "data": {
+            "values": [
+            ]
+          },
+          "mark": "bar",
+          "encoding": {
+            "x": {"field": "name", "type": "ordinal", "axis": {"labelAngle": 45}},
+            "y": {"field": "value", "type": "quantitative"}
           }
         }
-      ]
-    }
     )"_json;
-    //you want to iterate on the db and add the data in some way here, think of what'd be the best
-    //dont think its worth it to making it super personalizible
-    std::cout << "🍅🍅🍅" << pub_data["data"] << std::endl;
-
     SQLite::Statement query(*m_db, code);
 
     if (query.getColumnCount() != 0)
@@ -410,11 +329,21 @@ nl::json interpreter::create_vega_plot_bar(std::string& code)
             std::string name = query.getColumnName(column);
         }
 
+        int graph_bars_no = 0;
         //Iterates through the columns and prints them
         while (query.executeStep())
         {
             for (int column = 0; column < query.getColumnCount(); column++) {
                 std::string cell = query.getColumn(column);
+                if (column == 0)
+                {
+                    pub_data["data"]["values"][graph_bars_no]["name"] = cell;
+                }
+                else if (column == 1)
+                {
+                    pub_data["data"]["values"][graph_bars_no - 1]["value"] = cell;
+                }
+                graph_bars_no++;
             }
         }
     }
