@@ -84,7 +84,7 @@ bool interpreter::is_magic(std::vector<std::string>& tokenized_code)
 void interpreter::load_db(const std::vector<std::string> tokenized_code)
 {
     /*
-        Loads the a database. If the open mode is not specified it defaults
+        Loads the database. If the open mode is not specified it defaults
         to read and write mode.
     */
 
