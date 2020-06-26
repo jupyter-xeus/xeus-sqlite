@@ -323,7 +323,7 @@ nl::json interpreter::execute_request_impl(int execution_counter,
 
             if (query.getColumnCount() != 0)
             {
-                std::vector<std::variant<std::string, tabulate::Table>> column_names;
+                std::vector<std::variant<std::string, const char*, tabulate::Table>> column_names;
                 html_table << "<table>\n<tr>\n";
                 for (int column = 0; column < query.getColumnCount(); column++) {
                     std::string name = query.getColumnName(column);
@@ -337,7 +337,7 @@ nl::json interpreter::execute_request_impl(int execution_counter,
                 while (query.executeStep())
                 {
                     html_table << "<tr>\n";
-                    std::vector<std::variant<std::string, tabulate::Table>> row;
+                    std::vector<std::variant<std::string, const char*, tabulate::Table>> row;
                     for (int column = 0; column < query.getColumnCount(); column++) {
                         std::string cell = query.getColumn(column);
                         row.push_back(cell);
