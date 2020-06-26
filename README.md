@@ -4,8 +4,6 @@
 [![Documentation Status](https://readthedocs.org/projects/xeus-sqlite/badge/?version=latest)](https://xeus-sqlite.readthedocs.io/en/latest/?badge=latest)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyter-xeus/xeus-sqlite/stable?filepath=examples/Simple%20operations.ipynb)
 
-**xeus-sqlite is and early developer preview and is not suitable for general usage yet. Features and implementation are subject to change.**
-
 `xeus-sqlite` is a Jupyter kernel for SQL based on the native implementation of the Jupyter protocol [xeus](https://github.com/jupyter-xeus/xeus).
 
 ## Usage
@@ -70,9 +68,9 @@ https://xeus-sqlite.readthedocs.io/en/latest/
 
 | `xeus-sqlite`|      `xeus`     |     `SQLite`    |   `SQLiteCPP`   |   `tabulate`    |
 |--------------|-----------------|-----------------|-----------------|-----------------|
-|    master    | >=0.24.0, <0.25 | >=3.30.1, <4    | >=3.0.0, <4     | =1.2.0          |
+|    master    | >=0.24.0, <0.25 | >=3.30.1, <4    | >=3.0.0, <4     | >=1.3.0,<2.0    |
+|    0.1.1     | >=0.24.0, <0.25 | >=3.30.1, <4    | >=3.0.0, <4     | >=1.3.0,<2.0    |
 |    0.1.0     | >=0.23.9, <0.24 | >=3.30.1, <4    | >=3.0.0, <4     | =1.2.0          |
-
 
 ## Contributing
 
