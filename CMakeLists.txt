@@ -29,12 +29,12 @@ set(CMAKE_PROGRAM_PATH ${CMAKE_PREFIX_PATH})
 file(STRINGS "${XEUS_SQLITE_INCLUDE_DIR}/xeus-sqlite/xeus_sqlite_config.hpp" xsqlite_version_defines
      REGEX "#define XSQLITE_VERSION_(MAJOR|MINOR|PATCH)")
 foreach(ver ${xsqlite_version_defines})
-    if(ver MATCHES "#define XSQLITE_VERSION_(MAJOR|MINOR|PATCH) +([^ ]+)$")
+    if(ver MATCHES "#define XSQLITE_VERSION_(MAJOR|MINOR|PATCH) +([^ ]+)")
         set(XSQLITE_VERSION_${CMAKE_MATCH_1} "${CMAKE_MATCH_2}" CACHE INTERNAL "")
     endif()
 endforeach()
 set(${PROJECT_NAME}_VERSION
-${XSQLITE_VERSION_MAJOR}.${XPYT_VERSION_MINOR}.${XPYT_VERSION_PATCH})
+${XSQLITE_VERSION_MAJOR}.${XSQLITE_VERSION_MINOR}.${XSQLITE_VERSION_PATCH})
 message(STATUS "Building xeus-sqlite v${${PROJECT_NAME}_VERSION}")
 
 # Configuration
