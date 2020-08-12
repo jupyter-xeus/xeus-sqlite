@@ -13,7 +13,6 @@ project(xeus-sqlite)
 set(XEUS_SQLITE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(XEUS_TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
 
-
 set(CMAKE_FIND_ROOT_PATH ${CMAKE_PREFIX_PATH})
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
 set(CMAKE_FIND_ROOT_PATH_MODE_LIBRARY ONLY)
@@ -83,6 +82,10 @@ if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU"
     else()
         message(FATAL_ERROR "Unsupported compiler -- xeus-sqlite requires C++17 support!")
     endif()
+elseif (MSVC)
+    # std::optional used by cpp-tabulate
+    # TODO: drop c++17 when tabulate can fall back to the std::optional polyfill
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /std:c++17")
 endif()
 
 # Target and link
@@ -103,7 +106,6 @@ set(XEUS_SQLITE_HEADERS
 
 # xeus-sqlite is the target for the library
 add_library(xeus-sqlite SHARED ${XEUS_SQLITE_SRC} ${XEUS_SQLITE_HEADERS})
-
 
 # xsqlite is the target for the kernel executable
 add_executable(xsqlite src/main.cpp)
