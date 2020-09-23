@@ -10,12 +10,14 @@
 #ifndef XEUS_SQLITE_INTERPRETER_HPP
 #define XEUS_SQLITE_INTERPRETER_HPP
 
+#include "xeus_sqlite_config.hpp"
+#include "xvega_bindings.hpp"
+
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <SQLiteCpp/VariadicBind.h>
 
-#include "xeus/xinterpreter.hpp"
 #include "nlohmann/json.hpp"
-#include "xeus_sqlite_config.hpp"
+#include "xeus/xinterpreter.hpp"
 
 namespace nl = nlohmann;
 
@@ -54,14 +56,9 @@ namespace xeus_sqlite
         std::vector<std::string> tokenizer(const std::string& code);
 
         /**
-         * Returns true if the code input is magic and false if isn't.
-         */
-        bool is_magic(std::vector<std::string>& tokenized_code);
-
-        /**
          * Parse magic and calls the correct function.
          */
-        void parse_code(int execution_counter, const std::vector<std::string>& tokenized_code);
+        void parse_code(int execution_counter, const std::vector<std::string>& tokenized_input);
 
         /*! \brief load_db - loads a database.
          *
@@ -71,10 +68,10 @@ namespace xeus_sqlite
          * If no third arguments are passed to this method, it will default to read
          * and write mode.
          *
-         * param accList std::vector<std::string>& tokenized_code
+         * param accList std::vector<std::string>& tokenized_input
          * return void
          */
-        void load_db(const std::vector<std::string> tokenized_code);
+        void load_db(const std::vector<std::string> tokenized_input);
 
         /*! \brief create_db - creates a database.
          *
@@ -82,16 +79,16 @@ namespace xeus_sqlite
          * Receives two arguments: the command %CREATE, the path to where the
          * database will be created and the name of the database.
          *
-         * param accList std::vector<std::string>& tokenized_code
+         * param accList std::vector<std::string>& tokenized_input
          * return void
          */
-        void create_db(const std::vector<std::string> tokenized_code);
+        void create_db(const std::vector<std::string> tokenized_input);
 
         /*! \brief delete_db - deletes a database.
          *
          * Deletes the last database that was either loaded or created.
          *
-         * param accList std::vector<std::string>& tokenized_code
+         * param accList std::vector<std::string>& tokenized_input
          * return void
          */
         void delete_db();
@@ -163,6 +160,19 @@ namespace xeus_sqlite
          * return void
          */
         void backup(std::string backup_type);
+
+
+        /*! \brief get_header_info - backups a database.
+         *
+         * Runs pure SQLite code. Sends the result as HTML or Text to the front
+         * end.
+         *
+         * return void
+         */
+        void run_SQLite_code(int execution_counter,
+                                        std::unique_ptr<SQLite::Database> &m_db,
+                                        const std::string& code,
+                                        xv::df_type xvega_sqlite_df);
 
         std::unique_ptr<SQLite::Database> m_db = nullptr;
         std::unique_ptr<SQLite::Database> m_backup_db = nullptr;
