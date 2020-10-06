@@ -85,10 +85,10 @@ namespace xeus_sqlite
             //TODO: go throught list of different kinds of marks and let the
             //user actually choose which kind they want
             xv::mark_point mp;
-            chart.mark() = {mp};
         }
+
         auto enc = xv::Encodings().x(x_enc).y(y_enc);
-        chart.encoding() = {enc};
+        chart.encoding() = enc;
 
         populate_marks(json_template, chart);
         populate_encodings(json_template, chart);
