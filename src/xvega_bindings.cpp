@@ -38,16 +38,16 @@ namespace xeus_sqlite
         xv::populate_data(json_template, chart);
 
         auto width = std::find(tokenized_input.begin(),
-                                 tokenized_input.end(),
-                                 "WIDTH");
+                               tokenized_input.end(),
+                               "WIDTH");
         if (width != tokenized_input.end())
         {
             chart.width() = std::stoi(*(width + 1));
         }
 
         auto height = std::find(tokenized_input.begin(),
-                                 tokenized_input.end(),
-                                 "HEIGHT");
+                                tokenized_input.end(),
+                                "HEIGHT");
         if (height != tokenized_input.end())
         {
             chart.height() = std::stoi(*(height + 1));
@@ -78,15 +78,15 @@ namespace xeus_sqlite
         }
 
         auto mark = std::find(tokenized_input.begin(),
-                                 tokenized_input.end(),
-                                 "MARK");
+                              tokenized_input.end(),
+                              "MARK");
         if (mark != tokenized_input.end())
         {
             //TODO: go throught list of different kinds of marks and let the
             //user actually choose which kind they want
-            xv::mark_point mp;
+            auto mp = xv::mark_point();
+            chart.mark() = mp;
         }
-
         auto enc = xv::Encodings().x(x_enc).y(y_enc);
         chart.encoding() = enc;
 
@@ -106,8 +106,8 @@ namespace xeus_sqlite
     {
         //TODO: test edge cases
         auto found = std::find(complete_input.begin(),
-                                 complete_input.end(),
-                                 "<>");
+                               complete_input.end(),
+                               "<>");
 
         std::vector<std::string> xvega_input(complete_input.begin(), found);
         std::vector<std::string> sqlite_input(found + 1, complete_input.end());
