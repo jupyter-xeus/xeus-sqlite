@@ -11,6 +11,7 @@
 #include <algorithm>
 #include <vector>
 #include <iterator>
+#include <map>
 
 #include "xeus-sqlite/xvega_bindings.hpp"
 
@@ -18,36 +19,20 @@ namespace nl = nlohmann;
 
 namespace xeus_sqlite
 {
-    void xvega_sqlite::test()
-    {
-        std::cout << "🌸🌸🌸\n";
-    }
 
-    nl::json xvega_sqlite::parse_xvega_input(std::vector<std::string>
+    nl::json xvega_sqlite::run_xvega_input(std::vector<std::string>
                                              tokenized_input,
-                                             xv::df_type& xvega_sqlite_df)
+                                             xv::df_type xvega_sqlite_df)
     {
-        for (auto i : tokenized_input)
-        {
-            std::cout << "🔥🔥" << i << std::endl;
-        }
-
-        /* Creates Chart object */
-        xv::Chart chart;
-
-        /* Converts the xv::df_type into a data_frame type that is compatible
-            with xv::Chart
-        */
         xv::data_frame data_frame;
         data_frame.values = xvega_sqlite_df;
 
-        /* Populates chart with data gathered on interpreter::run_SQLite_code */
-        chart.data() = data_frame;
-
         /* Creates basic xvega template */
         auto json_template = xv::base_vegalite_json();
-        populate_data(json_template, chart);
 
+        /* Populates chart with data gathered on interpreter::run_SQLite_code */
+        chart.data() = data_frame;
+        populate_data(json_template, chart);
 
         auto width = std::find(tokenized_input.begin(),
                                  tokenized_input.end(),
@@ -121,8 +106,17 @@ namespace xeus_sqlite
 
     }
 
-    void xvega_sqlite::run_xvega_code(std::string xvega_input, xv::df_type xvega_sqlite_df)
+    std::pair<std::vector<std::string>, std::vector<std::string>> 
+        xvega_sqlite::split_xvega_sqlite_input(std::vector<std::string> complete_input)
     {
+        //TODO: test edge cases
+        auto found = std::find(complete_input.begin(),
+                                 complete_input.end(),
+                                 "<>");
 
+        std::vector<std::string> xvega_input(complete_input.begin(), found);
+        std::vector<std::string> sqlite_input(found + 1, complete_input.end());
+
+        return std::make_pair(xvega_input, sqlite_input);
     }
 }

@@ -172,7 +172,7 @@ namespace xeus_sqlite
         void run_SQLite_code(int execution_counter,
                                         std::unique_ptr<SQLite::Database> &m_db,
                                         const std::string& code,
-                                        xv::df_type xvega_sqlite_df);
+                                        xv::df_type& xvega_sqlite_df);
 
         std::unique_ptr<SQLite::Database> m_db = nullptr;
         std::unique_ptr<SQLite::Database> m_backup_db = nullptr;
@@ -184,6 +184,11 @@ namespace xeus_sqlite
      * Cleans the code from inputs that are acceptable in a jupyter notebook.
      */
     std::string sanitize_string(const std::string& code);
+
+    /**
+     * Upper case code and remove first char.
+     */
+    void normalize_string(std::vector<std::string>& tokenized_input);
 }
 
 #endif

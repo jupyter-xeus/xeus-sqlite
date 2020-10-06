@@ -14,6 +14,7 @@
 #include <sstream>
 #include <stack>
 #include <vector>
+#include <tuple>
 
 #include "xeus/xinterpreter.hpp"
 #include "tabulate/table.hpp"
@@ -32,7 +33,7 @@ namespace xeus_sqlite
     //TODO:
     //All functions that are declared here outside of the class should be moved to
     //an utils file. sanitize_string can and should be used inside xvega_bindings.cpp
-    //in the parse_xvega_input method.
+    //in the run_xvega_input method.
 
     std::string sanitize_string(const std::string& code)
     {
@@ -51,6 +52,12 @@ namespace xeus_sqlite
         return aux;
     }
 
+    void normalize_string(std::vector<std::string>& tokenized_input)
+    {
+        tokenized_input[1].erase(0, 1);
+        std::transform(tokenized_input[1].begin(), tokenized_input[1].end(),
+                        tokenized_input[1].begin(), ::toupper);
+    }
 
     bool is_xvega(std::vector<std::string>& tokenized_input)
     {
@@ -67,16 +74,13 @@ namespace xeus_sqlite
         }
     }
 
-    bool is_magic(std::vector<std::string>& tokenized_input)
+    bool is_magic(std::vector<std::string> tokenized_input)
     {
         /*
             Returns true if the code input is magic and false if isn't.
         */
         if(tokenized_input[0] == "%")
         {
-            tokenized_input[1].erase(0, 1);
-            std::transform(tokenized_input[1].begin(), tokenized_input[1].end(),
-                            tokenized_input[1].begin(), ::toupper);
             return true;
         }
         else
@@ -321,7 +325,7 @@ namespace xeus_sqlite
     void interpreter::run_SQLite_code(int execution_counter,
                                         std::unique_ptr<SQLite::Database> &m_db,
                                         const std::string& code,
-                                        xv::df_type xvega_sqlite_df)
+                                        xv::df_type& xvega_sqlite_df)
     {
         //TODO: all of the xvega outputs can be tested before we add stuff
         //in them. Might improve performance?
@@ -387,7 +391,7 @@ namespace xeus_sqlite
                     html_table << "<td>" << cell << "</td>\n";
 
                     /* Build application/vnd.vegalite.v3+json output */
-                    xvega_sqlite_df[col_name] = { cell };
+                    xvega_sqlite_df[col_name].push_back(cell);
                 }
                 /* Builds text/html output */
                 html_table << "</tr>\n";
@@ -421,7 +425,7 @@ namespace xeus_sqlite
         std::vector<std::string> traceback;
         std::vector<std::string> tokenized_input = tokenizer(code);
 
-        /* This structure is only used when xvega code is ran */
+        /* This structure is only used when xvega code is run */
         xv::df_type xvega_sqlite_df;
 
         try
@@ -429,6 +433,8 @@ namespace xeus_sqlite
             /* Runs magic */
             if(is_magic(tokenized_input))
             {
+                normalize_string(tokenized_input);
+
                 /* Runs SQLite magic */
                 parse_code(execution_counter, tokenized_input);
 
@@ -436,8 +442,28 @@ namespace xeus_sqlite
                 if(is_xvega(tokenized_input))
                 {
                     nl::json chart;
-                    chart = xvega_sqlite::parse_xvega_input(tokenized_input,
-                                                            xvega_sqlite_df);
+                    std::vector<std::string> xvega_input, sqlite_input;
+                    std::tie(xvega_input, sqlite_input) = xvega_sqlite::split_xvega_sqlite_input(tokenized_input);
+
+                    //TODO:
+                    //Once we have the tokenized function as an util we have to
+                    //change run_xvega_input to receive a string and then this
+                    //piece won't be necessary anymore as we will tokenize the
+                    //string inside xvega_sqlite::run_xvega_input
+                    //sqlite_input has to be strigfied because
+                    //SQLite::Statement query(*m_db, code); only accepts strings
+                    std::stringstream stringfied_sqlite_input;
+                    for (size_t i = 0; i < sqlite_input.size(); i++) {
+                        stringfied_sqlite_input << " " << sqlite_input[i];
+                    }
+
+                    run_SQLite_code(execution_counter,
+                                    m_db,
+                                    stringfied_sqlite_input.str(),
+                                    xvega_sqlite_df);
+
+                    chart = xvega_sqlite::run_xvega_input(xvega_input,
+                                                          xvega_sqlite_df);
 
                     publish_execution_result(execution_counter,
                                                 std::move(chart),
