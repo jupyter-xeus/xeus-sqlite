@@ -27,12 +27,15 @@ namespace xeus_sqlite
         xv::data_frame data_frame;
         data_frame.values = xvega_sqlite_df;
 
+        /* Creates Chart object */
+        xv::Chart chart;
+
         /* Creates basic xvega template */
         auto json_template = xv::base_vegalite_json();
 
         /* Populates chart with data gathered on interpreter::run_SQLite_code */
         chart.data() = data_frame;
-        populate_data(json_template, chart);
+        xv::populate_data(json_template, chart);
 
         auto width = std::find(tokenized_input.begin(),
                                  tokenized_input.end(),
@@ -74,26 +77,18 @@ namespace xeus_sqlite
             y_enc = xv::Y().field(*(y_field + 1)).type("quantitative");
         }
 
-        /* Sets mark configurations */
-        int len_marks = chart.marks().size();
-        if(len_marks > 1)
-        {
-            json_template["layer"] = {{}};
-        }
-
-
-        auto marks = std::find(tokenized_input.begin(),
+        auto mark = std::find(tokenized_input.begin(),
                                  tokenized_input.end(),
-                                 "MARKS");
-        if (marks != tokenized_input.end())
+                                 "MARK");
+        if (mark != tokenized_input.end())
         {
             //TODO: go throught list of different kinds of marks and let the
             //user actually choose which kind they want
             xv::mark_point mp;
-            chart.marks() = {mp};
+            chart.mark() = {mp};
         }
         auto enc = xv::Encodings().x(x_enc).y(y_enc);
-        chart.encodings() = {enc};
+        chart.encoding() = {enc};
 
         populate_marks(json_template, chart);
         populate_encodings(json_template, chart);
