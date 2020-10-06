@@ -4,7 +4,7 @@ Xeus and xeus-sqlite are subprojects of Project Jupyter and subject to the [Jupy
 
 ## General Guidelines
 
-For general documentation about contributing to Jupyter projects, see the [Project Jupyter Contributor Documentation](https://jupyter.readthedocs.io/en/latest/contributor/content-contributor.html).
+For general documentation about contributing to Jupyter projects, see the [Project Jupyter Contributor Documentation](https://jupyter.readthedocs.io/en/latest/contributing/content-contributor.html).
 
 ## Community
 
