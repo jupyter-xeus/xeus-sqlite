@@ -40,7 +40,7 @@ conda install xeus-sqlite notebook -c conda-forge
 To install the xeus-sqlite dependencies
 
 ```bash
-conda install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.2 -c conda-forge
+conda install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.3 xvega -c conda-forge
 ```
 
 Then you can compile the sources
