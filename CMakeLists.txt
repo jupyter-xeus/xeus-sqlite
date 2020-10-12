@@ -61,6 +61,7 @@ set(xeus_REQUIRED_VERSION 0.23.10)
 
 find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
 find_package(SQLite3 REQUIRED)
+find_package(xvega REQUIRED)
 find_package(SQLiteCpp REQUIRED)
 find_package(tabulate REQUIRED)
 find_package(Threads REQUIRED)
@@ -94,10 +95,12 @@ set(XEUS_SQLITE_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 # xeus-sqlite source files
 set(XEUS_SQLITE_SRC
     ${XEUS_SQLITE_SRC_DIR}/xeus_sqlite_interpreter.cpp
+    ${XEUS_SQLITE_SRC_DIR}/xvega_bindings.cpp
 )
 
 set(XEUS_SQLITE_HEADERS
     include/xeus-sqlite/xeus_sqlite_interpreter.hpp
+    include/xeus-sqlite/xvega_bindings.hpp
     include/xeus-sqlite/xeus_sqlite_config.hpp
 )
 
@@ -130,6 +133,7 @@ set_target_properties(xsqlite xeus-sqlite PROPERTIES
 
 target_link_libraries(xeus-sqlite PUBLIC 
   xeus
+  xvega
   SQLiteCpp
   SQLite::SQLite3
 )

@@ -32,7 +32,7 @@ conda activate xeus-sqlite
 To install xeus-sqlite with the conda package manager
 
 ```
-conda install xeus-sqlite notebook -c conda-forge
+conda install xeus-sqlite jupyterlab -c conda-forge
 ```
 
 ### Installing from source
@@ -40,7 +40,7 @@ conda install xeus-sqlite notebook -c conda-forge
 To install the xeus-sqlite dependencies
 
 ```bash
-conda install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.2 -c conda-forge
+conda install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.3 xvega xproperty jupyterlab -c conda-forge
 ```
 
 Then you can compile the sources
@@ -65,12 +65,13 @@ https://xeus-sqlite.readthedocs.io/en/latest/
 - [SQLite](https://github.com/sqlite/sqlite)
 - [SQLiteCPP](https://github.com/SRombauts/SQLiteCpp)
 - [Tabulate](https://github.com/p-ranav/tabulate)
+- [XVega](https://github.com/Quantstack/xvega)
 
-| `xeus-sqlite`|      `xeus`     |     `SQLite`    |   `SQLiteCPP`   |   `tabulate`    | `nlohmann_json` |
-|--------------|-----------------|-----------------|-----------------|-----------------|-----------------|
-|    master    | >=0.24.0, <0.25 | >=3.30.1, <4    | >=3.0.0, <4     | >=1.3.0,<2.0    | >=3.0.0         |  
-|    0.1.1     | >=0.24.0, <0.25 | >=3.30.1, <4    | >=3.0.0, <4     | >=1.3.0,<2.0    | >=3.0.0         |
-|    0.1.0     | >=0.23.9, <0.24 | >=3.30.1, <4    | >=3.0.0, <4     | =1.2.0          | >=3.0.0         |
+| `xeus-sqlite`|      `xeus`     |     `SQLite`    |   `SQLiteCPP`   |   `tabulate`    | `nlohmann_json` | `xvega` |
+|--------------|-----------------|-----------------|-----------------|-----------------|-----------------|---------|
+|    master    | >=0.24.0, <0.25 | >=3.30.1, <4    | >=3.0.0, <4     | >=1.3.0,<2.0    | >=3.0.0         | >= 0.0.4|
+|    0.1.1     | >=0.24.0, <0.25 | >=3.30.1, <4    | >=3.0.0, <4     | >=1.3.0,<2.0    | >=3.0.0         | >= 0.0.4|
+|    0.1.0     | >=0.23.9, <0.24 | >=3.30.1, <4    | >=3.0.0, <4     | =1.2.0          | >=3.0.0         | >= 0.0.4|
 
 ## Contributing
 
