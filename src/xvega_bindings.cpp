@@ -37,6 +37,7 @@ namespace xeus_sqlite
         chart.data() = data_frame;
         xv::populate_data(json_template, chart);
 
+        /* Parses input and look for WIDTH and HEIGHT attrs */
         auto width = std::find(tokenized_input.begin(),
                                tokenized_input.end(),
                                "WIDTH");
@@ -76,7 +77,11 @@ namespace xeus_sqlite
         {
             y_enc = xv::Y().field(*(y_field + 1)).type("quantitative");
         }
+        /* Sets X_FIELD and Y_FIELD on chart */
+        auto enc = xv::Encodings().x(x_enc).y(y_enc);
+        chart.encoding() = enc;
 
+        /* Parses input and look for MARK attr */
         auto mark = std::find(tokenized_input.begin(),
                               tokenized_input.end(),
                               "MARK");
@@ -84,11 +89,96 @@ namespace xeus_sqlite
         {
             //TODO: go throught list of different kinds of marks and let the
             //user actually choose which kind they want
-            auto mp = xv::mark_point();
-            chart.mark() = mp;
+            if (*(mark + 1) == "point")
+            {
+                auto m_point = xv::mark_point();
+                chart.mark() = m_point;
+            }
+
+            if else (*(mark + 1) == "arc")
+            {
+                auto m_arc = xv::mark_arc();
+                chart.mark() = m_arc;
+            }
+
+            if else (*(mark + 1) == "area")
+            {
+                auto m_area = xv::mark_area();
+                chart.mark() = m_area;
+            }
+
+            if else (*(mark + 1) == "bar")
+            {
+                auto m_bar = xv::mark_bar();
+                chart.mark() = m_bar;
+            }
+
+            if else (*(mark + 1) == "circle")
+            {
+                auto m_circle = xv::mark_circle();
+                chart.mark() = m_circle;
+            }
+
+            if else (*(mark + 1) == "geoshape")
+            {
+                auto m_geoshape = xv::mark_geoshape();
+                chart.mark() = m_geoshape;
+            }
+
+            // if else (*(mark + 1) == "image")
+            // {
+            //     auto m_image = xv::mark_image();
+            //     chart.mark() = m_image;
+            // }
+
+            if else (*(mark + 1) == "line")
+            {
+                auto m_line = xv::mark_line();
+                chart.mark() = m_line;
+            }
+
+            if else (*(mark + 1) == "point")
+            {
+                auto m_point = xv::mark_point();
+                chart.mark() = m_point;
+            }
+
+            if else (*(mark + 1) == "rect")
+            {
+                auto m_rect = xv::mark_rect();
+                chart.mark() = m_rect;
+            }
+
+            if else (*(mark + 1) == "rule")
+            {
+                auto m_rule = xv::mark_rule();
+                chart.mark() = m_rule;
+            }
+
+            if else (*(mark + 1) == "square")
+            {
+                auto m_square = xv::mark_square();
+                chart.mark() = m_square;
+            }
+
+            // if else (*(mark + 1) == "text")
+            // {
+            //     auto m_text = xv::mark_text();
+            //     chart.mark() = m_text;
+            // }
+
+            if else (*(mark + 1) == "tick")
+            {
+                auto m_tick = xv::mark_tick();
+                chart.mark() = m_tick;
+            }
+
+            if else (*(mark + 1) == "trail")
+            {
+                auto m_trail = xv::mark_trail();
+                chart.mark() = m_trail;
+            }
         }
-        auto enc = xv::Encodings().x(x_enc).y(y_enc);
-        chart.encoding() = enc;
 
         populate_marks(json_template, chart);
         populate_encodings(json_template, chart);
@@ -97,8 +187,8 @@ namespace xeus_sqlite
 
         nl::json bundle;
         bundle["application/vnd.vegalite.v3+json"] = json_template;
-        return bundle;
 
+        return bundle;
     }
 
     std::pair<std::vector<std::string>, std::vector<std::string>> 
