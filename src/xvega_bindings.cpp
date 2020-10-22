@@ -87,8 +87,7 @@ namespace xeus_sqlite
                               "MARK");
         if (mark != tokenized_input.end())
         {
-            //TODO: go throught list of different kinds of marks and let the
-            //user actually choose which kind they want
+            //TODO: implement img and txt
             if (*(mark + 1) == "point")
             {
                 auto m_point = xv::mark_point();
