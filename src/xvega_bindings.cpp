@@ -94,85 +94,85 @@ namespace xeus_sqlite
                 chart.mark() = m_point;
             }
 
-            if else (*(mark + 1) == "arc")
+            else if (*(mark + 1) == "arc")
             {
                 auto m_arc = xv::mark_arc();
                 chart.mark() = m_arc;
             }
 
-            if else (*(mark + 1) == "area")
+            else if (*(mark + 1) == "area")
             {
                 auto m_area = xv::mark_area();
                 chart.mark() = m_area;
             }
 
-            if else (*(mark + 1) == "bar")
+            else if (*(mark + 1) == "bar")
             {
                 auto m_bar = xv::mark_bar();
                 chart.mark() = m_bar;
             }
 
-            if else (*(mark + 1) == "circle")
+            else if (*(mark + 1) == "circle")
             {
                 auto m_circle = xv::mark_circle();
                 chart.mark() = m_circle;
             }
 
-            if else (*(mark + 1) == "geoshape")
-            {
-                auto m_geoshape = xv::mark_geoshape();
-                chart.mark() = m_geoshape;
-            }
+            // else if (*(mark + 1) == "geoshape")
+            // {
+            //     auto m_geoshape = xv::mark_geoshape();
+            //     chart.mark() = m_geoshape;
+            // }
 
-            // if else (*(mark + 1) == "image")
+            // else if (*(mark + 1) == "image")
             // {
             //     auto m_image = xv::mark_image();
             //     chart.mark() = m_image;
             // }
 
-            if else (*(mark + 1) == "line")
+            else if (*(mark + 1) == "line")
             {
                 auto m_line = xv::mark_line();
                 chart.mark() = m_line;
             }
 
-            if else (*(mark + 1) == "point")
+            else if (*(mark + 1) == "point")
             {
                 auto m_point = xv::mark_point();
                 chart.mark() = m_point;
             }
 
-            if else (*(mark + 1) == "rect")
+            else if (*(mark + 1) == "rect")
             {
                 auto m_rect = xv::mark_rect();
                 chart.mark() = m_rect;
             }
 
-            if else (*(mark + 1) == "rule")
+            else if (*(mark + 1) == "rule")
             {
                 auto m_rule = xv::mark_rule();
                 chart.mark() = m_rule;
             }
 
-            if else (*(mark + 1) == "square")
+            else if (*(mark + 1) == "square")
             {
                 auto m_square = xv::mark_square();
                 chart.mark() = m_square;
             }
 
-            // if else (*(mark + 1) == "text")
+            // else if (*(mark + 1) == "text")
             // {
             //     auto m_text = xv::mark_text();
             //     chart.mark() = m_text;
             // }
 
-            if else (*(mark + 1) == "tick")
+            else if (*(mark + 1) == "tick")
             {
                 auto m_tick = xv::mark_tick();
                 chart.mark() = m_tick;
             }
 
-            if else (*(mark + 1) == "trail")
+            else if (*(mark + 1) == "trail")
             {
                 auto m_trail = xv::mark_trail();
                 chart.mark() = m_trail;
