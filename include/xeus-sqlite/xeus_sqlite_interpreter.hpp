@@ -51,11 +51,6 @@ namespace xeus_sqlite
         void shutdown_request_impl() override;
 
         /**
-         * Separetes the code on spaces so it's easier to execute the commands.
-         */
-        std::vector<std::string> tokenizer(const std::string& code);
-
-        /**
          * Parse magic and calls the correct function.
          */
         void parse_code(int execution_counter, const std::vector<std::string>& tokenized_input);

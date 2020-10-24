@@ -87,7 +87,7 @@ namespace xeus_sqlite
                               "MARK");
         if (mark != tokenized_input.end())
         {
-            //TODO: implement img and txt
+            //TODO: implement img, geoshape and txt
             if (*(mark + 1) == "point")
             {
                 auto m_point = xv::mark_point();
