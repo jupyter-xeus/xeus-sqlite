@@ -20,11 +20,7 @@ namespace xeus_sqlite
      */
     std::string sanitize_string(const std::string& code);
 
-    /**
-     * Upper case code and remove first char.
-     */
-    void normalize_string(std::vector<std::string>& tokenized_input);
-
+    bool case_insentive_equals(const std::string&, const std::string&);
     bool is_xvega(std::vector<std::string>& tokenized_input);
     bool is_magic(std::vector<std::string> tokenized_input);
 

@@ -171,10 +171,13 @@ namespace xeus_sqlite
                                     const std::vector<
                                         std::string>& tokenized_input)
     {
-        if (tokenized_input[1] == "LOAD")
+        if (case_insentive_equals(tokenized_input[0], "LOAD"))
         {
-            m_db_path = tokenized_input[2];
+            m_db_path = tokenized_input[1];
 
+            // std::ifstream path_is_valid;
+            // path_is_valid.open(m_db_path);
+            // if (!path_is_valid.is_open())
             std::ifstream path_is_valid(m_db_path);
             if (!path_is_valid.is_open())
             {
@@ -182,57 +185,57 @@ namespace xeus_sqlite
             }
             else
             {
+
                 return load_db(tokenized_input);
             }
         }
-
-        else if (tokenized_input[1] == "CREATE")
+        else if (case_insentive_equals(tokenized_input[0], "CREATE"))
         {
             return create_db(tokenized_input);
         }
-            if (m_bd_is_loaded)
+        if (m_bd_is_loaded)
+        {
+            if (case_insentive_equals(tokenized_input[0], "DELETE"))
             {
-                if (tokenized_input[1] == "DELETE")
-                {
-                    delete_db();
-                }
-                else if (tokenized_input[1] == "TABLE_EXISTS")
-                {
-                    publish_execution_result(execution_counter,
-                        std::move(table_exists(tokenized_input[2])),
-                        nl::json::object());
-                }
-                else if (tokenized_input[1] == "LOAD_EXTENSION")
-                {
-                    //TODO: add a try catch to treat all void functions
-                    m_db->SQLite::Database::loadExtension(tokenized_input[2].c_str(),
-                            tokenized_input[3].c_str());
-                }
-                else if (tokenized_input[1] == "SET_KEY")
-                {
-                    m_db->SQLite::Database::key(tokenized_input[2]);
-                }
-                else if (tokenized_input[1] == "REKEY")
-                {
-                    m_db->SQLite::Database::rekey(tokenized_input[2]);
-                }
-                else if (tokenized_input[1] == "IS_UNENCRYPTED")
-                {
-                    publish_execution_result(execution_counter,
-                        std::move(is_unencrypted()),
-                        nl::json::object());
-                }
-                else if (tokenized_input[1] == "GET_INFO")
-                {
-                    publish_execution_result(execution_counter,
-                        std::move(get_header_info()),
-                        nl::json::object());
-                }
-                else if (tokenized_input[1] == "BACKUP")
-                {
-                    backup(tokenized_input[2]);
-                }
+                delete_db();
             }
+            else if (case_insentive_equals(tokenized_input[0], "TABLE_EXISTS"))
+            {
+                publish_execution_result(execution_counter,
+                    std::move(table_exists(tokenized_input[1])),
+                    nl::json::object());
+            }
+            else if (case_insentive_equals(tokenized_input[0], "LOAD_EXTENSION"))
+            {
+                //TODO: add a try catch to treat all void functions
+                m_db->SQLite::Database::loadExtension(tokenized_input[1].c_str(),
+                        tokenized_input[2].c_str());
+            }
+            else if (case_insentive_equals(tokenized_input[0], "SET_KEY"))
+            {
+                m_db->SQLite::Database::key(tokenized_input[1]);
+            }
+            else if (case_insentive_equals(tokenized_input[0], "REKEY"))
+            {
+                m_db->SQLite::Database::rekey(tokenized_input[1]);
+            }
+            else if (case_insentive_equals(tokenized_input[0], "IS_UNENCRYPTED"))
+            {
+                publish_execution_result(execution_counter,
+                    std::move(is_unencrypted()),
+                    nl::json::object());
+            }
+            else if (case_insentive_equals(tokenized_input[0], "GET_INFO"))
+            {
+                publish_execution_result(execution_counter,
+                    std::move(get_header_info()),
+                    nl::json::object());
+            }
+            else if (case_insentive_equals(tokenized_input[0], "BACKUP"))
+            {
+                backup(tokenized_input[1]);
+            }
+        }
         else
         {
             throw std::runtime_error("Load a database to run this command.");
@@ -355,7 +358,9 @@ namespace xeus_sqlite
             /* Runs magic */
             if(is_magic(tokenized_input))
             {
-                normalize_string(tokenized_input);
+                /* Removes "%" symbol */
+                tokenized_input[0].erase(0, 1);
+                // for (auto i : tokenized_input)
 
                 /* Runs SQLite magic */
                 parse_SQLite_magic(execution_counter, tokenized_input);
@@ -379,7 +384,6 @@ namespace xeus_sqlite
                                     stringfied_sqlite_input.str(),
                                     xvega_sqlite_df);
 
-                    normalize_string(xvega_input);
                     chart = xvega_sqlite::process_xvega_input(xvega_input,
                                                           xvega_sqlite_df);
 
