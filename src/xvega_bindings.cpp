@@ -38,6 +38,7 @@ namespace xeus_sqlite
         chart.data() = data_frame;
         xv::populate_data(json_template, chart);
 
+
         /* Parses input and look for WIDTH and HEIGHT attrs */
         auto width = std::find(tokenized_input.begin(),
                                tokenized_input.end(),
@@ -82,6 +83,7 @@ namespace xeus_sqlite
         auto enc = xv::Encodings().x(x_enc).y(y_enc);
         chart.encoding() = enc;
 
+
         /* Parses input and look for COLOR attr */
         auto color = std::find(tokenized_input.begin(),
                               tokenized_input.end(),
@@ -94,7 +96,7 @@ namespace xeus_sqlite
         if (mark != tokenized_input.end())
         {
             //TODO: implement img, geoshape and txt
-            if (*(mark + 1) == "POINT")
+            if (case_insentive_equals(*(mark + 1), "POINT"))
             {
                 auto m_point = xv::mark_point();
                 if (color != tokenized_input.end())
@@ -104,7 +106,7 @@ namespace xeus_sqlite
                 chart.mark() = m_point;
             }
 
-            else if (*(mark + 1) == "ARC")
+            else if (case_insentive_equals(*(mark + 1), "ARC"))
             {
                 auto m_arc = xv::mark_arc();
                 if (color != tokenized_input.end())
@@ -114,7 +116,7 @@ namespace xeus_sqlite
                 chart.mark() = m_arc;
             }
 
-            else if (*(mark + 1) == "AREA")
+            else if (case_insentive_equals(*(mark + 1), "AREA"))
             {
                 auto m_area = xv::mark_area();
                 if (color != tokenized_input.end())
@@ -124,7 +126,7 @@ namespace xeus_sqlite
                 chart.mark() = m_area;
             }
 
-            else if (*(mark + 1) == "BAR")
+            else if (case_insentive_equals(*(mark + 1), "BAR"))
             {
                 auto m_bar = xv::mark_bar();
                 if (color != tokenized_input.end())
@@ -134,7 +136,7 @@ namespace xeus_sqlite
                 chart.mark() = m_bar;
             }
 
-            else if (*(mark + 1) == "CIRCLE")
+            else if (case_insentive_equals(*(mark + 1), "CIRCLE"))
             {
                 auto m_circle = xv::mark_circle();
                 if (color != tokenized_input.end())
@@ -144,7 +146,7 @@ namespace xeus_sqlite
                 chart.mark() = m_circle;
             }
 
-            // else if (*(mark + 1) == "geoshape")
+            // else if (case_insentive_equals(*(mark + 1), "geoshape"))
             // {
             //     auto m_geoshape = xv::mark_geoshape();
             // if (color != tokenized_input.end())
@@ -154,7 +156,7 @@ namespace xeus_sqlite
             //     chart.mark() = m_geoshape;
             // }
 
-            // else if (*(mark + 1) == "image")
+            // else if (case_insentive_equals(*(mark + 1), "image"))
             // {
             //     auto m_image = xv::mark_image();
             // if (color != tokenized_input.end())
@@ -164,7 +166,7 @@ namespace xeus_sqlite
             //     chart.mark() = m_image;
             // }
 
-            else if (*(mark + 1) == "LINE")
+            else if (case_insentive_equals(*(mark + 1), "LINE"))
             {
                 auto m_line = xv::mark_line();
                 if (color != tokenized_input.end())
@@ -174,7 +176,7 @@ namespace xeus_sqlite
                 chart.mark() = m_line;
             }
 
-            else if (*(mark + 1) == "POINT")
+            else if (case_insentive_equals(*(mark + 1), "POINT"))
             {
                 auto m_point = xv::mark_point();
                 if (color != tokenized_input.end())
@@ -184,7 +186,7 @@ namespace xeus_sqlite
                 chart.mark() = m_point;
             }
 
-            else if (*(mark + 1) == "RECT")
+            else if (case_insentive_equals(*(mark + 1), "RECT"))
             {
                 auto m_rect = xv::mark_rect();
                 if (color != tokenized_input.end())
@@ -194,7 +196,7 @@ namespace xeus_sqlite
                 chart.mark() = m_rect;
             }
 
-            else if (*(mark + 1) == "RULE")
+            else if (case_insentive_equals(*(mark + 1), "RULE"))
             {
                 auto m_rule = xv::mark_rule();
                 if (color != tokenized_input.end())
@@ -204,7 +206,7 @@ namespace xeus_sqlite
                 chart.mark() = m_rule;
             }
 
-            else if (*(mark + 1) == "square")
+            else if (case_insentive_equals(*(mark + 1), "square"))
             {
                 auto m_square = xv::mark_square();
                 if (color != tokenized_input.end())
@@ -214,7 +216,7 @@ namespace xeus_sqlite
                 chart.mark() = m_square;
             }
 
-            // else if (*(mark + 1) == "text")
+            // else if (case_insentive_equals(*(mark + 1), "text"))
             // {
             //     auto m_text = xv::mark_text();
             // if (color != tokenized_input.end())
@@ -224,7 +226,7 @@ namespace xeus_sqlite
             //     chart.mark() = m_text;
             // }
 
-            else if (*(mark + 1) == "TICK")
+            else if (case_insentive_equals(*(mark + 1), "TICK"))
             {
                 auto m_tick = xv::mark_tick();
                 if (color != tokenized_input.end())
@@ -234,7 +236,7 @@ namespace xeus_sqlite
                 chart.mark() = m_tick;
             }
 
-            else if (*(mark + 1) == "TRAIL")
+            else if (case_insentive_equals(*(mark + 1), "TRAIL"))
             {
                 auto m_trail = xv::mark_trail();
                 if (color != tokenized_input.end())
@@ -244,6 +246,7 @@ namespace xeus_sqlite
                 chart.mark() = m_trail;
             }
         }
+
 
         populate_marks(json_template, chart);
         populate_encodings(json_template, chart);

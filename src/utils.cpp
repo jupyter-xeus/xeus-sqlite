@@ -1,6 +1,7 @@
 #include "xeus-sqlite/utils.hpp"
 
 #include <algorithm>
+#include <iostream>
 #include <sstream>
 
 namespace xeus_sqlite
@@ -22,11 +23,12 @@ namespace xeus_sqlite
         return aux;
     }
 
-    void normalize_string(std::vector<std::string>& tokenized_input)
+    bool case_insentive_equals(const std::string& a, const std::string& b)
     {
-        tokenized_input[1].erase(0, 1);
-        std::transform(tokenized_input[1].begin(), tokenized_input[1].end(),
-                        tokenized_input[1].begin(), ::toupper);
+        return std::equal(a.begin(), a.end(), b.begin(),
+                    [](unsigned char a, unsigned char b) {
+                          return std::tolower(a) == std::tolower(b);
+                    });
     }
 
     bool is_xvega(std::vector<std::string>& tokenized_input)
@@ -34,7 +36,7 @@ namespace xeus_sqlite
         /*
             Returns true if the code input is xvega and false if isn't.
         */
-        if(tokenized_input[1] == "XVEGA_PLOT")
+        if(tokenized_input[0] == "XVEGA_PLOT")
         {
             return true;
         }
@@ -49,7 +51,7 @@ namespace xeus_sqlite
         /*
             Returns true if the code input is magic and false if isn't.
         */
-        if(tokenized_input[0] == "%")
+        if(tokenized_input[0][0] == '%')
         {
             return true;
         }
@@ -59,22 +61,21 @@ namespace xeus_sqlite
         }
     }
 
-    std::vector<std::string> tokenizer(const std::string& code)
+    std::vector<std::string> tokenizer(const std::string& input)
     {
         /*
-            Separetes the code on spaces so it's easier to execute the commands.
+            Separetes the input with spaces.
         */
-        std::stringstream input(sanitize_string(code));
+        std::stringstream sanitized_input(sanitize_string(input));
         std::string segment;
-        std::vector<std::string> tokenized_str;
-        std::string is_magic(1, input.str()[0]);
-        tokenized_str.push_back(is_magic);
+        std::vector<std::string> tokenized_input;
 
-        while(std::getline(input, segment, ' '))
+        while(std::getline(sanitized_input, segment, ' '))
         {
-            tokenized_str.push_back(segment);
+            tokenized_input.push_back(segment);
         }
-        return tokenized_str;
+
+        return tokenized_input;
     }
 
 }
