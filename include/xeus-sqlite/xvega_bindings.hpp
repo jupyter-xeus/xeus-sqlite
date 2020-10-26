@@ -24,7 +24,7 @@ namespace xeus_sqlite
         xvega_sqlite() = default;
         virtual ~xvega_sqlite() = default;
 
-        static nl::json run_xvega_input(std::vector<std::string>, xv::df_type);
+        static nl::json process_xvega_input(std::vector<std::string>, xv::df_type);
         static std::pair<std::vector<std::string>, std::vector<std::string>>
                split_xvega_sqlite_input(std::vector<std::string>);
 

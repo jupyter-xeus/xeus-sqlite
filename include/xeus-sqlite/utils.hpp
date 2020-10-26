@@ -15,8 +15,16 @@
 
 namespace xeus_sqlite
 {
+    /**
+     * Cleans the code from inputs that are acceptable in a jupyter notebook.
+     */
     std::string sanitize_string(const std::string& code);
+
+    /**
+     * Upper case code and remove first char.
+     */
     void normalize_string(std::vector<std::string>& tokenized_input);
+
     bool is_xvega(std::vector<std::string>& tokenized_input);
     bool is_magic(std::vector<std::string> tokenized_input);
 
