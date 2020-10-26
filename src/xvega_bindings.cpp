@@ -14,13 +14,14 @@
 #include <map>
 
 #include "xeus-sqlite/xvega_bindings.hpp"
+#include "xeus-sqlite/utils.hpp"
 
 namespace nl = nlohmann;
 
 namespace xeus_sqlite
 {
 
-    nl::json xvega_sqlite::run_xvega_input(std::vector<std::string>
+    nl::json xvega_sqlite::process_xvega_input(std::vector<std::string>
                                              tokenized_input,
                                              xv::df_type xvega_sqlite_df)
     {
@@ -33,7 +34,7 @@ namespace xeus_sqlite
         /* Creates basic xvega template */
         auto json_template = xv::base_vegalite_json();
 
-        /* Populates chart with data gathered on interpreter::run_SQLite_code */
+        /* Populates chart with data gathered on interpreter::process_SQLite_input */
         chart.data() = data_frame;
         xv::populate_data(json_template, chart);
 
@@ -73,7 +74,7 @@ namespace xeus_sqlite
                                  tokenized_input.end(),
                                  "Y_FIELD");
         xv::Y y_enc;
-        if (x_field != tokenized_input.end())
+        if (y_field != tokenized_input.end())
         {
             y_enc = xv::Y().field(*(y_field + 1)).type("quantitative");
         }
@@ -81,100 +82,165 @@ namespace xeus_sqlite
         auto enc = xv::Encodings().x(x_enc).y(y_enc);
         chart.encoding() = enc;
 
+        /* Parses input and look for COLOR attr */
+        auto color = std::find(tokenized_input.begin(),
+                              tokenized_input.end(),
+                              "COLOR");
+
         /* Parses input and look for MARK attr */
         auto mark = std::find(tokenized_input.begin(),
                               tokenized_input.end(),
                               "MARK");
         if (mark != tokenized_input.end())
         {
-            //TODO: implement img and txt
-            if (*(mark + 1) == "point")
+            //TODO: implement img, geoshape and txt
+            if (*(mark + 1) == "POINT")
             {
                 auto m_point = xv::mark_point();
+                if (color != tokenized_input.end())
+                {
+                    m_point.color = *(color + 1);
+                }
                 chart.mark() = m_point;
             }
 
-            else if (*(mark + 1) == "arc")
+            else if (*(mark + 1) == "ARC")
             {
                 auto m_arc = xv::mark_arc();
+                if (color != tokenized_input.end())
+                {
+                    m_arc.color = *(color + 1);
+                }
                 chart.mark() = m_arc;
             }
 
-            else if (*(mark + 1) == "area")
+            else if (*(mark + 1) == "AREA")
             {
                 auto m_area = xv::mark_area();
+                if (color != tokenized_input.end())
+                {
+                    m_area.color = *(color + 1);
+                }
                 chart.mark() = m_area;
             }
 
-            else if (*(mark + 1) == "bar")
+            else if (*(mark + 1) == "BAR")
             {
                 auto m_bar = xv::mark_bar();
+                if (color != tokenized_input.end())
+                {
+                    m_bar.color = *(color + 1);
+                }
                 chart.mark() = m_bar;
             }
 
-            else if (*(mark + 1) == "circle")
+            else if (*(mark + 1) == "CIRCLE")
             {
                 auto m_circle = xv::mark_circle();
+                if (color != tokenized_input.end())
+                {
+                    m_circle.color = *(color + 1);
+                }
                 chart.mark() = m_circle;
             }
 
             // else if (*(mark + 1) == "geoshape")
             // {
             //     auto m_geoshape = xv::mark_geoshape();
+            // if (color != tokenized_input.end())
+            //     {
+            //         m_geoshape.color = *(color + 1);
+            //     }
             //     chart.mark() = m_geoshape;
             // }
 
             // else if (*(mark + 1) == "image")
             // {
             //     auto m_image = xv::mark_image();
+            // if (color != tokenized_input.end())
+            //     {
+            //         m_image.color = *(color + 1);
+            //     }
             //     chart.mark() = m_image;
             // }
 
-            else if (*(mark + 1) == "line")
+            else if (*(mark + 1) == "LINE")
             {
                 auto m_line = xv::mark_line();
+                if (color != tokenized_input.end())
+                {
+                    m_line.color = *(color + 1);
+                }
                 chart.mark() = m_line;
             }
 
-            else if (*(mark + 1) == "point")
+            else if (*(mark + 1) == "POINT")
             {
                 auto m_point = xv::mark_point();
+                if (color != tokenized_input.end())
+                {
+                    m_point.color = *(color + 1);
+                }
                 chart.mark() = m_point;
             }
 
-            else if (*(mark + 1) == "rect")
+            else if (*(mark + 1) == "RECT")
             {
                 auto m_rect = xv::mark_rect();
+                if (color != tokenized_input.end())
+                {
+                    m_rect.color = *(color + 1);
+                }
                 chart.mark() = m_rect;
             }
 
-            else if (*(mark + 1) == "rule")
+            else if (*(mark + 1) == "RULE")
             {
                 auto m_rule = xv::mark_rule();
+                if (color != tokenized_input.end())
+                {
+                    m_rule.color = *(color + 1);
+                }
                 chart.mark() = m_rule;
             }
 
             else if (*(mark + 1) == "square")
             {
                 auto m_square = xv::mark_square();
+                if (color != tokenized_input.end())
+                {
+                    m_square.color = *(color + 1);
+                }
                 chart.mark() = m_square;
             }
 
             // else if (*(mark + 1) == "text")
             // {
             //     auto m_text = xv::mark_text();
+            // if (color != tokenized_input.end())
+            //     {
+            //         m_text.color = *(color + 1);
+            //     }
             //     chart.mark() = m_text;
             // }
 
-            else if (*(mark + 1) == "tick")
+            else if (*(mark + 1) == "TICK")
             {
                 auto m_tick = xv::mark_tick();
+                if (color != tokenized_input.end())
+                {
+                    m_tick.color = *(color + 1);
+                }
                 chart.mark() = m_tick;
             }
 
-            else if (*(mark + 1) == "trail")
+            else if (*(mark + 1) == "TRAIL")
             {
                 auto m_trail = xv::mark_trail();
+                if (color != tokenized_input.end())
+                {
+                    m_trail.color = *(color + 1);
+                }
                 chart.mark() = m_trail;
             }
         }

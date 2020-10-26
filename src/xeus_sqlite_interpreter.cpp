@@ -16,6 +16,8 @@
 #include <vector>
 #include <tuple>
 
+#include "xeus-sqlite/utils.hpp"
+
 #include "xeus/xinterpreter.hpp"
 #include "tabulate/table.hpp"
 
@@ -29,87 +31,6 @@
 
 namespace xeus_sqlite
 {
-
-    //TODO:
-    //All functions that are declared here outside of the class should be moved to
-    //an utils file. sanitize_string can and should be used inside xvega_bindings.cpp
-    //in the run_xvega_input method.
-
-    std::string sanitize_string(const std::string& code)
-    {
-        /*
-            Cleans the code from inputs that are acceptable in a jupyter notebook.
-        */
-        std::string aux = code;
-        aux.erase(
-            std::remove_if(
-                aux.begin(), aux.end(), [](char const c) {
-                    return '\n' == c || '\r' == c || '\0' == c || '\x1A' == c;
-                }
-            ),
-            aux.end()
-        );
-        return aux;
-    }
-
-    void normalize_string(std::vector<std::string>& tokenized_input)
-    {
-        tokenized_input[1].erase(0, 1);
-        std::transform(tokenized_input[1].begin(), tokenized_input[1].end(),
-                        tokenized_input[1].begin(), ::toupper);
-    }
-
-    bool is_xvega(std::vector<std::string>& tokenized_input)
-    {
-        /*
-            Returns true if the code input is xvega and false if isn't.
-        */
-        if(tokenized_input[1] == "XVEGA_PLOT")
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    bool is_magic(std::vector<std::string> tokenized_input)
-    {
-        /*
-            Returns true if the code input is magic and false if isn't.
-        */
-        if(tokenized_input[0] == "%")
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    //TODO: move to utils file
-    std::vector<std::string> interpreter::tokenizer(const std::string& code)
-    {
-        /*
-            Separetes the code on spaces so it's easier to execute the commands.
-        */
-        std::stringstream input(sanitize_string(code));
-        std::string segment;
-        std::vector<std::string> tokenized_str;
-        std::string is_magic(1, input.str()[0]);
-        tokenized_str.push_back(is_magic);
-
-        while(std::getline(input, segment, ' '))
-        {
-            tokenized_str.push_back(segment);
-        }
-
-
-        return tokenized_str;
-    }
-
 
     void interpreter::load_db(const std::vector<std::string> tokenized_input)
     {
@@ -246,7 +167,7 @@ namespace xeus_sqlite
         }
     }
 
-    void interpreter::parse_code(int execution_counter,
+    void interpreter::parse_SQLite_magic(int execution_counter,
                                     const std::vector<
                                         std::string>& tokenized_input)
     {
@@ -322,7 +243,7 @@ namespace xeus_sqlite
     {
     }
 
-    void interpreter::run_SQLite_code(int execution_counter,
+    void interpreter::process_SQLite_input(int execution_counter,
                                         std::unique_ptr<SQLite::Database> &m_db,
                                         const std::string& code,
                                         xv::df_type& xvega_sqlite_df)
@@ -423,7 +344,8 @@ namespace xeus_sqlite
                                                bool /*allow_stdin*/)
     {
         std::vector<std::string> traceback;
-        std::vector<std::string> tokenized_input = tokenizer(code);
+        std::string sanitized_code = sanitize_string(code);
+        std::vector<std::string> tokenized_input = tokenizer(sanitized_code);
 
         /* This structure is only used when xvega code is run */
         xv::df_type xvega_sqlite_df;
@@ -436,33 +358,29 @@ namespace xeus_sqlite
                 normalize_string(tokenized_input);
 
                 /* Runs SQLite magic */
-                parse_code(execution_counter, tokenized_input);
+                parse_SQLite_magic(execution_counter, tokenized_input);
 
                 /* Runs xvega magic and SQLite code */
                 if(is_xvega(tokenized_input))
                 {
                     nl::json chart;
                     std::vector<std::string> xvega_input, sqlite_input;
-                    std::tie(xvega_input, sqlite_input) = xvega_sqlite::split_xvega_sqlite_input(tokenized_input);
+                    std::tie(xvega_input, sqlite_input) = 
+                        xvega_sqlite::split_xvega_sqlite_input(tokenized_input);
 
-                    //TODO:
-                    //Once we have the tokenized function as an util we have to
-                    //change run_xvega_input to receive a string and then this
-                    //piece won't be necessary anymore as we will tokenize the
-                    //string inside xvega_sqlite::run_xvega_input
-                    //sqlite_input has to be strigfied because
-                    //SQLite::Statement query(*m_db, code); only accepts strings
+                    /* Stringfyes SQLite run code again */
                     std::stringstream stringfied_sqlite_input;
                     for (size_t i = 0; i < sqlite_input.size(); i++) {
                         stringfied_sqlite_input << " " << sqlite_input[i];
                     }
 
-                    run_SQLite_code(execution_counter,
+                    process_SQLite_input(execution_counter,
                                     m_db,
                                     stringfied_sqlite_input.str(),
                                     xvega_sqlite_df);
 
-                    chart = xvega_sqlite::run_xvega_input(xvega_input,
+                    normalize_string(xvega_input);
+                    chart = xvega_sqlite::process_xvega_input(xvega_input,
                                                           xvega_sqlite_df);
 
                     publish_execution_result(execution_counter,
@@ -473,7 +391,7 @@ namespace xeus_sqlite
             /* Runs SQLite code */
             else
             {
-                run_SQLite_code(execution_counter, m_db, code, xvega_sqlite_df);
+                process_SQLite_input(execution_counter, m_db, code, xvega_sqlite_df);
             }
 
             nl::json jresult;

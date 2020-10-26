@@ -33,6 +33,10 @@ namespace xeus_sqlite
         virtual ~interpreter() = default;
 
     private:
+        std::unique_ptr<SQLite::Database> m_db = nullptr;
+        std::unique_ptr<SQLite::Database> m_backup_db = nullptr;
+        bool m_bd_is_loaded = false;
+        std::string m_db_path;
 
         void configure_impl() override;
         nl::json execute_request_impl(int execution_counter,
@@ -51,14 +55,9 @@ namespace xeus_sqlite
         void shutdown_request_impl() override;
 
         /**
-         * Separetes the code on spaces so it's easier to execute the commands.
+         * Parses magic and calls the correct function.
          */
-        std::vector<std::string> tokenizer(const std::string& code);
-
-        /**
-         * Parse magic and calls the correct function.
-         */
-        void parse_code(int execution_counter, const std::vector<std::string>& tokenized_input);
+        void parse_SQLite_magic(int execution_counter, const std::vector<std::string>& tokenized_input);
 
         /*! \brief load_db - loads a database.
          *
@@ -169,26 +168,11 @@ namespace xeus_sqlite
          *
          * return void
          */
-        void run_SQLite_code(int execution_counter,
+        void process_SQLite_input(int execution_counter,
                                         std::unique_ptr<SQLite::Database> &m_db,
                                         const std::string& code,
                                         xv::df_type& xvega_sqlite_df);
-
-        std::unique_ptr<SQLite::Database> m_db = nullptr;
-        std::unique_ptr<SQLite::Database> m_backup_db = nullptr;
-        bool m_bd_is_loaded = false;
-        std::string m_db_path;
     };
-
-    /**
-     * Cleans the code from inputs that are acceptable in a jupyter notebook.
-     */
-    std::string sanitize_string(const std::string& code);
-
-    /**
-     * Upper case code and remove first char.
-     */
-    void normalize_string(std::vector<std::string>& tokenized_input);
 }
 
 #endif
