@@ -31,13 +31,8 @@ namespace xeus_sqlite
         /* Creates Chart object */
         xv::Chart chart;
 
-        /* Creates basic xvega template */
-        auto json_template = xv::base_vegalite_json();
-
         /* Populates chart with data gathered on interpreter::process_SQLite_input */
         chart.data() = data_frame;
-        xv::populate_data(json_template, chart);
-
 
         /* Parses input and look for WIDTH and HEIGHT attrs */
         auto width = std::find(tokenized_input.begin(),
@@ -56,10 +51,6 @@ namespace xeus_sqlite
             chart.height() = std::stoi(*(height + 1));
             std::cout << chart.height() << std::endl;
         }
-
-        /* Sets width and height attrs for the chart */
-        xv::serialize(json_template, chart.width(), "width");
-        xv::serialize(json_template, chart.height(), "height");
 
         /* Parses input and look for X_FIELD and Y_FIELD attrs */
         auto x_field = std::find(tokenized_input.begin(),
@@ -247,14 +238,8 @@ namespace xeus_sqlite
             }
         }
 
-
-        populate_marks(json_template, chart);
-        populate_encodings(json_template, chart);
-        populate_selections(json_template, chart);
-        populate_transformations(json_template, chart);
-
         nl::json bundle;
-        bundle["application/vnd.vegalite.v3+json"] = json_template;
+        bundle["application/vnd.vegalite.v3+json"] = chart;
 
         return bundle;
     }
