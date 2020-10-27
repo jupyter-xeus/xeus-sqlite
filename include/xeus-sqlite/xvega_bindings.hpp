@@ -37,13 +37,8 @@ namespace xeus_sqlite
         xv::df_type xvega_sqlite_df;
 
     private:
+
         using input_it = std::vector<std::string>::iterator;
-
-        static input_it parse_width(xv::Chart& chart, const input_it& input);
-
-        static input_it parse_height(xv::Chart& chart, const input_it& input) {
-            
-        }
 
         struct command_info {
             int number_required_arguments;
@@ -51,10 +46,9 @@ namespace xeus_sqlite
         };
 
         static const std::map<std::string, command_info> mapping_table;
-        // {
-        //     {"WIDTH", {1, parse_width}},
-        //     {"HEIGHT", {1, parse_height}},
-        // };
+
+        static input_it parse_width(xv::Chart& chart, const input_it& input);
+        static input_it parse_height(xv::Chart& chart, const input_it& input);
     };
 }
 

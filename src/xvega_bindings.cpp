@@ -23,13 +23,20 @@ namespace xeus_sqlite
 
     const std::map<std::string, xvega_sqlite::command_info> xvega_sqlite::mapping_table = {
         {"WIDTH", {1, xvega_sqlite::parse_width}},
-        // {"HEIGHT", {1, xvega_sqlite::parse_height}},
+        {"HEIGHT", {1, xvega_sqlite::parse_height}},
     };
 
     xvega_sqlite::input_it xvega_sqlite::parse_width(xv::Chart& chart, const xvega_sqlite::input_it& input)
     {
-        std::cout << "parse_width\n";
         chart.width() = std::stoi(*input);
+        xv::serialize(json_template, chart.width(), "width");
+        return input + 1;
+    }
+
+    xvega_sqlite::input_it xvega_sqlite::parse_height(xv::Chart& chart, const xvega_sqlite::input_it& input)
+    {
+        chart.height() = std::stoi(*input);
+        xv::serialize(json_template, chart.height(), "height");
         return input + 1;
     }
 
@@ -51,14 +58,14 @@ namespace xeus_sqlite
         while (it != tokenized_input.end()) {
             auto cmdit = xvega_sqlite::mapping_table.find(*it);
             if (cmdit == xvega_sqlite::mapping_table.end()) {
-                // error: invalid command *it
+                throw std::runtime_error("This is not a valid command for SQLite XVega.");
                 ++it;
                 continue;
             }
 
             xvega_sqlite::command_info cmdinfo = cmdit->second;
             if (std::distance(it, tokenized_input.end()) < cmdinfo.number_required_arguments) {
-                // error: missing arguments
+                throw std::runtime_error("This is not the right number of required arguments for the command ", (*it));
             }
 
             // Advance to first parameter
@@ -66,24 +73,6 @@ namespace xeus_sqlite
 
             // Call parsing function for command
             it = cmdinfo.parse_function(chart, it);
-        }
-
-        // /* Parses input and look for WIDTH and HEIGHT attrs */
-        // auto width = std::find(tokenized_input.begin(),
-        //                        tokenized_input.end(),
-        //                        "WIDTH");
-        // if (width != tokenized_input.end())
-        // {
-        //     chart.width() = std::stoi(*(width + 1));
-        // }
-
-        auto height = std::find(tokenized_input.begin(),
-                                tokenized_input.end(),
-                                "HEIGHT");
-        if (height != tokenized_input.end())
-        {
-            chart.height() = std::stoi(*(height + 1));
-            std::cout << chart.height() << std::endl;
         }
 
         /* Parses input and look for X_FIELD and Y_FIELD attrs */
