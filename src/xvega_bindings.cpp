@@ -21,6 +21,18 @@ namespace nl = nlohmann;
 namespace xeus_sqlite
 {
 
+    const std::map<std::string, xvega_sqlite::command_info> xvega_sqlite::mapping_table = {
+        {"WIDTH", {1, xvega_sqlite::parse_width}},
+        // {"HEIGHT", {1, xvega_sqlite::parse_height}},
+    };
+
+    xvega_sqlite::input_it xvega_sqlite::parse_width(xv::Chart& chart, const xvega_sqlite::input_it& input)
+    {
+        std::cout << "parse_width\n";
+        chart.width() = std::stoi(*input);
+        return input + 1;
+    }
+
     nl::json xvega_sqlite::process_xvega_input(std::vector<std::string>
                                              tokenized_input,
                                              xv::df_type xvega_sqlite_df)
@@ -33,15 +45,37 @@ namespace xeus_sqlite
 
         /* Populates chart with data gathered on interpreter::process_SQLite_input */
         chart.data() = data_frame;
+        xv::populate_data(json_template, chart);
 
-        /* Parses input and look for WIDTH and HEIGHT attrs */
-        auto width = std::find(tokenized_input.begin(),
-                               tokenized_input.end(),
-                               "WIDTH");
-        if (width != tokenized_input.end())
-        {
-            chart.width() = std::stoi(*(width + 1));
+        xvega_sqlite::input_it it = tokenized_input.begin();
+        while (it != tokenized_input.end()) {
+            auto cmdit = xvega_sqlite::mapping_table.find(*it);
+            if (cmdit == xvega_sqlite::mapping_table.end()) {
+                // error: invalid command *it
+                ++it;
+                continue;
+            }
+
+            xvega_sqlite::command_info cmdinfo = cmdit->second;
+            if (std::distance(it, tokenized_input.end()) < cmdinfo.number_required_arguments) {
+                // error: missing arguments
+            }
+
+            // Advance to first parameter
+            ++it;
+
+            // Call parsing function for command
+            it = cmdinfo.parse_function(chart, it);
         }
+
+        // /* Parses input and look for WIDTH and HEIGHT attrs */
+        // auto width = std::find(tokenized_input.begin(),
+        //                        tokenized_input.end(),
+        //                        "WIDTH");
+        // if (width != tokenized_input.end())
+        // {
+        //     chart.width() = std::stoi(*(width + 1));
+        // }
 
         auto height = std::find(tokenized_input.begin(),
                                 tokenized_input.end(),
