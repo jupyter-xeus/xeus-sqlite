@@ -4,6 +4,7 @@
 #include "gtest/gtest.h"
 
 #include "xeus-sqlite/xeus_sqlite_interpreter.hpp"
+#include "xeus-sqlite/utils.hpp"
 
 namespace xeus_sqlite
 {
