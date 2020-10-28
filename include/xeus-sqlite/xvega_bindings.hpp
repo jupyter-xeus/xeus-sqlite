@@ -27,8 +27,7 @@ namespace xeus_sqlite
     {
     public:
 
-        xvega_sqlite() = default;
-        virtual ~xvega_sqlite() = default;
+        virtual ~xvega_sqlite();
 
         static nl::json process_xvega_input(std::vector<std::string>, xv::df_type);
         static std::pair<std::vector<std::string>, std::vector<std::string>>
@@ -38,17 +37,23 @@ namespace xeus_sqlite
 
     private:
 
+        xvega_sqlite(xv::Chart&);
+
         using input_it = std::vector<std::string>::iterator;
 
         struct command_info {
             int number_required_arguments;
-            std::function<input_it(xv::Chart&, const input_it&)> parse_function;
+            std::function<input_it(xvega_sqlite&, const input_it&)> parse_function;
         };
 
         static const std::map<std::string, command_info> mapping_table;
 
-        static input_it parse_width(xv::Chart& chart, const input_it& input);
-        static input_it parse_height(xv::Chart& chart, const input_it& input);
+        xv::Chart& chart;
+
+        input_it parse_width(const input_it&);
+        input_it parse_height(const input_it&);
+        input_it parse_x_field(const input_it&);
+        input_it parse_y_field(const input_it&);
     };
 }
 

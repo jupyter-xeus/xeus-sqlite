@@ -21,22 +21,48 @@ namespace nl = nlohmann;
 namespace xeus_sqlite
 {
 
+    xvega_sqlite::xvega_sqlite(xv::Chart& chart) : chart(chart)
+    {
+    }
+
+    xvega_sqlite::~xvega_sqlite()
+    {
+    }
+
     const std::map<std::string, xvega_sqlite::command_info> xvega_sqlite::mapping_table = {
-        {"WIDTH", {1, xvega_sqlite::parse_width}},
-        {"HEIGHT", {1, xvega_sqlite::parse_height}},
+        {"WIDTH", {1, &xvega_sqlite::parse_width}},
+        {"HEIGHT", {1, &xvega_sqlite::parse_height}},
+        {"X_FIELD", {1, &xvega_sqlite::parse_x_field}},
+        {"Y_FIELD", {1, &xvega_sqlite::parse_y_field}},
     };
 
-    xvega_sqlite::input_it xvega_sqlite::parse_width(xv::Chart& chart, const xvega_sqlite::input_it& input)
+    xvega_sqlite::input_it xvega_sqlite::parse_width(const xvega_sqlite::input_it& input)
     {
-        chart.width() = std::stoi(*input);
-        xv::serialize(json_template, chart.width(), "width");
+        this->chart.width() = std::stoi(*input);
         return input + 1;
     }
 
-    xvega_sqlite::input_it xvega_sqlite::parse_height(xv::Chart& chart, const xvega_sqlite::input_it& input)
+    xvega_sqlite::input_it xvega_sqlite::parse_height(const xvega_sqlite::input_it& input)
     {
-        chart.height() = std::stoi(*input);
-        xv::serialize(json_template, chart.height(), "height");
+        this->chart.height() = std::stoi(*input);
+        return input + 1;
+    }
+
+    xvega_sqlite::input_it xvega_sqlite::parse_x_field(const xvega_sqlite::input_it& input)
+    {
+        xv::X x_enc = xv::X()
+            .field(*(input))
+            .type("quantitative");
+        this->chart.encoding().value().x = x_enc;
+        return input + 1;
+    }
+
+    xvega_sqlite::input_it xvega_sqlite::parse_y_field(const xvega_sqlite::input_it& input)
+    {
+        xv::Y y_enc = xv::Y()
+            .field(*(input))
+            .type("quantitative");
+        this->chart.encoding().value().y = y_enc;
         return input + 1;
     }
 
@@ -47,56 +73,38 @@ namespace xeus_sqlite
         xv::data_frame data_frame;
         data_frame.values = xvega_sqlite_df;
 
-        /* Creates Chart object */
         xv::Chart chart;
+        chart.encoding() = xv::Encodings();
+
+        xvega_sqlite context(chart);
 
         /* Populates chart with data gathered on interpreter::process_SQLite_input */
         chart.data() = data_frame;
-        xv::populate_data(json_template, chart);
+
+        /* Remove XVEGA_PLOT command */
+        tokenized_input.erase(tokenized_input.begin());
 
         xvega_sqlite::input_it it = tokenized_input.begin();
         while (it != tokenized_input.end()) {
+            std::cout << *it << "🌈\n";
             auto cmdit = xvega_sqlite::mapping_table.find(*it);
             if (cmdit == xvega_sqlite::mapping_table.end()) {
-                throw std::runtime_error("This is not a valid command for SQLite XVega.");
+                // throw std::runtime_error("This is not a valid command for SQLite XVega.");
                 ++it;
                 continue;
             }
 
             xvega_sqlite::command_info cmdinfo = cmdit->second;
-            if (std::distance(it, tokenized_input.end()) < cmdinfo.number_required_arguments) {
-                throw std::runtime_error("This is not the right number of required arguments for the command ", (*it));
+            if (std::distance(it, tokenized_input.end()) <= cmdinfo.number_required_arguments) {
+                throw std::runtime_error(std::string("This is not the right number of required arguments for the command ") + *it);
             }
 
             // Advance to first parameter
             ++it;
 
             // Call parsing function for command
-            it = cmdinfo.parse_function(chart, it);
+            it = cmdinfo.parse_function(context, it);
         }
-
-        /* Parses input and look for X_FIELD and Y_FIELD attrs */
-        auto x_field = std::find(tokenized_input.begin(),
-                                 tokenized_input.end(),
-                                 "X_FIELD");
-        xv::X x_enc;
-        if (x_field != tokenized_input.end())
-        {
-            x_enc = xv::X().field(*(x_field + 1)).type("quantitative");
-        }
-
-        auto y_field = std::find(tokenized_input.begin(),
-                                 tokenized_input.end(),
-                                 "Y_FIELD");
-        xv::Y y_enc;
-        if (y_field != tokenized_input.end())
-        {
-            y_enc = xv::Y().field(*(y_field + 1)).type("quantitative");
-        }
-        /* Sets X_FIELD and Y_FIELD on chart */
-        auto enc = xv::Encodings().x(x_enc).y(y_enc);
-        chart.encoding() = enc;
-
 
         /* Parses input and look for COLOR attr */
         auto color = std::find(tokenized_input.begin(),
