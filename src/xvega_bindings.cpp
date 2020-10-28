@@ -51,8 +51,8 @@ namespace xeus_sqlite
     xvega_sqlite::input_it xvega_sqlite::parse_x_field(const xvega_sqlite::input_it& input)
     {
         xv::X x_enc = xv::X()
-            .field(*(input))
-            .type("quantitative");
+                        .field(*(input))
+                        .type("quantitative");
         this->chart.encoding().value().x = x_enc;
         return input + 1;
     }
@@ -60,8 +60,8 @@ namespace xeus_sqlite
     xvega_sqlite::input_it xvega_sqlite::parse_y_field(const xvega_sqlite::input_it& input)
     {
         xv::Y y_enc = xv::Y()
-            .field(*(input))
-            .type("quantitative");
+                        .field(*(input))
+                        .type("quantitative");
         this->chart.encoding().value().y = y_enc;
         return input + 1;
     }
@@ -80,9 +80,6 @@ namespace xeus_sqlite
 
         /* Populates chart with data gathered on interpreter::process_SQLite_input */
         chart.data() = data_frame;
-
-        /* Remove XVEGA_PLOT command */
-        tokenized_input.erase(tokenized_input.begin());
 
         xvega_sqlite::input_it it = tokenized_input.begin();
         while (it != tokenized_input.end()) {
@@ -121,10 +118,6 @@ namespace xeus_sqlite
             if (case_insentive_equals(*(mark + 1), "POINT"))
             {
                 auto m_point = xv::mark_point();
-                if (color != tokenized_input.end())
-                {
-                    m_point.color = *(color + 1);
-                }
                 chart.mark() = m_point;
             }
 

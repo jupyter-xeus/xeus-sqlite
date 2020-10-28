@@ -33,8 +33,6 @@ namespace xeus_sqlite
         static std::pair<std::vector<std::string>, std::vector<std::string>>
                split_xvega_sqlite_input(std::vector<std::string>);
 
-        xv::df_type xvega_sqlite_df;
-
     private:
 
         xvega_sqlite(xv::Chart&);
