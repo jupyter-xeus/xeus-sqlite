@@ -66,23 +66,10 @@ namespace xeus_sqlite
         return input + 1;
     }
 
-    nl::json xvega_sqlite::process_xvega_input(std::vector<std::string>
-                                             tokenized_input,
-                                             xv::df_type xvega_sqlite_df)
+    void xvega_sqlite::xvega_execution_loop(const xvega_sqlite::input_it& begin, const xvega_sqlite::input_it& end)
     {
-        xv::data_frame data_frame;
-        data_frame.values = xvega_sqlite_df;
-
-        xv::Chart chart;
-        chart.encoding() = xv::Encodings();
-
-        xvega_sqlite context(chart);
-
-        /* Populates chart with data gathered on interpreter::process_SQLite_input */
-        chart.data() = data_frame;
-
-        xvega_sqlite::input_it it = tokenized_input.begin();
-        while (it != tokenized_input.end()) {
+        xvega_sqlite::input_it it = begin;
+        while (it != end) {
             std::cout << *it << "🌈\n";
             auto cmdit = xvega_sqlite::mapping_table.find(*it);
             if (cmdit == xvega_sqlite::mapping_table.end()) {
@@ -92,7 +79,7 @@ namespace xeus_sqlite
             }
 
             xvega_sqlite::command_info cmdinfo = cmdit->second;
-            if (std::distance(it, tokenized_input.end()) <= cmdinfo.number_required_arguments) {
+            if (std::distance(it, end) <= cmdinfo.number_required_arguments) {
                 throw std::runtime_error(std::string("This is not the right number of required arguments for the command ") + *it);
             }
 
@@ -100,8 +87,26 @@ namespace xeus_sqlite
             ++it;
 
             // Call parsing function for command
-            it = cmdinfo.parse_function(context, it);
+            it = cmdinfo.parse_function(*this, it);
         }
+    }
+
+    nl::json xvega_sqlite::process_xvega_input(std::vector<std::string>
+                                               tokenized_input,
+                                               xv::df_type xvega_sqlite_df)
+    {
+        /* Initializes and populates xeus_sqlite object*/
+        xv::Chart chart;
+        chart.encoding() = xv::Encodings();
+        xvega_sqlite context(chart);
+
+        /* Populates chart with data gathered on interpreter::process_SQLite_input */
+        xv::data_frame data_frame;
+        data_frame.values = xvega_sqlite_df;
+        chart.data() = data_frame;
+
+        context.xvega_execution_loop(tokenized_input.begin(),
+                                     tokenized_input.end());
 
         /* Parses input and look for COLOR attr */
         auto color = std::find(tokenized_input.begin(),

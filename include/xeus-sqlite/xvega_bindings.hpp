@@ -48,6 +48,8 @@ namespace xeus_sqlite
 
         xv::Chart& chart;
 
+        void xvega_execution_loop(const input_it&, const input_it&);
+
         input_it parse_width(const input_it&);
         input_it parse_height(const input_it&);
         input_it parse_x_field(const input_it&);
