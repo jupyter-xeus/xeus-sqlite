@@ -36,14 +36,7 @@ namespace xeus_sqlite
         /*
             Returns true if the code input is xvega and false if isn't.
         */
-        if(tokenized_input[0] == "XVEGA_PLOT")
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return tokenized_input[0] == "XVEGA_PLOT";
     }
 
     bool is_magic(std::vector<std::string> tokenized_input)
@@ -51,14 +44,7 @@ namespace xeus_sqlite
         /*
             Returns true if the code input is magic and false if isn't.
         */
-        if(tokenized_input[0][0] == '%')
-        {
-            return true;
-        }
-        else
-        {
-            return false;
-        }
+        return tokenized_input[0][0] == '%';
     }
 
     std::vector<std::string> tokenizer(const std::string& input)

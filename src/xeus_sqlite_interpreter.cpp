@@ -360,7 +360,6 @@ namespace xeus_sqlite
             {
                 /* Removes "%" symbol */
                 tokenized_input[0].erase(0, 1);
-                // for (auto i : tokenized_input)
 
                 /* Runs SQLite magic */
                 parse_SQLite_magic(execution_counter, tokenized_input);
@@ -368,28 +367,33 @@ namespace xeus_sqlite
                 /* Runs xvega magic and SQLite code */
                 if(is_xvega(tokenized_input))
                 {
+                    /* Removes XVEGA_PLOT command */
+                    tokenized_input.erase(tokenized_input.begin());
+
                     nl::json chart;
                     std::vector<std::string> xvega_input, sqlite_input;
+
+
                     std::tie(xvega_input, sqlite_input) = 
                         xvega_sqlite::split_xvega_sqlite_input(tokenized_input);
 
-                    /* Stringfyes SQLite run code again */
+                    /* Stringfies SQLite run code again */
                     std::stringstream stringfied_sqlite_input;
                     for (size_t i = 0; i < sqlite_input.size(); i++) {
                         stringfied_sqlite_input << " " << sqlite_input[i];
                     }
 
                     process_SQLite_input(execution_counter,
-                                    m_db,
-                                    stringfied_sqlite_input.str(),
-                                    xvega_sqlite_df);
+                                         m_db,
+                                         stringfied_sqlite_input.str(),
+                                         xvega_sqlite_df);
 
                     chart = xvega_sqlite::process_xvega_input(xvega_input,
-                                                          xvega_sqlite_df);
+                                                              xvega_sqlite_df);
 
                     publish_execution_result(execution_counter,
-                                                std::move(chart),
-                                                nl::json::object());
+                                             std::move(chart),
+                                             nl::json::object());
                 }
             }
             /* Runs SQLite code */
