@@ -249,7 +249,7 @@ namespace xeus_sqlite
     void interpreter::process_SQLite_input(int execution_counter,
                                         std::unique_ptr<SQLite::Database> &m_db,
                                         const std::string& code,
-                                        xv::df_type& xvega_sqlite_df)
+                                        xv::df_type& xv_sqlite_df)
     {
         //TODO: all of the xvega outputs can be tested before we add stuff
         //in them. Might improve performance?
@@ -284,7 +284,7 @@ namespace xeus_sqlite
                 html_table << "<th>" << name << "</th>\n";
 
                 /* Build application/vnd.vegalite.v3+json output */
-                xvega_sqlite_df[name] = { "name" };
+                xv_sqlite_df[name] = { "name" };
             }
             /* Builds text/plain output */
             plain_table.add_row(col_names);
@@ -315,7 +315,7 @@ namespace xeus_sqlite
                     html_table << "<td>" << cell << "</td>\n";
 
                     /* Build application/vnd.vegalite.v3+json output */
-                    xvega_sqlite_df[col_name].push_back(cell);
+                    xv_sqlite_df[col_name].push_back(cell);
                 }
                 /* Builds text/html output */
                 html_table << "</tr>\n";
@@ -351,7 +351,7 @@ namespace xeus_sqlite
         std::vector<std::string> tokenized_input = tokenizer(sanitized_code);
 
         /* This structure is only used when xvega code is run */
-        xv::df_type xvega_sqlite_df;
+        xv::df_type xv_sqlite_df;
 
         try
         {
@@ -375,7 +375,7 @@ namespace xeus_sqlite
 
 
                     std::tie(xvega_input, sqlite_input) = 
-                        xvega_sqlite::split_xvega_sqlite_input(tokenized_input);
+                        xv_sqlite::split_xv_sqlite_input(tokenized_input);
 
                     /* Stringfies SQLite run code again */
                     std::stringstream stringfied_sqlite_input;
@@ -386,10 +386,10 @@ namespace xeus_sqlite
                     process_SQLite_input(execution_counter,
                                          m_db,
                                          stringfied_sqlite_input.str(),
-                                         xvega_sqlite_df);
+                                         xv_sqlite_df);
 
-                    chart = xvega_sqlite::process_xvega_input(xvega_input,
-                                                              xvega_sqlite_df);
+                    chart = xv_sqlite::process_xvega_input(xvega_input,
+                                                              xv_sqlite_df);
 
                     publish_execution_result(execution_counter,
                                              std::move(chart),
@@ -399,7 +399,7 @@ namespace xeus_sqlite
             /* Runs SQLite code */
             else
             {
-                process_SQLite_input(execution_counter, m_db, code, xvega_sqlite_df);
+                process_SQLite_input(execution_counter, m_db, code, xv_sqlite_df);
             }
 
             nl::json jresult;

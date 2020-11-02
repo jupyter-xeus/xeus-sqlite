@@ -21,40 +21,40 @@ namespace nl = nlohmann;
 namespace xeus_sqlite
 {
 
-    xvega_sqlite::xvega_sqlite(xv::Chart& chart) : chart(chart)
+    xv_sqlite::xv_sqlite(xv::Chart& chart) : chart(chart)
     {
     }
 
-    xvega_sqlite::~xvega_sqlite()
+    xv_sqlite::~xv_sqlite()
     {
     }
 
-    const std::map<std::string, xvega_sqlite::command_info> xvega_sqlite::xvega_mapping_table = {
-        {"WIDTH", {1, &xvega_sqlite::parse_width}},
-        {"HEIGHT", {1, &xvega_sqlite::parse_height}},
-        {"X_FIELD", {1, &xvega_sqlite::parse_x_field}},
-        {"Y_FIELD", {1, &xvega_sqlite::parse_y_field}},
-        {"MARK", {1, &xvega_sqlite::parse_mark}},
+    const std::map<std::string, xv_sqlite::command_info> xv_sqlite::xvega_mapping_table = {
+        {"WIDTH", {1, &xv_sqlite::parse_width}},
+        {"HEIGHT", {1, &xv_sqlite::parse_height}},
+        {"X_FIELD", {1, &xv_sqlite::parse_x_field}},
+        {"Y_FIELD", {1, &xv_sqlite::parse_y_field}},
+        {"MARK", {1, &xv_sqlite::parse_mark}},
     };
 
-    const std::map<std::string, xvega_sqlite::command_info> xvega_sqlite::mark_mapping_table = {
-        {"COLOR", {1, &xvega_sqlite::parse_color}}
+    const std::map<std::string, xv_sqlite::command_info> xv_sqlite::mark_mapping_table = {
+        {"COLOR", {1, &xv_sqlite::parse_color}}
     };
 
 
-    xvega_sqlite::input_it xvega_sqlite::parse_width(const xvega_sqlite::input_it& input)
+    xv_sqlite::input_it xv_sqlite::parse_width(const xv_sqlite::input_it& input)
     {
         this->chart.width() = std::stoi(*input);
         return input + 1;
     }
 
-    xvega_sqlite::input_it xvega_sqlite::parse_height(const xvega_sqlite::input_it& input)
+    xv_sqlite::input_it xv_sqlite::parse_height(const xv_sqlite::input_it& input)
     {
         this->chart.height() = std::stoi(*input);
         return input + 1;
     }
 
-    xvega_sqlite::input_it xvega_sqlite::parse_x_field(const xvega_sqlite::input_it& input)
+    xv_sqlite::input_it xv_sqlite::parse_x_field(const xv_sqlite::input_it& input)
     {
         xv::X x_enc = xv::X()
                         .field(*(input))
@@ -63,7 +63,7 @@ namespace xeus_sqlite
         return input + 1;
     }
 
-    xvega_sqlite::input_it xvega_sqlite::parse_y_field(const xvega_sqlite::input_it& input)
+    xv_sqlite::input_it xv_sqlite::parse_y_field(const xv_sqlite::input_it& input)
     {
         xv::Y y_enc = xv::Y()
                         .field(*(input))
@@ -72,10 +72,10 @@ namespace xeus_sqlite
         return input + 1;
     }
 
-    xvega_sqlite::input_it xvega_sqlite::parse_mark(const xvega_sqlite::input_it& input, const xvega_sqlite::input_it& end)
+    xv_sqlite::input_it xv_sqlite::parse_mark(const xv_sqlite::input_it& input, const xv_sqlite::input_it& end)
     {
         //TODO: should only accept one attribute for marks
-        const std::map<std::string, xvega_sqlite::command_info> mark_attr_mapping_table = {
+        const std::map<std::string, xv_sqlite::command_info> mark_attr_mapping_table = {
             {"ARC",    {1, [this]{ this->chart.mark() = xv::mark_arc();    }}},
             {"AREA",   {1, [this]{ this->chart.mark() = xv::mark_area();   }}},
             {"BAR",    {1, [this]{ this->chart.mark() = xv::mark_bar();    }}},
@@ -94,7 +94,7 @@ namespace xeus_sqlite
         return input + 1;
     }
 
-    xvega_sqlite::input_it xvega_sqlite::parse_color(const xvega_sqlite::input_it& input)
+    xv_sqlite::input_it xv_sqlite::parse_color(const xv_sqlite::input_it& input)
     {
         struct visitor
         {
@@ -126,9 +126,9 @@ namespace xeus_sqlite
         return input + 1;
     }
 
-    void xvega_sqlite::xvega_execution_loop(const xvega_sqlite::input_it& begin, const xvega_sqlite::input_it& end, const std::map<std::string, xvega_sqlite::command_info> mapping_table)
+    void xv_sqlite::xvega_execution_loop(const xv_sqlite::input_it& begin, const xv_sqlite::input_it& end, const std::map<std::string, xv_sqlite::command_info> mapping_table)
     {
-        xvega_sqlite::input_it it = begin;
+        xv_sqlite::input_it it = begin;
 
         while (it != end)
         {
@@ -141,7 +141,7 @@ namespace xeus_sqlite
                 continue;
             }
 
-            xvega_sqlite::command_info cmd_info = cmd_it->second;
+            xv_sqlite::command_info cmd_info = cmd_it->second;
 
             /* Prevents code to end prematurely.*/
             if (std::distance(it, end) < cmd_info.number_required_arguments)
@@ -156,27 +156,27 @@ namespace xeus_sqlite
             //The impl. is too complex, don't think it's worth it, but should we?
             // struct visitor
             // {
-            //     xvega_sqlite* _this;
-            //     const xvega_sqlite::input_it& it;
-            //     const xvega_sqlite::input_it& end;
+            //     xv_sqlite* _this;
+            //     const xv_sqlite::input_it& it;
+            //     const xv_sqlite::input_it& end;
 
-            //     visitor(xvega_sqlite* _this,
-            //             const xvega_sqlite::input_it& it,
-            //             const xvega_sqlite::input_it& end)
+            //     visitor(xv_sqlite* _this,
+            //             const xv_sqlite::input_it& it,
+            //             const xv_sqlite::input_it& end)
             //                 : _this(_this)
             //                 , it(it)
             //                 , end(end)
             //     {
             //     }
 
-            //     xtl::variant<std::monostate, xvega_sqlite::input_it> operator()(xvega_sqlite::point_it_fun f) { return f(*_this, it); }
-            //     xtl::variant<std::monostate, xvega_sqlite::input_it> operator()(xvega_sqlite::range_it_fun f) { return f(*_this, it, end); }
-            //     xtl::variant<std::monostate, xvega_sqlite::input_it> operator()(xvega_sqlite::free_fun f) { f(); }
+            //     xtl::variant<std::monostate, xv_sqlite::input_it> operator()(xv_sqlite::point_it_fun f) { return f(*_this, it); }
+            //     xtl::variant<std::monostate, xv_sqlite::input_it> operator()(xv_sqlite::range_it_fun f) { return f(*_this, it, end); }
+            //     xtl::variant<std::monostate, xv_sqlite::input_it> operator()(xv_sqlite::free_fun f) { f(); }
             // };
 
             // visitor v(this, it, end);
 
-            // xtl::variant<std::monostate, xvega_sqlite::input_it> ret = xtl::visit(v, cmd_info.parse_function);
+            // xtl::variant<std::monostate, xv_sqlite::input_it> ret = xtl::visit(v, cmd_info.parse_function);
 
             // if (ret.index() == 1)
             // {
@@ -202,18 +202,18 @@ namespace xeus_sqlite
         }
     }
 
-    nl::json xvega_sqlite::process_xvega_input(std::vector<std::string>
+    nl::json xv_sqlite::process_xvega_input(std::vector<std::string>
                                                tokenized_input,
-                                               xv::df_type xvega_sqlite_df)
+                                               xv::df_type xv_sqlite_df)
     {
         /* Initializes and populates xeus_sqlite object*/
         xv::Chart chart;
         chart.encoding() = xv::Encodings();
-        xvega_sqlite context(chart);
+        xv_sqlite context(chart);
 
         /* Populates chart with data gathered on interpreter::process_SQLite_input */
         xv::data_frame data_frame;
-        data_frame.values = xvega_sqlite_df;
+        data_frame.values = xv_sqlite_df;
         chart.data() = data_frame;
 
         context.xvega_execution_loop(tokenized_input.begin(),
@@ -227,7 +227,7 @@ namespace xeus_sqlite
     }
 
     std::pair<std::vector<std::string>, std::vector<std::string>> 
-        xvega_sqlite::split_xvega_sqlite_input(std::vector<std::string> complete_input)
+        xv_sqlite::split_xv_sqlite_input(std::vector<std::string> complete_input)
     {
         //TODO: test edge cases
         auto found = std::find(complete_input.begin(),

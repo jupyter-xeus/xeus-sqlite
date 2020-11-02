@@ -24,24 +24,24 @@ namespace nl = nlohmann;
 
 namespace xeus_sqlite
 {
-    class XEUS_SQLITE_API xvega_sqlite
+    class XEUS_SQLITE_API xv_sqlite
     {
     public:
 
-        virtual ~xvega_sqlite();
+        virtual ~xv_sqlite();
 
         static nl::json process_xvega_input(std::vector<std::string>, xv::df_type);
         static std::pair<std::vector<std::string>, std::vector<std::string>>
-               split_xvega_sqlite_input(std::vector<std::string>);
+               split_xv_sqlite_input(std::vector<std::string>);
 
     private:
 
-        xvega_sqlite(xv::Chart&);
+        xv_sqlite(xv::Chart&);
 
         using input_it = std::vector<std::string>::iterator;
         using free_fun = std::function<void()>;
-        using point_it_fun = std::function<input_it(xvega_sqlite&, const input_it&)>;
-        using range_it_fun = std::function<input_it(xvega_sqlite&, const input_it&, const input_it&)>;
+        using point_it_fun = std::function<input_it(xv_sqlite&, const input_it&)>;
+        using range_it_fun = std::function<input_it(xv_sqlite&, const input_it&, const input_it&)>;
         using parse_function_types = xtl::variant<point_it_fun, range_it_fun, free_fun>;
 
         struct command_info {
