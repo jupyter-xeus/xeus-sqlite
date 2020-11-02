@@ -14,6 +14,7 @@
 #include <functional>
 #include <map>
 #include <string>
+#include <variant>
 #include <vector>
 
 #include "xvega/xvega.hpp"
@@ -38,22 +39,29 @@ namespace xeus_sqlite
         xvega_sqlite(xv::Chart&);
 
         using input_it = std::vector<std::string>::iterator;
+        using free_fun = std::function<void()>;
+        using point_it_fun = std::function<input_it(xvega_sqlite&, const input_it&)>;
+        using range_it_fun = std::function<input_it(xvega_sqlite&, const input_it&, const input_it&)>;
 
         struct command_info {
             int number_required_arguments;
-            std::function<input_it(xvega_sqlite&, const input_it&)> parse_function;
+            std::variant<point_it_fun, range_it_fun, free_fun> parse_function;
         };
 
-        static const std::map<std::string, command_info> mapping_table;
+        static const std::map<std::string, command_info> xvega_mapping_table;
+        static const std::map<std::string, command_info> mark_mapping_table;
 
         xv::Chart& chart;
 
-        void xvega_execution_loop(const input_it&, const input_it&);
+        void xvega_execution_loop(const input_it&, const input_it&, const std::map<std::string, command_info>);
 
         input_it parse_width(const input_it&);
         input_it parse_height(const input_it&);
         input_it parse_x_field(const input_it&);
         input_it parse_y_field(const input_it&);
+
+        input_it parse_mark(const input_it&, const input_it&);
+        input_it parse_color(const input_it&);
     };
 }
 
