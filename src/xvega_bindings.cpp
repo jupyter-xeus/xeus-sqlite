@@ -153,21 +153,51 @@ namespace xeus_sqlite
             ++it;
 
             //TODO: use a visitor instead of index
+            //The impl. is too complex, don't think it's worth it, but should we?
+            // struct visitor
+            // {
+            //     xvega_sqlite* _this;
+            //     const xvega_sqlite::input_it& it;
+            //     const xvega_sqlite::input_it& end;
+
+            //     visitor(xvega_sqlite* _this,
+            //             const xvega_sqlite::input_it& it,
+            //             const xvega_sqlite::input_it& end)
+            //                 : _this(_this)
+            //                 , it(it)
+            //                 , end(end)
+            //     {
+            //     }
+
+            //     xtl::variant<std::monostate, xvega_sqlite::input_it> operator()(xvega_sqlite::point_it_fun f) { return f(*_this, it); }
+            //     xtl::variant<std::monostate, xvega_sqlite::input_it> operator()(xvega_sqlite::range_it_fun f) { return f(*_this, it, end); }
+            //     xtl::variant<std::monostate, xvega_sqlite::input_it> operator()(xvega_sqlite::free_fun f) { f(); }
+            // };
+
+            // visitor v(this, it, end);
+
+            // xtl::variant<std::monostate, xvega_sqlite::input_it> ret = xtl::visit(v, cmd_info.parse_function);
+
+            // if (ret.index() == 1)
+            // {
+            //     it = xtl::get<1>(ret);
+            // }
+
             /* Calls parsing function for command */
             if (cmd_info.parse_function.index() == 0)
             {
                 /* Calls command functions that receive a point iterator*/
-                it = std::get<0>(cmd_info.parse_function)(*this, it);
+                it = xtl::get<0>(cmd_info.parse_function)(*this, it);
             }
             else if (cmd_info.parse_function.index() == 1)
             {
-                /* Calls command functions that receive a range iterator*/
-                it = std::get<1>(cmd_info.parse_function)(*this, it, end);
+                /* Calls command functions that receive a range iterator */
+                it = xtl::get<1>(cmd_info.parse_function)(*this, it, end);
             }
             else if (cmd_info.parse_function.index() == 2)
             {
                 /* Calls command functions that receive a range iterator*/
-                std::get<2>(cmd_info.parse_function)();
+                xtl::get<2>(cmd_info.parse_function)();
             }
         }
     }

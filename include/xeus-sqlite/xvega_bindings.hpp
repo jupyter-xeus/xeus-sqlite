@@ -42,10 +42,11 @@ namespace xeus_sqlite
         using free_fun = std::function<void()>;
         using point_it_fun = std::function<input_it(xvega_sqlite&, const input_it&)>;
         using range_it_fun = std::function<input_it(xvega_sqlite&, const input_it&, const input_it&)>;
+        using parse_function_types = xtl::variant<point_it_fun, range_it_fun, free_fun>;
 
         struct command_info {
             int number_required_arguments;
-            std::variant<point_it_fun, range_it_fun, free_fun> parse_function;
+            parse_function_types parse_function;
         };
 
         static const std::map<std::string, command_info> xvega_mapping_table;
