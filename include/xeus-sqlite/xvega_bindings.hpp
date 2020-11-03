@@ -14,6 +14,7 @@
 #include <functional>
 #include <map>
 #include <string>
+#include <utility>
 #include <variant>
 #include <vector>
 
@@ -60,10 +61,10 @@ namespace xeus_sqlite
 
         xv::Chart& chart;
 
-        void xvega_execution_loop(const input_it&,
-                                  const input_it&,
-                                  const std::map<std::string,
-                                  command_info>);
+        std::pair<input_it, bool> xvega_execution_step(const input_it&,
+                                      const input_it&,
+                                      const std::map<std::string,
+                                      command_info>);
 
         input_it parse_width(const input_it&);
         input_it parse_height(const input_it&);

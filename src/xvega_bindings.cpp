@@ -63,7 +63,7 @@ namespace xeus_sqlite
                         .field(*(input))
                         .type("quantitative");
         this->chart.encoding().value().x = x_enc;
-        xvega_execution_loop(input, end, field_mapping_table);
+        // xvega_execution_step(input, end, field_mapping_table);
         return input + 1;
     }
 
@@ -73,7 +73,7 @@ namespace xeus_sqlite
                         .field(*(input))
                         .type("quantitative");
         this->chart.encoding().value().y = y_enc;
-        xvega_execution_loop(input, end, field_mapping_table);
+        // xvega_execution_step(input, end, field_mapping_table);
         return input + 1;
     }
 
@@ -85,7 +85,7 @@ namespace xeus_sqlite
         //     {"ORDINAL",      {1, [this]{ this->chart.encoding().value().x.type(to_lower(*input))}}},
         // }
 
-        // xvega_execution_loop(input, end, field_type_mapping_table);
+        // xvega_execution_step(input, end, field_type_mapping_table);
         // return input + 1;
     }
 
@@ -107,9 +107,17 @@ namespace xeus_sqlite
             {"TRAIL",  {1, [this]{ this->chart.mark() = xv::mark_trail();  }}},
         };
 
-        xvega_execution_loop(input, end, mark_attr_mapping_table);
-        xvega_execution_loop(input, end, mark_mapping_table);
-        return input + 1;
+        xv_sqlite::input_it it = input;
+        bool succeeded;
+
+        std::tie(it, std::ignore) = xvega_execution_step(input, end, mark_attr_mapping_table);
+
+        do
+        {
+            std::tie(it, succeeded) = xvega_execution_step(it, end, mark_mapping_table);
+        } while (succeeded);
+
+        return it;
     }
 
     xv_sqlite::input_it xv_sqlite::parse_mark_color(const xv_sqlite::input_it& input)
@@ -144,84 +152,81 @@ namespace xeus_sqlite
         return input + 1;
     }
 
-    void xv_sqlite::xvega_execution_loop(const xv_sqlite::input_it& begin,
+    std::pair<xv_sqlite::input_it, bool> xv_sqlite::xvega_execution_step(const xv_sqlite::input_it& begin,
                                          const xv_sqlite::input_it& end,
                                          const std::map<std::string,
                                          xv_sqlite::command_info> mapping_table)
     {
         xv_sqlite::input_it it = begin;
 
-        while (it != end)
+        auto cmd_it = mapping_table.find(*it);
+
+        if (cmd_it == mapping_table.end())
         {
-            auto cmd_it = mapping_table.find(*it);
-
-            if (cmd_it == mapping_table.end())
-            {
-                // throw std::runtime_error("This is not a valid command for SQLite XVega.");
-                ++it;
-                continue;
-            }
-
-            xv_sqlite::command_info cmd_info = cmd_it->second;
-
-            /* Prevents code to end prematurely.*/
-            if (std::distance(it, end) < cmd_info.number_required_arguments)
-            {
-                throw std::runtime_error(std::string("Arguments missing."));
-            }
-
-            /* Advances to first parameter */
-            ++it;
-
-            //TODO: use a visitor instead of index
-            //The impl. is too complex, don't think it's worth it, but should we?
-            // struct visitor
-            // {
-            //     xv_sqlite* _this;
-            //     const xv_sqlite::input_it& it;
-            //     const xv_sqlite::input_it& end;
-
-            //     visitor(xv_sqlite* _this,
-            //             const xv_sqlite::input_it& it,
-            //             const xv_sqlite::input_it& end)
-            //                 : _this(_this)
-            //                 , it(it)
-            //                 , end(end)
-            //     {
-            //     }
-
-            //     /* Types must be variant of all possible outcomes because the visit function can't choose right type byt itself */
-            //     xtl::variant<std::monostate, xv_sqlite::input_it> operator()(xv_sqlite::point_it_fun f) { return f(*_this, it); }
-            //     xtl::variant<std::monostate, xv_sqlite::input_it> operator()(xv_sqlite::range_it_fun f) { return f(*_this, it, end); }
-            //     xtl::variant<std::monostate, xv_sqlite::input_it> operator()(xv_sqlite::free_fun f) { f(); }
-            // };
-
-            // visitor v(this, it, end);
-
-            // xtl::variant<std::monostate, xv_sqlite::input_it> ret = xtl::visit(v, cmd_info.parse_function);
-
-            // if (ret.index() == 1)
-            // {
-            //     it = xtl::get<1>(ret);
-            // }
-
-            /* Calls parsing function for command */
-            if (cmd_info.parse_function.index() == 0)
-            {
-                /* Calls command functions that receive a point iterator*/
-                it = xtl::get<0>(cmd_info.parse_function)(*this, it);
-            }
-            else if (cmd_info.parse_function.index() == 1)
-            {
-                /* Calls command functions that receive a range iterator */
-                it = xtl::get<1>(cmd_info.parse_function)(*this, it, end);
-            }
-            else if (cmd_info.parse_function.index() == 2)
-            {
-                /* Calls command functions that receive a range iterator*/
-                xtl::get<2>(cmd_info.parse_function)();
-            }
+            return std::make_pair(it, false);
         }
+
+        xv_sqlite::command_info cmd_info = cmd_it->second;
+
+        /* Prevents code to end prematurely.*/
+        if (std::distance(it, end) < cmd_info.number_required_arguments)
+        {
+            throw std::runtime_error(std::string("Arguments missing."));
+        }
+
+        /* Advances to next parameter */
+        ++it;
+
+        /* Calls parsing function for command */
+        if (cmd_info.parse_function.index() == 0)
+        {
+            /* Calls command functions that receive a point iterator*/
+            it = xtl::get<0>(cmd_info.parse_function)(*this, it);
+        }
+        else if (cmd_info.parse_function.index() == 1)
+        {
+            /* Calls command functions that receive a range iterator */
+            it = xtl::get<1>(cmd_info.parse_function)(*this, it, end);
+        }
+        else if (cmd_info.parse_function.index() == 2)
+        {
+            /* Treat case where functions return void */
+            xtl::get<2>(cmd_info.parse_function)();
+        }
+
+        return std::make_pair(it, true);
+
+        //TODO: use a visitor instead of index
+        //The impl. is too complex, don't think it's worth it, but should we?
+        // struct visitor
+        // {
+        //     xv_sqlite* _this;
+        //     const xv_sqlite::input_it& it;
+        //     const xv_sqlite::input_it& end;
+
+        //     visitor(xv_sqlite* _this,
+        //             const xv_sqlite::input_it& it,
+        //             const xv_sqlite::input_it& end)
+        //                 : _this(_this)
+        //                 , it(it)
+        //                 , end(end)
+        //     {
+        //     }
+
+        //     /* Types must be variant of all possible outcomes because the visit function can't choose right type byt itself */
+        //     xtl::variant<std::monostate, xv_sqlite::input_it> operator()(xv_sqlite::point_it_fun f) { return f(*_this, it); }
+        //     xtl::variant<std::monostate, xv_sqlite::input_it> operator()(xv_sqlite::range_it_fun f) { return f(*_this, it, end); }
+        //     xtl::variant<std::monostate, xv_sqlite::input_it> operator()(xv_sqlite::free_fun f) { f(); }
+        // };
+
+        // visitor v(this, it, end);
+
+        // xtl::variant<std::monostate, xv_sqlite::input_it> ret = xtl::visit(v, cmd_info.parse_function);
+
+        // if (ret.index() == 1)
+        // {
+        //     it = xtl::get<1>(ret);
+        // }
     }
 
 
@@ -239,10 +244,23 @@ namespace xeus_sqlite
         xv::data_frame data_frame;
         data_frame.values = xv_sqlite_df;
         chart.data() = data_frame;
+        input_it it = tokenized_input.begin();
 
-        context.xvega_execution_loop(tokenized_input.begin(),
-                                     tokenized_input.end(),
-                                     xvega_mapping_table);
+        bool succeeded;
+
+        /* Main execution loop */
+        while (it != tokenized_input.end())
+        {
+            std::tie(it, succeeded) = 
+                context.xvega_execution_step(it,
+                                             tokenized_input.end(),
+                                             xvega_mapping_table);
+
+            if (!succeeded)
+            {
+                throw std::runtime_error("This is not a valid command for SQLite XVega.");
+            }
+        }
 
         nl::json bundle;
         bundle["application/vnd.vegalite.v3+json"] = chart;
