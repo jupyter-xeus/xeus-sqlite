@@ -38,9 +38,12 @@ namespace xeus_sqlite
     };
 
     const std::map<std::string, xv_sqlite::command_info> xv_sqlite::mark_mapping_table = {
-        {"COLOR", {1, &xv_sqlite::parse_color}}
+        {"COLOR", {1, &xv_sqlite::parse_mark_color}}
     };
 
+    const std::map<std::string, xv_sqlite::command_info> xv_sqlite::field_mapping_table = {
+        {"FIELD_TYPE", {1, &xv_sqlite::parse_field_type}}
+    };
 
     xv_sqlite::input_it xv_sqlite::parse_width(const xv_sqlite::input_it& input)
     {
@@ -54,25 +57,40 @@ namespace xeus_sqlite
         return input + 1;
     }
 
-    xv_sqlite::input_it xv_sqlite::parse_x_field(const xv_sqlite::input_it& input)
+    xv_sqlite::input_it xv_sqlite::parse_x_field(const xv_sqlite::input_it& input, const input_it& end)
     {
         xv::X x_enc = xv::X()
                         .field(*(input))
                         .type("quantitative");
         this->chart.encoding().value().x = x_enc;
+        xvega_execution_loop(input, end, field_mapping_table);
         return input + 1;
     }
 
-    xv_sqlite::input_it xv_sqlite::parse_y_field(const xv_sqlite::input_it& input)
+    xv_sqlite::input_it xv_sqlite::parse_y_field(const xv_sqlite::input_it& input, const input_it& end)
     {
         xv::Y y_enc = xv::Y()
                         .field(*(input))
                         .type("quantitative");
         this->chart.encoding().value().y = y_enc;
+        xvega_execution_loop(input, end, field_mapping_table);
         return input + 1;
     }
 
-    xv_sqlite::input_it xv_sqlite::parse_mark(const xv_sqlite::input_it& input, const xv_sqlite::input_it& end)
+    xv_sqlite::input_it xv_sqlite::parse_field_type(const xv_sqlite::input_it& input,
+                                const xv_sqlite::input_it& end)
+    {
+        // const std::map<std::string, xv_sqlite::command_info> field_type_mapping_table = {
+        //     {"QUANTITATIVE", {1, [this]{ this->chart.encoding().value().x.type(to_lower(*input))}}},
+        //     {"ORDINAL",      {1, [this]{ this->chart.encoding().value().x.type(to_lower(*input))}}},
+        // }
+
+        // xvega_execution_loop(input, end, field_type_mapping_table);
+        // return input + 1;
+    }
+
+    xv_sqlite::input_it xv_sqlite::parse_mark(const xv_sqlite::input_it& input,
+                                              const xv_sqlite::input_it& end)
     {
         //TODO: should only accept one attribute for marks
         const std::map<std::string, xv_sqlite::command_info> mark_attr_mapping_table = {
@@ -94,7 +112,7 @@ namespace xeus_sqlite
         return input + 1;
     }
 
-    xv_sqlite::input_it xv_sqlite::parse_color(const xv_sqlite::input_it& input)
+    xv_sqlite::input_it xv_sqlite::parse_mark_color(const xv_sqlite::input_it& input)
     {
         struct visitor
         {
@@ -126,7 +144,10 @@ namespace xeus_sqlite
         return input + 1;
     }
 
-    void xv_sqlite::xvega_execution_loop(const xv_sqlite::input_it& begin, const xv_sqlite::input_it& end, const std::map<std::string, xv_sqlite::command_info> mapping_table)
+    void xv_sqlite::xvega_execution_loop(const xv_sqlite::input_it& begin,
+                                         const xv_sqlite::input_it& end,
+                                         const std::map<std::string,
+                                         xv_sqlite::command_info> mapping_table)
     {
         xv_sqlite::input_it it = begin;
 
@@ -169,6 +190,7 @@ namespace xeus_sqlite
             //     {
             //     }
 
+            //     /* Types must be variant of all possible outcomes because the visit function can't choose right type byt itself */
             //     xtl::variant<std::monostate, xv_sqlite::input_it> operator()(xv_sqlite::point_it_fun f) { return f(*_this, it); }
             //     xtl::variant<std::monostate, xv_sqlite::input_it> operator()(xv_sqlite::range_it_fun f) { return f(*_this, it, end); }
             //     xtl::variant<std::monostate, xv_sqlite::input_it> operator()(xv_sqlite::free_fun f) { f(); }
@@ -201,6 +223,8 @@ namespace xeus_sqlite
             }
         }
     }
+
+
 
     nl::json xv_sqlite::process_xvega_input(std::vector<std::string>
                                                tokenized_input,

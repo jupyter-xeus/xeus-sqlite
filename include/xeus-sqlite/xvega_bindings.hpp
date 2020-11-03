@@ -40,9 +40,14 @@ namespace xeus_sqlite
 
         using input_it = std::vector<std::string>::iterator;
         using free_fun = std::function<void()>;
-        using point_it_fun = std::function<input_it(xv_sqlite&, const input_it&)>;
-        using range_it_fun = std::function<input_it(xv_sqlite&, const input_it&, const input_it&)>;
-        using parse_function_types = xtl::variant<point_it_fun, range_it_fun, free_fun>;
+        using point_it_fun = std::function<input_it(xv_sqlite&,
+                                                    const input_it&)>;
+        using range_it_fun = std::function<input_it(xv_sqlite&,
+                                                    const input_it&,
+                                                    const input_it&)>;
+        using parse_function_types = xtl::variant<point_it_fun,
+                                                  range_it_fun,
+                                                  free_fun>;
 
         struct command_info {
             int number_required_arguments;
@@ -51,18 +56,25 @@ namespace xeus_sqlite
 
         static const std::map<std::string, command_info> xvega_mapping_table;
         static const std::map<std::string, command_info> mark_mapping_table;
+        static const std::map<std::string, command_info> field_mapping_table;
 
         xv::Chart& chart;
 
-        void xvega_execution_loop(const input_it&, const input_it&, const std::map<std::string, command_info>);
+        void xvega_execution_loop(const input_it&,
+                                  const input_it&,
+                                  const std::map<std::string,
+                                  command_info>);
 
         input_it parse_width(const input_it&);
         input_it parse_height(const input_it&);
-        input_it parse_x_field(const input_it&);
-        input_it parse_y_field(const input_it&);
+
+        input_it parse_x_field(const input_it&, const input_it&);
+        input_it parse_y_field(const input_it&, const input_it&);
+        input_it parse_field_type(const xv_sqlite::input_it& input,
+                                  const xv_sqlite::input_it& end);
 
         input_it parse_mark(const input_it&, const input_it&);
-        input_it parse_color(const input_it&);
+        input_it parse_mark_color(const input_it&);
     };
 }
 
