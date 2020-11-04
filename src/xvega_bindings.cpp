@@ -42,7 +42,7 @@ namespace xeus_sqlite
     };
 
     const std::map<std::string, xv_sqlite::command_info> xv_sqlite::field_mapping_table = {
-        {"FIELD_TYPE", {1, &xv_sqlite::parse_field_type}}
+        {"TYPE", {1, &xv_sqlite::parse_field_type}}
     };
 
     xv_sqlite::input_it xv_sqlite::parse_width(const xv_sqlite::input_it& input)
@@ -57,17 +57,32 @@ namespace xeus_sqlite
         return input + 1;
     }
 
-    xv_sqlite::input_it xv_sqlite::parse_x_field(const xv_sqlite::input_it& input, const input_it& end)
+    xv_sqlite::input_it xv_sqlite::parse_x_field(const xv_sqlite::input_it& input, const xv_sqlite::input_it& end)
     {
         xv::X x_enc = xv::X()
                         .field(*(input))
                         .type("quantitative");
         this->chart.encoding().value().x = x_enc;
-        // xvega_execution_step(input, end, field_mapping_table);
-        return input + 1;
+
+        std::cout << "it used inside parse_x_field " << *input << std::endl;
+
+        xv_sqlite::input_it it = input;
+        it += 1;
+        bool succeeded;
+
+        do
+        {
+            std::cout << "trying " << *it << " in field_mapping_table\n";
+            std::tie(it, succeeded) = xvega_execution_step(it, end, field_mapping_table);
+            std::cout << "this should be false: " << succeeded << std::endl;
+        } while (succeeded);
+
+        std::cout << "end parse_x_field at " << *it << "\n";
+
+        return it;
     }
 
-    xv_sqlite::input_it xv_sqlite::parse_y_field(const xv_sqlite::input_it& input, const input_it& end)
+    xv_sqlite::input_it xv_sqlite::parse_y_field(const xv_sqlite::input_it& input, const xv_sqlite::input_it& end)
     {
         xv::Y y_enc = xv::Y()
                         .field(*(input))
@@ -80,13 +95,20 @@ namespace xeus_sqlite
     xv_sqlite::input_it xv_sqlite::parse_field_type(const xv_sqlite::input_it& input,
                                 const xv_sqlite::input_it& end)
     {
-        // const std::map<std::string, xv_sqlite::command_info> field_type_mapping_table = {
-        //     {"QUANTITATIVE", {1, [this]{ this->chart.encoding().value().x.type(to_lower(*input))}}},
-        //     {"ORDINAL",      {1, [this]{ this->chart.encoding().value().x.type(to_lower(*input))}}},
-        // }
+        const std::map<std::string, xv_sqlite::command_info> field_type_mapping_table = {
+            {"QUANTITATIVE", {0, [this]{ this->chart.encoding().value().x().value().type().value() = "quantitative"; }}},
+            {"ORDINAL",      {0, [this]{ this->chart.encoding().value().x().value().type().value() = "ordinal"; }}},
+        };
 
-        // xvega_execution_step(input, end, field_type_mapping_table);
-        // return input + 1;
+
+        xv_sqlite::input_it it = input;
+
+        std::cout << "✨ parse_field_type began with it = " << *it <<std::endl;
+        // it += 1;
+        std::cout << "✨ parse_field_type current it = " << *it <<std::endl;
+
+        std::tie(it, std::ignore) = xvega_execution_step(it, end, field_type_mapping_table);
+        return input + 1;
     }
 
     xv_sqlite::input_it xv_sqlite::parse_mark(const xv_sqlite::input_it& input,
@@ -94,17 +116,17 @@ namespace xeus_sqlite
     {
         //TODO: should only accept one attribute for marks
         const std::map<std::string, xv_sqlite::command_info> mark_attr_mapping_table = {
-            {"ARC",    {1, [this]{ this->chart.mark() = xv::mark_arc();    }}},
-            {"AREA",   {1, [this]{ this->chart.mark() = xv::mark_area();   }}},
-            {"BAR",    {1, [this]{ this->chart.mark() = xv::mark_bar();    }}},
-            {"CIRCLE", {1, [this]{ this->chart.mark() = xv::mark_circle(); }}},
-            {"LINE",   {1, [this]{ this->chart.mark() = xv::mark_line();   }}},
-            {"POINT",  {1, [this]{ this->chart.mark() = xv::mark_point();  }}},
-            {"RECT",   {1, [this]{ this->chart.mark() = xv::mark_rect();   }}},
-            {"RULE",   {1, [this]{ this->chart.mark() = xv::mark_rule();   }}},
-            {"SQUARE", {1, [this]{ this->chart.mark() = xv::mark_square(); }}},
-            {"TICK",   {1, [this]{ this->chart.mark() = xv::mark_tick();   }}},
-            {"TRAIL",  {1, [this]{ this->chart.mark() = xv::mark_trail();  }}},
+            {"ARC",    {0, [this]{ this->chart.mark() = xv::mark_arc();    }}},
+            {"AREA",   {0, [this]{ this->chart.mark() = xv::mark_area();   }}},
+            {"BAR",    {0, [this]{ this->chart.mark() = xv::mark_bar();    }}},
+            {"CIRCLE", {0, [this]{ this->chart.mark() = xv::mark_circle(); }}},
+            {"LINE",   {0, [this]{ this->chart.mark() = xv::mark_line();   }}},
+            {"POINT",  {0, [this]{ this->chart.mark() = xv::mark_point();  }}},
+            {"RECT",   {0, [this]{ this->chart.mark() = xv::mark_rect();   }}},
+            {"RULE",   {0, [this]{ this->chart.mark() = xv::mark_rule();   }}},
+            {"SQUARE", {0, [this]{ this->chart.mark() = xv::mark_square(); }}},
+            {"TICK",   {0, [this]{ this->chart.mark() = xv::mark_tick();   }}},
+            {"TRAIL",  {0, [this]{ this->chart.mark() = xv::mark_trail();  }}},
         };
 
         xv_sqlite::input_it it = input;
@@ -157,15 +179,19 @@ namespace xeus_sqlite
                                          const std::map<std::string,
                                          xv_sqlite::command_info> mapping_table)
     {
+        std::cout << "first line of xvega_execution_step\n";
         xv_sqlite::input_it it = begin;
 
         auto cmd_it = mapping_table.find(*it);
 
+
         if (cmd_it == mapping_table.end())
         {
+            std::cout << "what makes things false "<< std::endl;
             return std::make_pair(it, false);
         }
 
+        std::cout << "🌈 Current command: " << cmd_it->first <<std::endl;
         xv_sqlite::command_info cmd_info = cmd_it->second;
 
         /* Prevents code to end prematurely.*/
@@ -174,9 +200,12 @@ namespace xeus_sqlite
             throw std::runtime_error(std::string("Arguments missing."));
         }
 
-        /* Advances to next parameter */
-        ++it;
-
+        /* Advances to next parameter if command has parameters */
+        if (cmd_info.number_required_arguments > 0)
+        {
+            ++it;
+        }
+        std::cout << "🌈🌈 Current command: " << *it <<std::endl;
         /* Calls parsing function for command */
         if (cmd_info.parse_function.index() == 0)
         {
@@ -192,6 +221,7 @@ namespace xeus_sqlite
         {
             /* Treat case where functions return void */
             xtl::get<2>(cmd_info.parse_function)();
+            ++it;
         }
 
         return std::make_pair(it, true);
@@ -249,6 +279,7 @@ namespace xeus_sqlite
         bool succeeded;
 
         /* Main execution loop */
+        std::cout << "🌸 Main loop" <<std::endl;
         while (it != tokenized_input.end())
         {
             std::tie(it, succeeded) = 
