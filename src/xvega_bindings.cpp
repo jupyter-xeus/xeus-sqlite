@@ -30,23 +30,24 @@ namespace xeus_sqlite
     }
 
     const std::map<std::string, xv_sqlite::command_info> xv_sqlite::xvega_mapping_table = {
-        {"WIDTH", {1, &xv_sqlite::parse_width}},
-        {"HEIGHT", {1, &xv_sqlite::parse_height}},
-        {"X_FIELD", {1, &xv_sqlite::parse_x_field}},
-        {"Y_FIELD", {1, &xv_sqlite::parse_y_field}},
-        {"MARK", {1, &xv_sqlite::parse_mark}},
+        {"WIDTH",   { 1, &xv_sqlite::parse_width   }},
+        {"HEIGHT",  { 1, &xv_sqlite::parse_height  }},
+        {"X_FIELD", { 1, &xv_sqlite::parse_x_field }},
+        {"Y_FIELD", { 1, &xv_sqlite::parse_y_field }},
+        {"MARK",    { 1, &xv_sqlite::parse_mark    }},
     };
 
     const std::map<std::string, xv_sqlite::command_info> xv_sqlite::mark_mapping_table = {
-        {"COLOR", {1, &xv_sqlite::parse_mark_color}}
+        {"COLOR", { 1, &xv_sqlite::parse_mark_color }}
     };
 
     const std::map<std::string, xv_sqlite::command_info> xv_sqlite::x_field_mapping_table = {
-        {"TYPE", {1, &xv_sqlite::parse_x_field_type}},
+        {"TYPE", { 1, &xv_sqlite::parse_x_field_type }},
+        {"BIN",  { 1, &xv_sqlite::parse_x_field_bin  }}
     };
 
     const std::map<std::string, xv_sqlite::command_info> xv_sqlite::y_field_mapping_table = {
-        {"TYPE", {1, &xv_sqlite::parse_y_field_type}},
+        {"TYPE", { 1, &xv_sqlite::parse_y_field_type}},
     };
 
     xv_sqlite::input_it xv_sqlite::parse_width(const xv_sqlite::input_it& input)
@@ -85,6 +86,38 @@ namespace xeus_sqlite
         return it;
     }
 
+    xv_sqlite::input_it xv_sqlite::parse_x_field_type(const xv_sqlite::input_it& input,
+                                                      const xv_sqlite::input_it& end)
+    {
+        const std::map<std::string, xv_sqlite::command_info> x_field_type_mapping_table = {
+            {"QUANTITATIVE", {0, [this]{ this->chart.encoding().value().x().value().type().value() = "quantitative"; }}},
+            {"ORDINAL",      {0, [this]{ this->chart.encoding().value().x().value().type().value() = "ordinal";      }}},
+            {"NOMINAL",      {0, [this]{ this->chart.encoding().value().x().value().type().value() = "nominal";      }}},
+        };
+
+        xv_sqlite::input_it it = input;
+
+        std::cout << "✨ parse_field_type began with it = " << *it <<std::endl;
+        std::cout << "✨ parse_field_type current it = " << *it <<std::endl;
+
+        std::tie(it, std::ignore) = xvega_execution_step(it, end, x_field_type_mapping_table);
+        return it;
+    }
+
+    xv_sqlite::input_it xv_sqlite::parse_x_field_bin(const xv_sqlite::input_it& input,
+                                                     const xv_sqlite::input_it& end)
+    {
+        const std::map<std::string, xv_sqlite::command_info> x_field_bin_mapping_table = {
+            {"TRUE",  {0, [this]{ this->chart.encoding().value().y().value().bin().value() = true;  }}},
+            {"FALSE", {0, [this]{ this->chart.encoding().value().y().value().bin().value() = false; }}}
+        };
+
+        xv_sqlite::input_it it = input + 1;
+        std::tie(it, std::ignore) = xvega_execution_step(it, end, x_field_bin_mapping_table);
+
+        return it;
+    }
+
     xv_sqlite::input_it xv_sqlite::parse_y_field(const xv_sqlite::input_it& input, const xv_sqlite::input_it& end)
     {
         xv::Y y_enc = xv::Y()
@@ -108,29 +141,13 @@ namespace xeus_sqlite
         return it;
     }
 
-    xv_sqlite::input_it xv_sqlite::parse_x_field_type(const xv_sqlite::input_it& input,
-                                                      const xv_sqlite::input_it& end)
-    {
-        const std::map<std::string, xv_sqlite::command_info> x_field_type_mapping_table = {
-            {"QUANTITATIVE", {0, [this]{ this->chart.encoding().value().x().value().type().value() = "quantitative"; }}},
-            {"ORDINAL",      {0, [this]{ this->chart.encoding().value().x().value().type().value() = "ordinal";}}},
-        };
-
-        xv_sqlite::input_it it = input;
-
-        std::cout << "✨ parse_field_type began with it = " << *it <<std::endl;
-        std::cout << "✨ parse_field_type current it = " << *it <<std::endl;
-
-        std::tie(it, std::ignore) = xvega_execution_step(it, end, x_field_type_mapping_table);
-        return it;
-    }
-
     xv_sqlite::input_it xv_sqlite::parse_y_field_type(const xv_sqlite::input_it& input,
                                                       const xv_sqlite::input_it& end)
     {
         const std::map<std::string, xv_sqlite::command_info> y_field_type_mapping_table = {
             {"QUANTITATIVE", {0, [this]{ this->chart.encoding().value().y().value().type().value() = "quantitative"; }}},
-            {"ORDINAL",      {0, [this]{ this->chart.encoding().value().y().value().type().value() = "ordinal"; }}},
+            {"ORDINAL",      {0, [this]{ this->chart.encoding().value().y().value().type().value() = "ordinal";      }}},
+            {"NOMINAL",      {0, [this]{ this->chart.encoding().value().y().value().type().value() = "nominal";      }}},
         };
 
         xv_sqlite::input_it it = input;
@@ -141,6 +158,7 @@ namespace xeus_sqlite
         std::tie(it, std::ignore) = xvega_execution_step(it, end, y_field_type_mapping_table);
         return it;
     }
+
 
     xv_sqlite::input_it xv_sqlite::parse_mark(const xv_sqlite::input_it& input,
                                               const xv_sqlite::input_it& end)

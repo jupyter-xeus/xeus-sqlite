@@ -67,6 +67,7 @@ namespace xeus_sqlite
     std::string to_lower(const std::string& input)
     {
         std::string lower_case_input;
+        lower_case_input.resize(input.length());
         std::transform(input.begin(), input.end(), lower_case_input.begin(), ::tolower);
         return lower_case_input;
     }
@@ -76,7 +77,6 @@ namespace xeus_sqlite
         std::string upper_case_input;
         upper_case_input.resize(input.length());
         std::transform(input.begin(), input.end(), upper_case_input.begin(), ::toupper);
-        std::cout << input << " inside to upper 🐼 " << upper_case_input << std::endl;
         return upper_case_input;
     }
 
