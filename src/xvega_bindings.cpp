@@ -42,12 +42,15 @@ namespace xeus_sqlite
     };
 
     const std::map<std::string, xv_sqlite::command_info> xv_sqlite::x_field_mapping_table = {
-        {"TYPE", { 1, &xv_sqlite::parse_x_field_type }},
-        {"BIN",  { 1, &xv_sqlite::parse_x_field_bin  }}
+        {"TYPE",      { 1, &xv_sqlite::parse_x_field_type      }},
+        {"BIN",       { 1, &xv_sqlite::parse_x_field_bin       }},
+        {"AGGREGATE", { 1, &xv_sqlite::parse_x_field_aggregate }},
     };
 
     const std::map<std::string, xv_sqlite::command_info> xv_sqlite::y_field_mapping_table = {
-        {"TYPE", { 1, &xv_sqlite::parse_y_field_type}},
+        {"TYPE", { 1, &xv_sqlite::parse_y_field_type }},
+        {"BIN",  { 1, &xv_sqlite::parse_y_field_bin  }},
+        {"AGGREGATE", { 1, &xv_sqlite::parse_y_field_aggregate }},
     };
 
     xv_sqlite::input_it xv_sqlite::parse_width(const xv_sqlite::input_it& input)
@@ -62,7 +65,8 @@ namespace xeus_sqlite
         return input + 1;
     }
 
-    xv_sqlite::input_it xv_sqlite::parse_x_field(const xv_sqlite::input_it& input, const xv_sqlite::input_it& end)
+    xv_sqlite::input_it xv_sqlite::parse_x_field(const xv_sqlite::input_it& input,
+                                                 const xv_sqlite::input_it& end)
     {
         xv::X x_enc = xv::X()
                         .field(*(input))
@@ -90,9 +94,9 @@ namespace xeus_sqlite
                                                       const xv_sqlite::input_it& end)
     {
         const std::map<std::string, xv_sqlite::command_info> x_field_type_mapping_table = {
-            {"QUANTITATIVE", {0, [this]{ this->chart.encoding().value().x().value().type().value() = "quantitative"; }}},
-            {"ORDINAL",      {0, [this]{ this->chart.encoding().value().x().value().type().value() = "ordinal";      }}},
-            {"NOMINAL",      {0, [this]{ this->chart.encoding().value().x().value().type().value() = "nominal";      }}},
+            {"QUANTITATIVE", { 0, [this]{ this->chart.encoding().value().x().value().type().value() = "quantitative"; }}},
+            {"ORDINAL",      { 0, [this]{ this->chart.encoding().value().x().value().type().value() = "ordinal";      }}},
+            {"NOMINAL",      { 0, [this]{ this->chart.encoding().value().x().value().type().value() = "nominal";      }}},
         };
 
         xv_sqlite::input_it it = input;
@@ -108,8 +112,8 @@ namespace xeus_sqlite
                                                      const xv_sqlite::input_it& end)
     {
         const std::map<std::string, xv_sqlite::command_info> x_field_bin_mapping_table = {
-            {"TRUE",  {0, [this]{ this->chart.encoding().value().y().value().bin().value() = true;  }}},
-            {"FALSE", {0, [this]{ this->chart.encoding().value().y().value().bin().value() = false; }}}
+            {"TRUE",  { 0, [this]{ this->chart.encoding().value().x().value().bin().value() = true;  }}},
+            {"FALSE", { 0, [this]{ this->chart.encoding().value().x().value().bin().value() = false; }}},
         };
 
         xv_sqlite::input_it it = input + 1;
@@ -118,7 +122,43 @@ namespace xeus_sqlite
         return it;
     }
 
-    xv_sqlite::input_it xv_sqlite::parse_y_field(const xv_sqlite::input_it& input, const xv_sqlite::input_it& end)
+    xv_sqlite::input_it xv_sqlite::parse_x_field_aggregate(const xv_sqlite::input_it& input,
+                                                           const xv_sqlite::input_it& end)
+    {
+        const std::map<std::string, xv_sqlite::command_info> x_field_aggregate_mapping_table = {
+            {"COUNT",     { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "count";     }}},
+            {"VALID",     { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "valid";     }}},
+            {"MISSING",   { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "missing";   }}},
+            {"DISTINCT",  { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "distinct";  }}},
+            {"SUM",       { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "sum";       }}},
+            {"PRODUCT",   { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "product";   }}},
+            {"MEAN",      { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "mean";      }}},
+            {"AVERAGE",   { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "average";   }}},
+            {"VARIANCE",  { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "variance";  }}},
+            {"VARIANCEP", { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "variancep"; }}},
+            {"STDEV",     { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "stdev";     }}},
+            {"STEDEVP",   { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "stedevp";   }}},
+            {"STEDERR",   { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "stederr";   }}},
+            {"MEDIAN",    { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "median";    }}},
+            {"Q1",        { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "q1";        }}},
+            {"Q3",        { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "q3";        }}},
+            {"CI0",       { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "ci0";       }}},
+            {"CI1",       { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "ci1";       }}},
+            {"MIN",       { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "min";       }}},
+            {"MAX",       { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "max";       }}},
+            {"ARGMIN",    { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "argmin";    }}},
+            {"ARGMAX",    { 0, [this]{ this->chart.encoding().value().x().value().aggregate().value() = "argmax";    }}},
+            //TODO: missing values arg
+        };
+
+        xv_sqlite::input_it it = input + 1;
+        std::tie(it, std::ignore) = xvega_execution_step(it, end, x_field_aggregate_mapping_table);
+
+        return it;
+    }
+
+    xv_sqlite::input_it xv_sqlite::parse_y_field(const xv_sqlite::input_it& input,
+                                                 const xv_sqlite::input_it& end)
     {
         xv::Y y_enc = xv::Y()
                         .field(*(input))
@@ -134,7 +174,7 @@ namespace xeus_sqlite
         {
             std::cout << "trying " << *it << " in field_mapping_table\n";
             std::tie(it, succeeded) = xvega_execution_step(it, end, y_field_mapping_table);
-            std::cout << "this should be false: " << succeeded << std::endl;
+            std::cout << "this should be "": " << succeeded << std::endl;
         } while (succeeded);
 
         std::cout << "end parse_x_field at " << *it << "\n";
@@ -145,9 +185,9 @@ namespace xeus_sqlite
                                                       const xv_sqlite::input_it& end)
     {
         const std::map<std::string, xv_sqlite::command_info> y_field_type_mapping_table = {
-            {"QUANTITATIVE", {0, [this]{ this->chart.encoding().value().y().value().type().value() = "quantitative"; }}},
-            {"ORDINAL",      {0, [this]{ this->chart.encoding().value().y().value().type().value() = "ordinal";      }}},
-            {"NOMINAL",      {0, [this]{ this->chart.encoding().value().y().value().type().value() = "nominal";      }}},
+            {"QUANTITATIVE", { 0, [this]{ this->chart.encoding().value().y().value().type().value() = "quantitative"; }}},
+            {"ORDINAL",      { 0, [this]{ this->chart.encoding().value().y().value().type().value() = "ordinal";      }}},
+            {"NOMINAL",      { 0, [this]{ this->chart.encoding().value().y().value().type().value() = "nominal";      }}},
         };
 
         xv_sqlite::input_it it = input;
@@ -159,23 +199,72 @@ namespace xeus_sqlite
         return it;
     }
 
+    xv_sqlite::input_it xv_sqlite::parse_y_field_bin(const xv_sqlite::input_it& input,
+                                                     const xv_sqlite::input_it& end)
+    {
+        const std::map<std::string, xv_sqlite::command_info> y_field_bin_mapping_table = {
+            {"TRUE",  { 0, [this]{ this->chart.encoding().value().y().value().bin().value() = true;  }}},
+            {"FALSE", { 0, [this]{ this->chart.encoding().value().y().value().bin().value() = false; }}}
+        };
+
+        xv_sqlite::input_it it = input + 1;
+        std::tie(it, std::ignore) = xvega_execution_step(it, end, y_field_bin_mapping_table);
+
+        return it;
+    }
+
+    xv_sqlite::input_it xv_sqlite::parse_y_field_aggregate(const xv_sqlite::input_it& input,
+                                                           const xv_sqlite::input_it& end)
+    {
+        const std::map<std::string, xv_sqlite::command_info> y_field_aggregate_mapping_table = {
+            {"COUNT",     { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "count";     }}},
+            {"VALID",     { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "valid";     }}},
+            {"MISSING",   { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "missing";   }}},
+            {"DISTINCT",  { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "distinct";  }}},
+            {"SUM",       { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "sum";       }}},
+            {"PRODUCT",   { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "product";   }}},
+            {"MEAN",      { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "mean";      }}},
+            {"AVERAGE",   { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "average";   }}},
+            {"VARIANCE",  { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "variance";  }}},
+            {"VARIANCEP", { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "variancep"; }}},
+            {"STDEV",     { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "stdev";     }}},
+            {"STEDEVP",   { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "stedevp";   }}},
+            {"STEDERR",   { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "stederr";   }}},
+            {"MEDIAN",    { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "median";    }}},
+            {"Q1",        { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "q1";        }}},
+            {"Q3",        { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "q3";        }}},
+            {"CI0",       { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "ci0";       }}},
+            {"CI1",       { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "ci1";       }}},
+            {"MIN",       { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "min";       }}},
+            {"MAX",       { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "max";       }}},
+            {"ARGMIN",    { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "argmin";    }}},
+            {"ARGMAX",    { 0, [this]{ this->chart.encoding().value().y().value().aggregate().value() = "argmax";    }}},
+            //TODO: missing values arg
+        };
+
+        xv_sqlite::input_it it = input + 1;
+        std::tie(it, std::ignore) = xvega_execution_step(it, end, y_field_aggregate_mapping_table);
+
+        return it;
+    }
+
 
     xv_sqlite::input_it xv_sqlite::parse_mark(const xv_sqlite::input_it& input,
                                               const xv_sqlite::input_it& end)
     {
         //TODO: should only accept one attribute for marks
         const std::map<std::string, xv_sqlite::command_info> mark_attr_mapping_table = {
-            {"ARC",    {0, [this]{ this->chart.mark() = xv::mark_arc();    }}},
-            {"AREA",   {0, [this]{ this->chart.mark() = xv::mark_area();   }}},
-            {"BAR",    {0, [this]{ this->chart.mark() = xv::mark_bar();    }}},
-            {"CIRCLE", {0, [this]{ this->chart.mark() = xv::mark_circle(); }}},
-            {"LINE",   {0, [this]{ this->chart.mark() = xv::mark_line();   }}},
-            {"POINT",  {0, [this]{ this->chart.mark() = xv::mark_point();  }}},
-            {"RECT",   {0, [this]{ this->chart.mark() = xv::mark_rect();   }}},
-            {"RULE",   {0, [this]{ this->chart.mark() = xv::mark_rule();   }}},
-            {"SQUARE", {0, [this]{ this->chart.mark() = xv::mark_square(); }}},
-            {"TICK",   {0, [this]{ this->chart.mark() = xv::mark_tick();   }}},
-            {"TRAIL",  {0, [this]{ this->chart.mark() = xv::mark_trail();  }}},
+            {"ARC",    { 0, [this]{ this->chart.mark() = xv::mark_arc();    }}},
+            {"AREA",   { 0, [this]{ this->chart.mark() = xv::mark_area();   }}},
+            {"BAR",    { 0, [this]{ this->chart.mark() = xv::mark_bar();    }}},
+            {"CIRCLE", { 0, [this]{ this->chart.mark() = xv::mark_circle(); }}},
+            {"LINE",   { 0, [this]{ this->chart.mark() = xv::mark_line();   }}},
+            {"POINT",  { 0, [this]{ this->chart.mark() = xv::mark_point();  }}},
+            {"RECT",   { 0, [this]{ this->chart.mark() = xv::mark_rect();   }}},
+            {"RULE",   { 0, [this]{ this->chart.mark() = xv::mark_rule();   }}},
+            {"SQUARE", { 0, [this]{ this->chart.mark() = xv::mark_square(); }}},
+            {"TICK",   { 0, [this]{ this->chart.mark() = xv::mark_tick();   }}},
+            {"TRAIL",  { 0, [this]{ this->chart.mark() = xv::mark_trail();  }}},
         };
 
         xv_sqlite::input_it it = input;

@@ -73,10 +73,12 @@ namespace xeus_sqlite
         input_it parse_x_field(const input_it&, const input_it&);
         input_it parse_x_field_type(const input_it&, const input_it&);
         input_it parse_x_field_bin(const input_it&, const input_it&);
+        input_it parse_x_field_aggregate(const input_it&, const input_it&);
 
         input_it parse_y_field(const input_it&, const input_it&);
         input_it parse_y_field_type(const input_it&, const input_it&);
         input_it parse_y_field_bin(const input_it&, const input_it&);
+        input_it parse_y_field_aggregate(const input_it&, const input_it&);
 
         input_it parse_mark(const input_it&, const input_it&);
         input_it parse_mark_color(const input_it&);
