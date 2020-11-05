@@ -113,7 +113,7 @@ namespace xeus_sqlite
     {
         const std::map<std::string, xv_sqlite::command_info> x_field_type_mapping_table = {
             {"QUANTITATIVE", {0, [this]{ this->chart.encoding().value().x().value().type().value() = "quantitative"; }}},
-            {"ORDINAL",      {0, [this]{ this->chart.encoding().value().x().value().type().value() = "ordinal"; std::cout << "inside ordinal xfield\n";}}},
+            {"ORDINAL",      {0, [this]{ this->chart.encoding().value().x().value().type().value() = "ordinal";}}},
         };
 
         xv_sqlite::input_it it = input;
@@ -205,7 +205,8 @@ namespace xeus_sqlite
         return input + 1;
     }
 
-    std::pair<xv_sqlite::input_it, bool> xv_sqlite::xvega_execution_step(const xv_sqlite::input_it& begin,
+    std::pair<xv_sqlite::input_it, bool> xv_sqlite::xvega_execution_step(
+                                         const xv_sqlite::input_it& begin,
                                          const xv_sqlite::input_it& end,
                                          const std::map<std::string,
                                          xv_sqlite::command_info> mapping_table)
@@ -213,16 +214,17 @@ namespace xeus_sqlite
         std::cout << "first line of xvega_execution_step\n";
         xv_sqlite::input_it it = begin;
 
-        auto cmd_it = mapping_table.find(*it);
+        auto cmd_it = mapping_table.find(to_upper(*it));
 
 
         if (cmd_it == mapping_table.end())
         {
             std::cout << "what makes things false "<< std::endl;
-            return std::make_pair(it, false);
+            std::cout << "🌈🌈 Current command: " << *it << " toupper " << to_upper(*it) << std::endl;
+            return std::make_pair(it, false); 
         }
 
-        // std::cout << "🌈 Current command: " << cmd_it->first <<std::endl;
+        std::cout << "🌈 Current command: " << cmd_it->first <<std::endl;
         xv_sqlite::command_info cmd_info = cmd_it->second;
 
         /* Prevents code to end prematurely.*/
@@ -236,7 +238,6 @@ namespace xeus_sqlite
         {
             ++it;
         }
-        // std::cout << "🌈🌈 Current command: " << *it <<std::endl;
         /* Calls parsing function for command */
         if (cmd_info.parse_function.index() == 0)
         {
