@@ -389,7 +389,7 @@ namespace xeus_sqlite
                                          xv_sqlite_df);
 
                     chart = xv_sqlite::process_xvega_input(xvega_input,
-                                                              xv_sqlite_df);
+                                                           xv_sqlite_df);
 
                     publish_execution_result(execution_counter,
                                              std::move(chart),

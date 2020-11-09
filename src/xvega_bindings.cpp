@@ -45,6 +45,8 @@ namespace xeus_sqlite
         {"TYPE",      { 1, &xv_sqlite::parse_x_field_type      }},
         {"BIN",       { 1, &xv_sqlite::parse_x_field_bin       }},
         {"AGGREGATE", { 1, &xv_sqlite::parse_x_field_aggregate }},
+        // {"TITLE",     { 1, &xv_sqlite::parse_x_field_title     }},
+        // {"GRID",      { 1, &xv_sqlite::parse_x_field_grid      }},
     };
 
     const std::map<std::string, xv_sqlite::command_info> xv_sqlite::y_field_mapping_table = {
@@ -73,19 +75,13 @@ namespace xeus_sqlite
                         .type("quantitative");
         this->chart.encoding().value().x = x_enc;
 
-        std::cout << "it used inside parse_x_field " << *input << std::endl;
-
         xv_sqlite::input_it it = input + 1;
         bool succeeded;
 
         do
         {
-            std::cout << "trying " << *it << " in field_mapping_table\n";
             std::tie(it, succeeded) = xvega_execution_step(it, end, x_field_mapping_table);
-            std::cout << "this should be false: " << succeeded << std::endl;
         } while (succeeded);
-
-        std::cout << "end parse_x_field at " << *it << "\n";
 
         return it;
     }
@@ -101,10 +97,8 @@ namespace xeus_sqlite
 
         xv_sqlite::input_it it = input;
 
-        std::cout << "✨ parse_field_type began with it = " << *it <<std::endl;
-        std::cout << "✨ parse_field_type current it = " << *it <<std::endl;
-
         std::tie(it, std::ignore) = xvega_execution_step(it, end, x_field_type_mapping_table);
+
         return it;
     }
 
@@ -157,6 +151,36 @@ namespace xeus_sqlite
         return it;
     }
 
+    // //TODO: I don't know why it doesn't work
+    // xv_sqlite::input_it xv_sqlite::parse_x_field_title(const xv_sqlite::input_it& input)
+    // {
+    //     xv_sqlite::input_it it = input;
+    //     std::vector<std::string> v = {*it};
+    //     auto x_axis = xtl::get<0>(this->chart.encoding().value().x().value().axis().value());
+    //     x_axis.title().value() = v;
+    //     this->chart.encoding().value().x().value().axis().value() = x_axis;
+    //     return it + 1;
+    // }
+
+    // //TODO: I don't know if this is working
+    // xv_sqlite::input_it xv_sqlite::parse_x_field_grid(const xv_sqlite::input_it& input,
+    //                                                   const xv_sqlite::input_it& end)
+    // {
+    //     const std::map<std::string, xv_sqlite::command_info> x_field_grid_mapping_table = {
+    //         // {"TRUE",  { 0, [this]{ xtl::get<0>(this->chart.encoding().value().x().value().axis().value()).grid().value() = true; std::cout << "🐉TRU🐉\n"; }}},
+    //         {"FALSE", { 0, [this]{ 
+    //             auto ac = xv::axis_config().grid(false);
+    //             auto cf = xv::Config().axis(ac);
+    //             this->chart.config() = cf;
+    //             std::cout << "sets grid to false\n";}}},
+    //     };
+
+    //     xv_sqlite::input_it it = input;
+    //     std::tie(it, std::ignore) = xvega_execution_step(it, end, x_field_grid_mapping_table);
+
+    //     return it;
+    // }
+
     xv_sqlite::input_it xv_sqlite::parse_y_field(const xv_sqlite::input_it& input,
                                                  const xv_sqlite::input_it& end)
     {
@@ -165,19 +189,14 @@ namespace xeus_sqlite
                         .type("quantitative");
         this->chart.encoding().value().y = y_enc;
 
-        std::cout << "it used inside parse_x_field " << *input << std::endl;
-
         xv_sqlite::input_it it = input + 1;
         bool succeeded;
 
         do
         {
-            std::cout << "trying " << *it << " in field_mapping_table\n";
             std::tie(it, succeeded) = xvega_execution_step(it, end, y_field_mapping_table);
-            std::cout << "this should be "": " << succeeded << std::endl;
         } while (succeeded);
 
-        std::cout << "end parse_x_field at " << *it << "\n";
         return it;
     }
 
@@ -191,9 +210,6 @@ namespace xeus_sqlite
         };
 
         xv_sqlite::input_it it = input;
-
-        std::cout << "✨ parse_field_type began with it = " << *it <<std::endl;
-        std::cout << "✨ parse_field_type current it = " << *it <<std::endl;
 
         std::tie(it, std::ignore) = xvega_execution_step(it, end, y_field_type_mapping_table);
         return it;
@@ -318,7 +334,6 @@ namespace xeus_sqlite
                                          const std::map<std::string,
                                          xv_sqlite::command_info> mapping_table)
     {
-        std::cout << "first line of xvega_execution_step\n";
         xv_sqlite::input_it it = begin;
 
         auto cmd_it = mapping_table.find(to_upper(*it));
@@ -326,12 +341,9 @@ namespace xeus_sqlite
 
         if (cmd_it == mapping_table.end())
         {
-            std::cout << "what makes things false "<< std::endl;
-            std::cout << "🌈🌈 Current command: " << *it << " toupper " << to_upper(*it) << std::endl;
             return std::make_pair(it, false); 
         }
 
-        std::cout << "🌈 Current command: " << cmd_it->first <<std::endl;
         xv_sqlite::command_info cmd_info = cmd_it->second;
 
         /* Prevents code to end prematurely.*/
@@ -358,7 +370,6 @@ namespace xeus_sqlite
         }
         else if (cmd_info.parse_function.index() == 2)
         {
-            std::cout << "🐸\n";
             /* Treat case where functions return void */
             xtl::get<2>(cmd_info.parse_function)();
             ++it;
@@ -419,10 +430,8 @@ namespace xeus_sqlite
         bool succeeded;
 
         /* Main execution loop */
-        std::cout << "🌸 Main loop" <<std::endl;
         while (it != tokenized_input.end())
         {
-            std::cout << "🔥🔥This dude's loop: " << *it << std::endl;
             std::tie(it, succeeded) = 
                 context.xvega_execution_step(it,
                                              tokenized_input.end(),
