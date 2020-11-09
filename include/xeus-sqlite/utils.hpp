@@ -23,6 +23,8 @@ namespace xeus_sqlite
     bool case_insentive_equals(const std::string&, const std::string&);
     bool is_xvega(std::vector<std::string>& tokenized_input);
     bool is_magic(std::vector<std::string> tokenized_input);
+    std::string to_lower(const std::string&);
+    std::string to_upper(const std::string&);
 
     /**
      * Separates the code on spaces so it's easier to execute the commands.

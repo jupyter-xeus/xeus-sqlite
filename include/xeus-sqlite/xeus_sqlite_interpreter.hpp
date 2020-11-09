@@ -171,7 +171,7 @@ namespace xeus_sqlite
         void process_SQLite_input(int execution_counter,
                                         std::unique_ptr<SQLite::Database> &m_db,
                                         const std::string& code,
-                                        xv::df_type& xvega_sqlite_df);
+                                        xv::df_type& xv_sqlite_df);
     };
 }
 

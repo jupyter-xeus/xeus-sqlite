@@ -64,4 +64,21 @@ namespace xeus_sqlite
         return tokenized_input;
     }
 
+    std::string to_lower(const std::string& input)
+    {
+        std::string lower_case_input;
+        lower_case_input.resize(input.length());
+        std::transform(input.begin(), input.end(), lower_case_input.begin(), ::tolower);
+        return lower_case_input;
+    }
+
+    std::string to_upper(const std::string& input)
+    {
+        std::string upper_case_input;
+        upper_case_input.resize(input.length());
+        std::transform(input.begin(), input.end(), upper_case_input.begin(), ::toupper);
+        return upper_case_input;
+    }
+
+
 }
