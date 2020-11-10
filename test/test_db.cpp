@@ -17,13 +17,13 @@ TEST(xeus_sqlite_interpreter, sanitize_string_check)
     EXPECT_EQ(sanitized_string, " Some input");
 }
 
-// TEST(xeus_sqlite_interpreter, tokenizer_check)
-// {
-//     std::string code = "%LOAD database.db rw";
-//     std::vector<std::string> tokenized_code;
-//     tokenized_code = tokenizer(code);
-//     EXPECT_EQ(tokenized_code[2], "database.db");
-// }
+TEST(xeus_sqlite_interpreter, tokenizer_check)
+{
+    std::string code = "%LOAD  database.db   rw";
+    std::vector<std::string> tokenized_code;
+    tokenized_code = tokenizer(code);
+    EXPECT_EQ(tokenized_code[2], "database.db");
+}
 
 // TEST(xeus_sqlite_interpreter, is_magic_check)
 // {
