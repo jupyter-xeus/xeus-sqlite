@@ -174,10 +174,6 @@ namespace xeus_sqlite
         if (case_insentive_equals(tokenized_input[0], "LOAD"))
         {
             m_db_path = tokenized_input[1];
-
-            // std::ifstream path_is_valid;
-            // path_is_valid.open(m_db_path);
-            // if (!path_is_valid.is_open())
             std::ifstream path_is_valid(m_db_path);
             if (!path_is_valid.is_open())
             {
@@ -185,7 +181,6 @@ namespace xeus_sqlite
             }
             else
             {
-
                 return load_db(tokenized_input);
             }
         }
@@ -423,7 +418,7 @@ namespace xeus_sqlite
     }
 
     nl::json interpreter::complete_request_impl(const std::string& /*code*/,
-                                                    int /*cursor_pos*/)
+                                                int /*cursor_pos*/)
     {
         nl::json jresult;
         jresult["status"] = "ok";
@@ -453,21 +448,19 @@ namespace xeus_sqlite
         result["implementation_version"] = "0.1.0";
 
         /* The jupyter-console banner for xeus-sqlite is the following:
-          __  _____ _   _ ___
-          \ \/ / _ \ | | / __|
-           >  <  __/ |_| \__ \
-          /_/\_\___|\__,_|___/
-          xeus-sqlite: a Jupyter kernel for SQLite
+            _  _ ____ _  _ ____    ____ ____ _    _ ___ ____
+             \/  |___ |  | [__  __ [__  |  | |    |  |  |___
+            _/\_ |___ |__| ___]    ___] |_\| |___ |  |  |___
+          xeus-SQLite: a Jupyter kernel for SQLite
+          SQLite version: x.x.x
         */
 
         std::string banner = ""
-              "  __  _____ _   _ ___\n"
-              "  \\ \\/ / _ \\ | | / __|\n"
-              "   >  <  __/ |_| \\__ \\\n"
-              "  /_/\\_\\___|\\__,_|___/\n"
-              "\n"
-              "  xeus-sqlite: a Jupyter kernel for SQLite\n"
-              "  SQLite ";
+              "_  _ ____ _  _ ____    ____ ____ _    _ ___ ____\n"
+              " \\/  |___ |  | [__  __ [__  |  | |    |  |  |___\n"
+              "_/\\_ |___ |__| ___]    ___] |_\\| |___ |  |  |___\n"
+              "  xeus-SQLite: a Jupyter kernel for SQLite\n"
+              "  SQLite version: ";
         banner.append(SQLite::VERSION);
 
         result["banner"] = banner;
