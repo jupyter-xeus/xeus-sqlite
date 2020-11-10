@@ -52,11 +52,11 @@ namespace xeus_sqlite
         /*
             Separetes the input with spaces.
         */
-        std::stringstream sanitized_input(sanitize_string(input));
+        std::istringstream sanitized_input(sanitize_string(input));
         std::string segment;
         std::vector<std::string> tokenized_input;
 
-        while(std::getline(sanitized_input, segment, ' '))
+        while(sanitized_input >> segment)
         {
             tokenized_input.push_back(segment);
         }
@@ -79,6 +79,5 @@ namespace xeus_sqlite
         std::transform(input.begin(), input.end(), upper_case_input.begin(), ::toupper);
         return upper_case_input;
     }
-
 
 }
