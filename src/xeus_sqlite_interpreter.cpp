@@ -129,28 +129,28 @@ namespace xeus_sqlite
         https://www.sqlite.org/fileformat.html#the_database_header*/
         nl::json pub_data;
         pub_data["text/plain"] =
-            "Magic header string: " + std::string(&header.headerStr[0], &header.headerStr[15]) + "\n" +
-            "Page size bytes: " + std::to_string(header.pageSizeBytes) + "\n" +
-            "File format write version: " + std::to_string(header.fileFormatWriteVersion) + "\n" +
-            "File format read version: " + std::to_string(header.fileFormatReadVersion) + "\n" +
-            "Reserved space bytes: " + std::to_string(header.reservedSpaceBytes) + "\n" +
-            "Max embedded payload fraction " + std::to_string(header.maxEmbeddedPayloadFrac) + "\n" +
-            "Min embedded payload fraction: " + std::to_string(header.minEmbeddedPayloadFrac) + "\n" +
-            "Leaf payload fraction: " + std::to_string(header.leafPayloadFrac) + "\n" +
-            "File change counter: " + std::to_string(header.fileChangeCounter) + "\n" +
-            "Database size pages: " + std::to_string(header.databaseSizePages) + "\n" +
-            "First freelist trunk page: " + std::to_string(header.firstFreelistTrunkPage) + "\n" +
-            "Total freelist trunk pages: " + std::to_string(header.totalFreelistPages) + "\n" +
-            "Schema cookie: " + std::to_string(header.schemaCookie) + "\n" +
-            "Schema format number: " + std::to_string(header.schemaFormatNumber) + "\n" +
-            "Default page cache size bytes: " + std::to_string(header.defaultPageCacheSizeBytes) + "\n" +
-            "Largest B tree page number: " + std::to_string(header.largestBTreePageNumber) + "\n" +
-            "Database text encoding: " + std::to_string(header.databaseTextEncoding) + "\n" +
-            "User version: " + std::to_string(header.userVersion) + "\n" +
-            "Incremental vaccum mode: " + std::to_string(header.incrementalVaccumMode) + "\n" +
-            "Application ID: " + std::to_string(header.applicationId) + "\n" +
-            "Version valid for: " + std::to_string(header.versionValidFor) + "\n" +
-            "SQLite version: " + std::to_string(header.sqliteVersion) + "\n";
+            "Magic header string: "           + std::string(&header.headerStr[0], &header.headerStr[15]) + "\n" +
+            "Page size bytes: "               + std::to_string(header.pageSizeBytes)                     + "\n" +
+            "File format write version: "     + std::to_string(header.fileFormatWriteVersion)            + "\n" +
+            "File format read version: "      + std::to_string(header.fileFormatReadVersion)             + "\n" +
+            "Reserved space bytes: "          + std::to_string(header.reservedSpaceBytes)                + "\n" +
+            "Max embedded payload fraction "  + std::to_string(header.maxEmbeddedPayloadFrac)            + "\n" +
+            "Min embedded payload fraction: " + std::to_string(header.minEmbeddedPayloadFrac)            + "\n" +
+            "Leaf payload fraction: "         + std::to_string(header.leafPayloadFrac)                   + "\n" +
+            "File change counter: "           + std::to_string(header.fileChangeCounter)                 + "\n" +
+            "Database size pages: "           + std::to_string(header.databaseSizePages)                 + "\n" +
+            "First freelist trunk page: "     + std::to_string(header.firstFreelistTrunkPage)            + "\n" +
+            "Total freelist trunk pages: "    + std::to_string(header.totalFreelistPages)                + "\n" +
+            "Schema cookie: "                 + std::to_string(header.schemaCookie)                      + "\n" +
+            "Schema format number: "          + std::to_string(header.schemaFormatNumber)                + "\n" +
+            "Default page cache size bytes: " + std::to_string(header.defaultPageCacheSizeBytes)         + "\n" +
+            "Largest B tree page number: "    + std::to_string(header.largestBTreePageNumber)            + "\n" +
+            "Database text encoding: "        + std::to_string(header.databaseTextEncoding)              + "\n" +
+            "User version: "                  + std::to_string(header.userVersion)                       + "\n" +
+            "Incremental vaccum mode: "       + std::to_string(header.incrementalVaccumMode)             + "\n" +
+            "Application ID: "                + std::to_string(header.applicationId)                     + "\n" +
+            "Version valid for: "             + std::to_string(header.versionValidFor)                   + "\n" +
+            "SQLite version: "                + std::to_string(header.sqliteVersion)                     + "\n";
         return pub_data;
     }
 
@@ -174,10 +174,6 @@ namespace xeus_sqlite
         if (case_insentive_equals(tokenized_input[0], "LOAD"))
         {
             m_db_path = tokenized_input[1];
-
-            // std::ifstream path_is_valid;
-            // path_is_valid.open(m_db_path);
-            // if (!path_is_valid.is_open())
             std::ifstream path_is_valid(m_db_path);
             if (!path_is_valid.is_open())
             {
@@ -185,7 +181,6 @@ namespace xeus_sqlite
             }
             else
             {
-
                 return load_db(tokenized_input);
             }
         }
@@ -251,9 +246,6 @@ namespace xeus_sqlite
                                         const std::string& code,
                                         xv::df_type& xv_sqlite_df)
     {
-        //TODO: all of the xvega outputs can be tested before we add stuff
-        //in them. Might improve performance?
-
         SQLite::Statement query(*m_db, code);
         nl::json pub_data;
 
@@ -292,7 +284,9 @@ namespace xeus_sqlite
             /* Builds text/html output */
             html_table << "</tr>\n";
 
-            /* Iterates through cols' rows and builds different kinds of outputs */
+            /* Iterates through cols' rows and builds different kinds of
+               outputs
+            */
             while (query.executeStep())
             {
                 /* Builds text/html output */
@@ -351,6 +345,9 @@ namespace xeus_sqlite
         std::vector<std::string> tokenized_input = tokenizer(sanitized_code);
 
         /* This structure is only used when xvega code is run */
+        //TODO: but it ends up being used in process_SQLite_input, that's why
+        //it's initialized here. Not the best approach, this should be
+        //compartimentilized under xvega domain.
         xv::df_type xv_sqlite_df;
 
         try
@@ -373,11 +370,10 @@ namespace xeus_sqlite
                     nl::json chart;
                     std::vector<std::string> xvega_input, sqlite_input;
 
-
                     std::tie(xvega_input, sqlite_input) = 
                         xv_sqlite::split_xv_sqlite_input(tokenized_input);
 
-                    /* Stringfies SQLite run code again */
+                    /* Stringfies SQLite code again */
                     std::stringstream stringfied_sqlite_input;
                     for (size_t i = 0; i < sqlite_input.size(); i++) {
                         stringfied_sqlite_input << " " << sqlite_input[i];
@@ -423,7 +419,7 @@ namespace xeus_sqlite
     }
 
     nl::json interpreter::complete_request_impl(const std::string& /*code*/,
-                                                    int /*cursor_pos*/)
+                                                int /*cursor_pos*/)
     {
         nl::json jresult;
         jresult["status"] = "ok";
@@ -453,21 +449,19 @@ namespace xeus_sqlite
         result["implementation_version"] = "0.1.0";
 
         /* The jupyter-console banner for xeus-sqlite is the following:
-          __  _____ _   _ ___
-          \ \/ / _ \ | | / __|
-           >  <  __/ |_| \__ \
-          /_/\_\___|\__,_|___/
-          xeus-sqlite: a Jupyter kernel for SQLite
+            _  _ ____ _  _ ____    ____ ____ _    _ ___ ____
+             \/  |___ |  | [__  __ [__  |  | |    |  |  |___
+            _/\_ |___ |__| ___]    ___] |_\| |___ |  |  |___
+           xeus-SQLite: a Jupyter kernel for SQLite
+           SQLite version: x.x.x
         */
 
         std::string banner = ""
-              "  __  _____ _   _ ___\n"
-              "  \\ \\/ / _ \\ | | / __|\n"
-              "   >  <  __/ |_| \\__ \\\n"
-              "  /_/\\_\\___|\\__,_|___/\n"
-              "\n"
-              "  xeus-sqlite: a Jupyter kernel for SQLite\n"
-              "  SQLite ";
+              "_  _ ____ _  _ ____    ____ ____ _    _ ___ ____\n"
+              " \\/  |___ |  | [__  __ [__  |  | |    |  |  |___\n"
+              "_/\\_ |___ |__| ___]    ___] |_\\| |___ |  |  |___\n"
+              "  xeus-SQLite: a Jupyter kernel for SQLite\n"
+              "  SQLite version: ";
         banner.append(SQLite::VERSION);
 
         result["banner"] = banner;
