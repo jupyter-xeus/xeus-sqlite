@@ -1,0 +1,45 @@
+build: false
+
+platform:
+  - x64
+
+image:
+  - Visual Studio 2017
+  # TODO: enable VS2015 when tabulate can use its std::optional polyfill
+  # - Visual Studio 2015
+
+environment:
+  matrix:
+    - MINICONDA: C:\\xeus-conda
+
+init:
+  - "ECHO %MINICONDA%"
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2015" set VCVARPATH="C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\vcvarsall.bat"
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2015" set VCARGUMENT=%PLATFORM%
+  - if "%APPVEYOR_BUILD_WORKER_IMAGE%" == "Visual Studio 2017" set VCVARPATH="C:\Program Files (x86)\Microsoft Visual Studio\2017\Community\VC\Auxiliary\Build\vcvars64.bat"
+  - echo "%VCVARPATH% %VCARGUMENT%"
+  - "%VCVARPATH% %VCARGUMENT%"
+  - ps: Start-FileDownload 'http://repo.continuum.io/miniconda/Miniconda3-latest-Windows-x86_64.exe' C:\Miniconda.exe
+  - cmd: C:\Miniconda.exe /S /D=C:\xeus-conda
+  - "set PATH=%MINICONDA%;%MINICONDA%\\Scripts;%MINICONDA%\\Library\\bin;%PATH%"
+
+install:
+  - conda config --set always_yes yes --set changeps1 no
+  - conda update -q conda
+  - conda info -a
+  # Host dependencies
+  - conda install xeus xtl nlohmann_json cppzmq sqlite sqlitecpp cpp-tabulate=1.3 xvega xproperty -c conda-forge
+  # Build dependencies
+  - conda install cmake -c conda-forge
+  # Build and install xeus-python
+  - mkdir build
+  - cd build
+  - cmake -G "NMake Makefiles" -D CMAKE_INSTALL_PREFIX=%MINICONDA%\\Library -D XSQL_DOWNLOAD_GTEST=ON ..
+  - nmake
+  - nmake install
+  # Install test dependencies
+  - conda install pytest jupyter_kernel_test -c conda-forge
+
+build_script:
+  - cd test
+  - test_xeus_sqlite

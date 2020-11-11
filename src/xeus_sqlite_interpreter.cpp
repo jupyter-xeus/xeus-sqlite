@@ -7,12 +7,17 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
+// Define WIN32_LEAN_AND_MEAN to prevent duplicate sockets symbols.
+// (Prevents Winsock.h from being included by the Windows.h header)
+#ifdef _MSC_VER
+#define WIN32_LEAN_AND_MEAN
+#endif
+
 #include <cctype>
 #include <cstdio>
 #include <fstream>
 #include <memory>
 #include <sstream>
-#include <stack>
 #include <vector>
 #include <tuple>
 
@@ -28,6 +33,13 @@
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <SQLiteCpp/VariadicBind.h>
 
+#if __cplusplus >= 201703L
+#include <variant>
+using std::variant;
+#else
+#include <tabulate/variant_lite.hpp>
+using nonstd::variant;
+#endif
 
 namespace xeus_sqlite
 {
