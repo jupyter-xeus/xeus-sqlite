@@ -132,6 +132,34 @@ namespace xeus_sqlite
         }
     };
 
+    struct bin_parser : parser_base<bin_parser>
+    {
+        xv::Bin& bin;
+        int num_parsed_attrs = 0;
+
+        bin_parser(xv::Bin& bin) : bin(bin)
+        {
+            mapping_table = {
+                {"ANCHOR",  { 1, &bin_parser::parse_bin_anchor  }},
+                // {"BASE",    { 1, &bin_parser::parse_bin_base    }},
+                // {"BINNED",  { 1, &bin_parser::parse_bin_binned  }},
+                // {"DIVIDE",  { 1, &bin_parser::parse_bin_divide  }},
+                // {"EXTENT",  { 1, &bin_parser::parse_bin_extent  }},
+                // {"MAXBINS", { 1, &bin_parser::parse_bin_maxbins }},
+                // {"MINSTEP", { 1, &bin_parser::parse_bin_minstep }},
+                // {"NICE",    { 1, &bin_parser::parse_bin_nice    }},
+                // {"STEP",    { 1, &bin_parser::parse_bin_step    }},
+                // {"STEPS",   { 1, &bin_parser::parse_bin_steps   }},
+            };
+        }
+
+        void parse_bin_anchor(const input_it& it)
+        {
+            bin.anchor().value() = std::stod(*it);
+        }
+
+    };
+
     struct field_parser : parser_base<field_parser>
     {
         using xy_variant = xtl::variant<xv::X*, xv::Y*>;
@@ -170,7 +198,14 @@ namespace xeus_sqlite
             }, enc);
             if (!found)
             {
-                throw std::runtime_error("Missing or invalid BIN type");
+                xv::Bin bin;
+                bin_parser parser(bin);
+                parser.parse_loop();
+
+                if (num_parsed_attrs == 0)
+                {
+                    throw std::runtime_error("Missing or invalid BIN type");
+                }
             }
         }
 
