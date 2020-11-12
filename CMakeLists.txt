@@ -129,19 +129,11 @@ else()
 endif()
 
 
-set_target_properties(xsqlite xeus-sqlite PROPERTIES
-    INSTALL_RPATH_USE_LINK_PATH TRUE
-)
-
 target_link_libraries(xeus-sqlite PUBLIC 
   xeus
   xvega
   SQLiteCpp
   SQLite::SQLite3
-)
-
-set_target_properties(xsqlite PROPERTIES
-    INSTALL_RPATH_USE_LINK_PATH TRUE
 )
 
 target_include_directories(xeus-sqlite
