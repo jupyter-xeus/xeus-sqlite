@@ -1,0 +1,42 @@
+############################################################################
+# Copyright (c) 2018, Martin Renou, Johan Mabille, Sylvain Corlay and      #
+# Wolf Vollprecht, Mariana Meireles                                        #
+#                                                                          #
+# Distributed under the terms of the BSD 3-Clause License.                 #
+#                                                                          #
+# The full license is in the file LICENSE, distributed with this software. #
+############################################################################
+
+# xeus-sqlite cmake module
+# This module sets the following variables in your project::
+#
+#   xeus-sqlite_FOUND - true if xeus-sqlite found on the system
+#   xeus-sqlite_INCLUDE_DIRS - the directory containing xeus-sqlite headers
+#   xeus-sqlite_LIBRARY - the library for dynamic linking
+#   xeus-sqlite_STATIC_LIBRARY - the library for static linking
+
+@PACKAGE_INIT@
+
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR};${CMAKE_MODULE_PATH}")
+
+@XEUS_CONFIG_CODE@
+
+include(CMakeFindDependencyMacro)
+find_dependency(xeus @xeus_REQUIRED_VERSION@)
+find_dependency(cppzmq @cppzmq_REQUIRED_VERSION@)
+find_dependency(SQLite3 @SQLite3_REQUIRED_VERSION@)
+find_dependency(xvega @xvega_REQUIRED_VERSION@)
+find_dependency(SQLiteCpp @SQLiteCpp_REQUIRED_VERSION@)
+find_dependency(tabulate @tabulate_REQUIRED_VERSION@)
+find_dependency(Threads @Threads_REQUIRED_VERSION@)
+
+if (NOT TARGET xeus-sqlite)
+    include("${CMAKE_CURRENT_LIST_DIR}/@PROJECT_NAME@Targets.cmake")
+
+    get_target_property(@PROJECT_NAME@_INCLUDE_DIR xeus-sqlite INTERFACE_INCLUDE_DIRECTORIES)
+    get_target_property(@PROJECT_NAME@_LIBRARY xeus-sqlite LOCATION)
+
+    if (TARGET xeus-sqlite-static)
+        get_target_property(@PROJECT_NAME@_STATIC_LIBRARY xeus-sqlite-static LOCATION)
+    endif ()
+endif ()
