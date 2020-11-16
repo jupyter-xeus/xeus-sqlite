@@ -82,17 +82,6 @@ add_definitions(-DSQLITE_ENABLE_EXPLAIN_COMMENTS=1 -DSQLITE_DEBUG=1 -DSQLITE_MEM
 # # Flags
 # # =====
 
-# if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR CMAKE_CXX_COMPILER_ID MATCHES "Intel")
-#     CHECK_CXX_COMPILER_FLAG("-std=c++17" HAS_CPP17_FLAG)
-
-#     if (HAS_CPP17_FLAG)
-#         set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++17")
-#         set(CMAKE_CXX_STANDARD 17)
-#     else()
-#         message(FATAL_ERROR "Unsupported compiler -- xeus-sqlite requires C++17 support!")
-#     endif()
-# endif()
-
 # Target and link
 # ===============
 
@@ -115,43 +104,9 @@ set(XEUS_SQLITE_HEADERS
 
 set(XSQLITE_SRC ${XEUS_SQLITE_SRC_DIR}/main.cpp)
 
-# xeus-sqlite is the target for the library
-# add_library(xeus-sqlite SHARED ${XEUS_SQLITE_SRC} ${XEUS_SQLITE_HEADERS})
-
-
-# xsqlite is the target for the kernel executable
-# add_executable(xsqlite src/main.cpp)
-# set_target_properties(xsqlite PROPERTIES ENABLE_EXPORTS 1)
-# target_link_libraries(xsqlite PRIVATE xeus-sqlite)
-
-# target_compile_definitions(xsqlite PRIVATE XEUS_SQLITE_HOME="${XSQLITE_PREFIX}")
-
-# if (APPLE)
-#     set_target_properties(xsqlite PROPERTIES
-#         MACOSX_RPATH ON
-#     )
-# else()
-#     set_target_properties(xsqlite PROPERTIES
-#         BUILD_WITH_INSTALL_RPATH 1
-#         SKIP_BUILD_RPATH FALSE
-#     )
-# endif()
-
-
-# set_target_properties(xsqlite xeus-sqlite PROPERTIES
-#     INSTALL_RPATH_USE_LINK_PATH TRUE
-# )
-
-# target_link_libraries(xeus-sqlite PUBLIC 
-#   xeus
-#   xvega
-#   SQLiteCpp
-#   SQLite::SQLite3
-# )
-
-# set_target_properties(xsqlite PROPERTIES
-#     INSTALL_RPATH_USE_LINK_PATH TRUE
-# )
+set(CMAKE_AR "gcc-ar")
+set(CMAKE_CXX_ARCHIVE_CREATE "<CMAKE_AR> qcs <TARGET> <LINK_FLAGS> <OBJECTS>")
+set(CMAKE_CXX_ARCHIVE_FINISH true)
 
 # Targets and link - Macros
 # =========================
@@ -164,11 +119,6 @@ string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE)
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib; ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 
 macro(xsql_set_common_options target_name)
-    # if (MSVC)
-    #     target_compile_options(${target_name} PUBLIC /wd4251 /wd4141)
-    #     target_compile_options(${target_name} PUBLIC /wd4018 /wd4267 /wd4715 /wd4146 /wd4129)
-    # endif ()
-
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR
         CMAKE_CXX_COMPILER_ID MATCHES "GNU" OR
         CMAKE_CXX_COMPILER_ID MATCHES "Intel")
@@ -323,10 +273,6 @@ if (XSQL_BUILD_XSQLITE_EXECUTABLE)
     else ()
         target_link_libraries(xsqlite PRIVATE xeus-sqlite-static)
     endif()
-
-    # if (XEUS_PYTHONHOME_RELPATH)
-    #     target_compile_definitions(xsqlite PRIVATE XEUS_PYTHONHOME_RELPATH=${XEUS_PYTHONHOME_RELPATH})
-    # endif()
 endif()
 
 
