@@ -115,6 +115,10 @@ set(XEUS_SQLITE_HEADERS
 
 set(XSQLITE_SRC ${XEUS_SQLITE_SRC_DIR}/main.cpp)
 
+SET(CMAKE_AR  "gcc-ar")
+SET(CMAKE_CXX_ARCHIVE_CREATE "<CMAKE_AR> qcs <TARGET> <LINK_FLAGS> <OBJECTS>")
+SET(CMAKE_CXX_ARCHIVE_FINISH   true)
+
 # xeus-sqlite is the target for the library
 # add_library(xeus-sqlite SHARED ${XEUS_SQLITE_SRC} ${XEUS_SQLITE_HEADERS})
 
@@ -193,29 +197,29 @@ macro(xsql_set_common_options target_name)
 
         # Enable link time optimization and set the default symbol
         # visibility to hidden (very important to obtain small binaries)
-        if (NOT ${U_CMAKE_BUILD_TYPE} MATCHES DEBUG)
-            # Check for Link Time Optimization support
-            # (GCC/Clang)
-            CHECK_CXX_COMPILER_FLAG("-flto" HAS_LTO_FLAG)
-            if (HAS_LTO_FLAG)
-                target_compile_options(${target_name} PUBLIC -flto)
-            endif ()
+        # if (NOT ${U_CMAKE_BUILD_TYPE} MATCHES DEBUG)
+        #     # Check for Link Time Optimization support
+        #     # (GCC/Clang)
+        #     CHECK_CXX_COMPILER_FLAG("-flto" HAS_LTO_FLAG)
+        #     if (HAS_LTO_FLAG)
+        #         target_compile_options(${target_name} PUBLIC -flto)
+        #     endif ()
 
-            # Avoids removing symbols from the static library
-            CHECK_CXX_COMPILER_FLAG("-ffat-lto-objects" HAS_FATLTO_FLAG)
-            if (${linkage_upper} MATCHES "STATIC" AND  HAS_FATLTO_FLAG)
-                message(STATUS "ENABLE FAT LTO OBJECTS")
-                target_compile_options(${target_name} PUBLIC -ffat-lto-objects)
-            endif ()
+        #     # Avoids removing symbols from the static library
+        #     CHECK_CXX_COMPILER_FLAG("-ffat-lto-objects" HAS_FATLTO_FLAG)
+        #     if (${linkage_upper} MATCHES "STATIC" AND  HAS_FATLTO_FLAG)
+        #         message(STATUS "ENABLE FAT LTO OBJECTS")
+        #         target_compile_options(${target_name} PUBLIC -ffat-lto-objects)
+        #     endif ()
 
-            # Intel equivalent to LTO is called IPO
-            if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
-                CHECK_CXX_COMPILER_FLAG("-ipo" HAS_IPO_FLAG)
-                if (HAS_IPO_FLAG)
-                    target_compile_options(${target_name} PUBLIC -ipo)
-                endif ()
-            endif ()
-        endif ()
+        #     # Intel equivalent to LTO is called IPO
+        #     if (CMAKE_CXX_COMPILER_ID MATCHES "Intel")
+        #         CHECK_CXX_COMPILER_FLAG("-ipo" HAS_IPO_FLAG)
+        #         if (HAS_IPO_FLAG)
+        #             target_compile_options(${target_name} PUBLIC -ipo)
+        #         endif ()
+        #     endif ()
+        # endif ()
 
     endif ()
 
