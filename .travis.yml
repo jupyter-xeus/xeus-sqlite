@@ -12,6 +12,12 @@ matrix:
         apt:
           sources:
             - ubuntu-toolchain-r-test
+    - os: linux
+      addons:
+        apt:
+          sources:
+            - ubuntu-toolchain-r-test
+      env: XSQL_USE_SHARED_XEUS=0 XSQL_USE_SHARED_XEUS_SQLITE=0
     - os: osx
       osx_image: xcode10
       compiler: clang
@@ -31,9 +37,8 @@ install:
     # Host dependencies
     - conda install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.3 xvega xproperty -c conda-forge
     # Build dependencies
-    - conda install cmake -c conda-forge
     - if [[ "$TRAVIS_OS_NAME" == "linux" ]]; then
-        conda install gxx_linux-64 libgcc -c conda-forge;
+        conda install gcc_linux-64=7.5.0 gcc_impl_linux-64=7.5.0 gxx_linux-64=7.5.0 gxx_impl_linux-64 -c conda-forge;
       fi
     # Activate root environment
     - source activate root
@@ -42,7 +47,14 @@ install:
     # Build and install xeus-sqlite
     - mkdir build
     - cd build
-    - cmake -DCMAKE_INSTALL_PREFIX=$HOME/miniconda -DXSQL_DOWNLOAD_GTEST=ON  -DCMAKE_PREFIX_PATH=$HOME/miniconda ..
+    - if [[ "$XSQL_USE_SHARED_XEUS_SQLITE" == 0 ]]; then
+        CMAKE_EXTRA_ARGS="$CMAKE_EXTRA_ARGS -DXSQL_BUILD_SHARED=OFF -DXSQL_USE_SHARED_XEUS_SQLITE=OFF";
+      fi
+    - if [[ "$XSQL_USE_SHARED_XEUS" == 0 ]]; then
+        CMAKE_EXTRA_ARGS="$CMAKE_EXTRA_ARGS -DXSQL_USE_SHARED_XEUS=OFF";
+      fi
+    - CMAKE_EXTRA_ARGS="$CMAKE_EXTRA_ARGS -DCMAKE_CXX_STANDARD=17";
+    - cmake -DCMAKE_INSTALL_PREFIX=$HOME/miniconda -DXSQL_DOWNLOAD_GTEST=ON -DCMAKE_PREFIX_PATH=$HOME/miniconda -DCMAKE_INSTALL_LIBDIR=lib -DCMAKE_C_COMPILER=$CC -DCMAKE_CXX_COMPILER=$CXX ${CMAKE_EXTRA_ARGS} ..
     - make -j2 install
 script:
     - ./test/test_xeus_sqlite
