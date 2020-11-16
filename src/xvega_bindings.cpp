@@ -141,23 +141,70 @@ namespace xeus_sqlite
         {
             mapping_table = {
                 {"ANCHOR",  { 1, &bin_parser::parse_bin_anchor  }},
-                // {"BASE",    { 1, &bin_parser::parse_bin_base    }},
-                // {"BINNED",  { 1, &bin_parser::parse_bin_binned  }},
+                {"BASE",    { 1, &bin_parser::parse_bin_base    }},
+                {"BINNED",  { 1, &bin_parser::parse_bin_binned  }},
                 // {"DIVIDE",  { 1, &bin_parser::parse_bin_divide  }},
                 // {"EXTENT",  { 1, &bin_parser::parse_bin_extent  }},
-                // {"MAXBINS", { 1, &bin_parser::parse_bin_maxbins }},
-                // {"MINSTEP", { 1, &bin_parser::parse_bin_minstep }},
-                // {"NICE",    { 1, &bin_parser::parse_bin_nice    }},
-                // {"STEP",    { 1, &bin_parser::parse_bin_step    }},
+                {"MAXBINS", { 1, &bin_parser::parse_bin_maxbins }},
+                {"MINSTEP", { 1, &bin_parser::parse_bin_minstep }},
+                {"NICE",    { 1, &bin_parser::parse_bin_nice    }},
+                {"STEP",    { 1, &bin_parser::parse_bin_step    }},
                 // {"STEPS",   { 1, &bin_parser::parse_bin_steps   }},
             };
         }
 
         void parse_bin_anchor(const input_it& it)
         {
+            std::cout << "parse_bin_anchor 🌈 " << *it << std::endl;
             bin.anchor().value() = std::stod(*it);
+            num_parsed_attrs++;
         }
 
+        void parse_bin_base(const input_it& it)
+        {
+            bin.base().value() = std::stod(*it);
+            num_parsed_attrs++;
+        }
+
+        void parse_bin_binned(const input_it& it)
+        {
+            simple_switch(*it,
+            {
+                {"TRUE",  [&]{ bin.binned().value() = true;
+                    num_parsed_attrs++; }},
+                {"FALSE", [&]{ bin.binned().value() = false;
+                    num_parsed_attrs++; }},
+            });
+        }
+
+        void parse_bin_maxbins(const input_it& it)
+        {
+            bin.maxbins().value() = std::stod(*it);
+            num_parsed_attrs++;
+        }
+
+        void parse_bin_minstep(const input_it& it)
+        {
+            bin.minstep().value() = std::stod(*it);
+            num_parsed_attrs++;
+        }
+
+        void parse_bin_nice(const input_it& it)
+        {
+            simple_switch(*it,
+            {
+                {"TRUE",  [&]{ bin.nice().value() = true;
+                    num_parsed_attrs++; }},
+                {"FALSE", [&]{ bin.nice().value() = false;
+                    num_parsed_attrs++; }},
+            });
+        }
+
+        void parse_bin_step(const input_it& it)
+        {
+            bin.step().value() = std::stod(*it);
+            num_parsed_attrs++;
+        }
     };
 
     struct field_parser : parser_base<field_parser>
@@ -186,23 +233,25 @@ namespace xeus_sqlite
             return begin + 1;
         }
 
-        void parse_field_bin(const input_it& it)
+        input_it parse_field_bin(const input_it& begin, const input_it& end)
         {
             bool found = xtl::visit([&](auto &&x_or_y)
             {
-                return simple_switch(*it,
+                return simple_switch(*begin,
                 {
-                    {"TRUE",  [&]{ x_or_y->bin().value() = true; }},
-                    {"FALSE", [&]{ x_or_y->bin().value() = false; }},
+                    {"TRUE",  [&]{ x_or_y->bin().value() = true; std::cout << "🌴🌴 Param found should just work\n";}},
+                    {"FALSE", [&]{ x_or_y->bin().value() = false; std::cout << "🌴🌴 Param found should just work\n";}},
                 });
             }, enc);
             if (!found)
             {
+                std::cout << "The next parameter of BIN was not found in the list it was suppose to handle, aka F and T\n";
+                std::cout << "🌈🌈🌈🌈🌈🌈🌈\n";
                 xv::Bin bin;
                 bin_parser parser(bin);
-                parser.parse_loop();
+                parser.parse_loop(begin, end);
 
-                if (num_parsed_attrs == 0)
+                if (parser.num_parsed_attrs == 0)
                 {
                     throw std::runtime_error("Missing or invalid BIN type");
                 }
