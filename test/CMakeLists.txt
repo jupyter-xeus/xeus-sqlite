@@ -101,11 +101,15 @@ set_target_properties(test_xeus_sqlite PROPERTIES
     INSTALL_RPATH_USE_LINK_PATH TRUE
 )
 
-
+if (XSQL_BUILD_SHARED)
+    set(XSQL_TEST_LINK_TARGET xeus-sqlite)
+else()
+    set(XSQL_TEST_LINK_TARGET xeus-sqlite-static)
+endif()
 include_directories(${XSQLITE_INCLUDE_DIRS})
-target_link_libraries(test_xeus_sqlite PRIVATE xeus-sqlite xeus ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
+target_link_libraries(test_xeus_sqlite PRIVATE ${XSQL_TEST_LINK_TARGET} xeus ${GTEST_BOTH_LIBRARIES} ${CMAKE_THREAD_LIBS_INIT})
 target_compile_definitions(test_xeus_sqlite PRIVATE XEUS_SQLITE_HOME="${XSQLITE_PREFIX}")
-target_include_directories(test_xeus_sqlite PRIVATE ${XEUS_SQLITE_SRC_DIR})
+target_include_directories(test_xeus_sqlite PRIVATE ${XEUS_SQLITE_INCLUDE_DIR})
 
 add_custom_target(
     xtest
