@@ -1,6 +1,6 @@
 /***************************************************************************
-* Copyright (c) 2020, Mariana Meireles                                     *
-* Copyright (c) 2020, QuantStack                                           *
+* Copyright (c) 2020, QuantStack and Xeus-SQLite contributors              *
+*                                                                          *
 *                                                                          *
 * Distributed under the terms of the BSD 3-Clause License.                 *
 *                                                                          *

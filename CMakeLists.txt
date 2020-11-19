@@ -1,6 +1,6 @@
 ############################################################################
-# Copyright (c) 2020, Mariana Meireles                                     #
-# Copyright (c) 2020, QuantStack                                           #
+# Copyright (c) 2020, QuantStack and Xeus-SQLite contributors              #
+#                                                                          #
 #                                                                          #
 # Distributed under the terms of the BSD 3-Clause License.                 #
 #                                                                          #
@@ -12,7 +12,6 @@ project(xeus-sqlite)
 
 set(XEUS_SQLITE_INCLUDE_DIR ${CMAKE_CURRENT_SOURCE_DIR}/include)
 set(XEUS_TEST_DIR ${CMAKE_CURRENT_SOURCE_DIR}/test)
-
 
 set(CMAKE_FIND_ROOT_PATH ${CMAKE_PREFIX_PATH})
 set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)
@@ -78,9 +77,6 @@ find_package(tabulate REQUIRED)
 find_package(Threads REQUIRED)
 
 add_definitions(-DSQLITE_ENABLE_EXPLAIN_COMMENTS=1 -DSQLITE_DEBUG=1 -DSQLITE_MEMDEBUG=1)
-
-# # Flags
-# # =====
 
 # Target and link
 # ===============
