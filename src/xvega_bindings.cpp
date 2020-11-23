@@ -23,7 +23,6 @@ namespace xeus_sqlite
 
     //TODO: I don't think most final value() are necessary
 
-
     /**
         Base parser class, should be inherited to define concrete parsers. This class
         contains helpers to call appropriate parsing functions based on a parsing map,
@@ -202,6 +201,7 @@ namespace xeus_sqlite
 
         bin_parser(xv::Bin& bin) : bin(bin)
         {
+            //TODO: implemente DIVIDE, EXTENT, STEPS
             mapping_table = {
                 {"ANCHOR",  { 1, &bin_parser::parse_bin_anchor  }},
                 {"BASE",    { 1, &bin_parser::parse_bin_base    }},
@@ -218,7 +218,6 @@ namespace xeus_sqlite
 
         void parse_bin_anchor(const input_it& it)
         {
-            std::cout << "parse_bin_anchor 🌈 " << *it << std::endl;
             bin.anchor().value() = std::stod(*it);
             num_parsed_attrs++;
         }
@@ -306,19 +305,30 @@ namespace xeus_sqlite
                     {"FALSE", [&]{ x_or_y->bin().value() = false; std::cout << "🌴🌴 Param found should just work\n";}},
                 });
             }, enc);
-            if (!found)
+
+            if (found)
             {
-                std::cout << "The next parameter of BIN was not found in the list it was suppose to handle, aka F and T\n";
-                std::cout << "🌈🌈🌈🌈🌈🌈🌈\n";
+                return begin + 1;
+            }
+            else
+            {
                 xv::Bin bin;
                 bin_parser parser(bin);
-                parser.parse_loop(begin, end);
+                input_it it = parser.parse_loop(begin, end);
 
                 if (parser.num_parsed_attrs == 0)
                 {
                     throw std::runtime_error("Missing or invalid BIN type");
                 }
+
+                xtl::visit([&](auto &&x_or_y)
+                {
+                    x_or_y->bin().value() = bin;
+                }, enc);
+
+                return it;
             }
+
         }
 
         void parse_field_type(const input_it& it)
@@ -377,8 +387,6 @@ namespace xeus_sqlite
             return begin + 1;
         }
 
-        //TODO: must set title again, it disappears once you set the time unit
-        // this problem might be related with the setting TITLE of the graph
         void parse_field_time_unit(const input_it& it)
         {
             bool found = xtl::visit([&](auto &&x_or_y)
@@ -484,9 +492,7 @@ namespace xeus_sqlite
 
         input_it parse_x_field(const input_it& begin, const input_it& end)
         {
-            std::vector<std::string> v;
-            auto ax = xv::Axis().title(v);
-            xv::X x_enc = xv::X().axis(ax);
+            xv::X x_enc = xv::X();
             this->chart.encoding().value().x = x_enc;
 
             field_parser parser(&chart.encoding().value().x().value());
@@ -526,7 +532,7 @@ namespace xeus_sqlite
         void parse_title(const input_it& it)
         {
             std::vector<std::string> v = {*it};
-            this->chart.config().value().axis().value().title() = v;
+            this->chart.config().value().header().value().title().value() = v;
         }
     };
 
