@@ -5,13 +5,13 @@
    The full license is in the file LICENSE, distributed with this software.
 
 Introduction
-------------
+============
 
 ``xeus-sqlite`` is a Jupyter kernel for SQLite based on the native implementation of the Jupyter protocol
 xeus_.
 
 Licensing
----------
+=========
 
 We use a shared copyright model that enables all contributors to maintain the
 copyright on their contributions.
@@ -20,17 +20,18 @@ This software is licensed under the BSD-3-Clause license. See the LICENSE file f
 
 
 .. toctree::
-   :caption: INSTALLATION
-   :maxdepth: 2
+   :caption: Getting started
+   :maxdepth: 4
 
    installation
+   getting_started
 
 .. toctree::
-   :caption: USAGE
-   :maxdepth: 2
+   :caption: API
+   :maxdepth: 4
 
-   usage
+   sqlite_magic
 
-   api
+   xvega_magic
 
 .. _xeus: https://github.com/jupyter-xeus/xeus
