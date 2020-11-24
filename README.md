@@ -53,9 +53,15 @@ make
 make install
 ```
 
-## Documentation
+## Documentation 
 
 https://xeus-sqlite.readthedocs.io/en/latest/
+
+### Build docs
+
+```
+mamba install sphinx breathe doxygen sphinx_rtd_theme
+```
 
 ## Dependencies
 

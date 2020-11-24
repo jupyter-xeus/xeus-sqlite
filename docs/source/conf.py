@@ -12,6 +12,10 @@ if on_rtd:
 import sphinx_rtd_theme
 
 html_theme = "sphinx_rtd_theme"
+html_theme_options = {
+    "navigation_depth": 4,
+    "collapse_navigation": False,
+}
 
 html_theme_path = [sphinx_rtd_theme.get_html_theme_path()]
 

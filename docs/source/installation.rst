@@ -20,12 +20,12 @@
 Installation
 ============
 
-With Conda
-----------
+With Conda or Mamba
+-------------------
 
 `xeus-sqlite` has been packaged for the conda package manager.
 
-To ensure that the installation works, it is preferable to install `xeus-sqlite` in a fresh conda environment.
+To ensure that the installation works, it is preferable to install `xeus-sqlite` in a fresh conda/mamba environment.
 It is also needed to use a miniconda_ installation because with the full anaconda_ you may have a conflict with
 the `zeromq` library which is already installed in the anaconda distribution.
 
@@ -37,11 +37,20 @@ The safest usage is to create an environment named `xeus-sqlite` with your minic
     conda create -n xeus-sqlite
     conda activate xeus-sqlite # Or `source activate xeus-sqlite` for conda < 4.6
 
+.. code::
+
+    mamba create -n xeus-sqlite
+    mamba activate xeus-sqlite
+
 Then you can install in this freshly created environment `xeus-sqlite` and its dependencies
 
 .. code::
 
     conda install xeus-sqlite notebook -c conda-forge
+
+.. code::
+
+    mamba install xeus-sqlite notebook -c conda-forge
 
 or, if you prefer to use JupyterLab_
 
@@ -49,10 +58,23 @@ or, if you prefer to use JupyterLab_
 
     conda install xeus-sqlite jupyterlab -c conda-forge
 
+.. code::
+
+    mamba install xeus-sqlite jupyterlab -c conda-forge
+
 From Source
 -----------
 
 You can install ``xeus-sqlite`` from source with cmake. This requires that you have all the dependencies installed in the same prefix.
+
+
+.. code::
+
+    conda install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.3 xvega xproperty jupyterlab -c conda-forge
+
+.. code::
+
+    mamba install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.3 xvega xproperty jupyterlab -c conda-forge
 
 .. code::
 
