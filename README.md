@@ -1,5 +1,5 @@
 # xeus-sqlite
-
+[![Azure Pipelines](https://dev.azure.com/jupyter-xeus/jupyter-xeus/_apis/build/status/jupyter-xeus.xeus-sqlite?branchName=master)](https://dev.azure.com/jupyter-xeus/jupyter-xeus/_build/latest?definitionId=5&branchName=master)
 [![Travis](https://travis-ci.com/jupyter-xeus/xeus-sqlite.svg?branch=master)](https://travis-ci.org/jupyter-xeus/xeus-sqlite)
 [![Documentation Status](https://readthedocs.org/projects/xeus-sqlite/badge/?version=latest)](https://xeus-sqlite.readthedocs.io/en/latest/?badge=latest)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyter-xeus/xeus-sqlite/stable?filepath=examples/Simple%20operations.ipynb)
