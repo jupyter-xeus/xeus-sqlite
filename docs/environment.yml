@@ -1,7 +1,7 @@
 name: xeus-sqlite-docs
 
 channels:
-  - QuantStack
+  - conda-forge 
 
 dependencies:
   - breathe
