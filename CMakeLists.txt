@@ -100,10 +100,6 @@ set(XEUS_SQLITE_HEADERS
 
 set(XSQLITE_SRC ${XEUS_SQLITE_SRC_DIR}/main.cpp)
 
-set(CMAKE_AR "gcc-ar")
-set(CMAKE_CXX_ARCHIVE_CREATE "<CMAKE_AR> qcs <TARGET> <LINK_FLAGS> <OBJECTS>")
-set(CMAKE_CXX_ARCHIVE_FINISH true)
-
 # Targets and link - Macros
 # =========================
 
