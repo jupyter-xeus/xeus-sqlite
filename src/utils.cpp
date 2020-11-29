@@ -7,7 +7,7 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#include "xeus-sqlite/utils.hpp"
+#include "utils.hpp"
 
 #include <algorithm>
 #include <iostream>

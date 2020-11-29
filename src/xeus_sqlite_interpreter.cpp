@@ -16,7 +16,7 @@
 #include <vector>
 #include <tuple>
 
-#include "xeus-sqlite/utils.hpp"
+#include "utils.hpp"
 
 #include "xeus/xinterpreter.hpp"
 #include "tabulate/table.hpp"
@@ -25,9 +25,11 @@
 #include "xeus-sqlite/xvega_bindings.hpp"
 #include "xvega/utils/custom_datatypes.hpp"
 
-#include <SQLiteCpp/SQLiteCpp.h>
-#include <SQLiteCpp/VariadicBind.h>
+#include "soci/soci.h"
+#include "soci/sqlite3/soci-sqlite3.h"
 
+#include <SQLiteCpp/VariadicBind.h>
+#include <SQLiteCpp/SQLiteCpp.h>
 
 namespace xeus_sqlite
 {
