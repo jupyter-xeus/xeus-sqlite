@@ -13,7 +13,7 @@
 #include "gtest/gtest.h"
 
 #include "xeus-sqlite/xeus_sqlite_interpreter.hpp"
-#include "xeus-sqlite/utils.hpp"
+#include "xvega-bindings/utils.hpp"
 
 namespace xeus_sqlite
 {
@@ -22,7 +22,7 @@ TEST(xeus_sqlite_interpreter, sanitize_string_check)
 {
     std::string code = "\n\n Some inp\nut\n";
     std::string sanitized_string;
-    sanitized_string = sanitize_string(code);
+    sanitized_string = xv_bindings::sanitize_string(code);
     EXPECT_EQ(sanitized_string, " Some input");
 }
 
@@ -30,7 +30,7 @@ TEST(xeus_sqlite_interpreter, tokenizer_check)
 {
     std::string code = "%LOAD  database.db   rw";
     std::vector<std::string> tokenized_code;
-    tokenized_code = tokenizer(code);
+    tokenized_code = xv_bindings::tokenizer(code);
     EXPECT_EQ(tokenized_code[1], "database.db");
 }
 

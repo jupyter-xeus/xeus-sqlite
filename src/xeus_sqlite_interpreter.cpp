@@ -16,14 +16,11 @@
 #include <vector>
 #include <tuple>
 
-#include "utils.hpp"
-
+#include "xvega-bindings/xvega-bindings.hpp"
 #include "xeus/xinterpreter.hpp"
 #include "tabulate/table.hpp"
 
 #include "xeus-sqlite/xeus_sqlite_interpreter.hpp"
-#include "xeus-sqlite/xvega_bindings.hpp"
-#include "xvega/utils/custom_datatypes.hpp"
 
 #include "soci/soci.h"
 #include "soci/sqlite3/soci-sqlite3.h"
@@ -173,7 +170,7 @@ namespace xeus_sqlite
                                     const std::vector<
                                         std::string>& tokenized_input)
     {
-        if (case_insentive_equals(tokenized_input[0], "LOAD"))
+        if (xv_bindings::case_insentive_equals(tokenized_input[0], "LOAD"))
         {
             m_db_path = tokenized_input[1];
             std::ifstream path_is_valid(m_db_path);
@@ -186,49 +183,49 @@ namespace xeus_sqlite
                 return load_db(tokenized_input);
             }
         }
-        else if (case_insentive_equals(tokenized_input[0], "CREATE"))
+        else if (xv_bindings::case_insentive_equals(tokenized_input[0], "CREATE"))
         {
             return create_db(tokenized_input);
         }
         if (m_bd_is_loaded)
         {
-            if (case_insentive_equals(tokenized_input[0], "DELETE"))
+            if (xv_bindings::case_insentive_equals(tokenized_input[0], "DELETE"))
             {
                 delete_db();
             }
-            else if (case_insentive_equals(tokenized_input[0], "TABLE_EXISTS"))
+            else if (xv_bindings::case_insentive_equals(tokenized_input[0], "TABLE_EXISTS"))
             {
                 publish_execution_result(execution_counter,
                     std::move(table_exists(tokenized_input[1])),
                     nl::json::object());
             }
-            else if (case_insentive_equals(tokenized_input[0], "LOAD_EXTENSION"))
+            else if (xv_bindings::case_insentive_equals(tokenized_input[0], "LOAD_EXTENSION"))
             {
                 //TODO: add a try catch to treat all void functions
                 m_db->SQLite::Database::loadExtension(tokenized_input[1].c_str(),
                         tokenized_input[2].c_str());
             }
-            else if (case_insentive_equals(tokenized_input[0], "SET_KEY"))
+            else if (xv_bindings::case_insentive_equals(tokenized_input[0], "SET_KEY"))
             {
                 m_db->SQLite::Database::key(tokenized_input[1]);
             }
-            else if (case_insentive_equals(tokenized_input[0], "REKEY"))
+            else if (xv_bindings::case_insentive_equals(tokenized_input[0], "REKEY"))
             {
                 m_db->SQLite::Database::rekey(tokenized_input[1]);
             }
-            else if (case_insentive_equals(tokenized_input[0], "IS_UNENCRYPTED"))
+            else if (xv_bindings::case_insentive_equals(tokenized_input[0], "IS_UNENCRYPTED"))
             {
                 publish_execution_result(execution_counter,
                     std::move(is_unencrypted()),
                     nl::json::object());
             }
-            else if (case_insentive_equals(tokenized_input[0], "GET_INFO"))
+            else if (xv_bindings::case_insentive_equals(tokenized_input[0], "GET_INFO"))
             {
                 publish_execution_result(execution_counter,
                     std::move(get_header_info()),
                     nl::json::object());
             }
-            else if (case_insentive_equals(tokenized_input[0], "BACKUP"))
+            else if (xv_bindings::case_insentive_equals(tokenized_input[0], "BACKUP"))
             {
                 backup(tokenized_input[1]);
             }
@@ -343,8 +340,8 @@ namespace xeus_sqlite
                                                bool /*allow_stdin*/)
     {
         std::vector<std::string> traceback;
-        std::string sanitized_code = sanitize_string(code);
-        std::vector<std::string> tokenized_input = tokenizer(sanitized_code);
+        std::string sanitized_code = xv_bindings::sanitize_string(code);
+        std::vector<std::string> tokenized_input = xv_bindings::tokenizer(sanitized_code);
 
         /* This structure is only used when xvega code is run */
         //TODO: but it ends up being used in process_SQLite_input, that's why
@@ -355,7 +352,7 @@ namespace xeus_sqlite
         try
         {
             /* Runs magic */
-            if(is_magic(tokenized_input))
+            if(xv_bindings::is_magic(tokenized_input))
             {
                 /* Removes "%" symbol */
                 tokenized_input[0].erase(0, 1);
@@ -364,7 +361,7 @@ namespace xeus_sqlite
                 parse_SQLite_magic(execution_counter, tokenized_input);
 
                 /* Runs xvega magic and SQLite code */
-                if(is_xvega(tokenized_input))
+                if(xv_bindings::is_xvega(tokenized_input))
                 {
                     /* Removes XVEGA_PLOT command */
                     tokenized_input.erase(tokenized_input.begin());
@@ -386,7 +383,7 @@ namespace xeus_sqlite
                                          stringfied_sqlite_input.str(),
                                          xv_sqlite_df);
 
-                    chart = xv_sqlite::process_xvega_input(xvega_input,
+                    chart = xv_bindings::process_xvega_input(xvega_input,
                                                            xv_sqlite_df);
 
                     publish_execution_result(execution_counter,

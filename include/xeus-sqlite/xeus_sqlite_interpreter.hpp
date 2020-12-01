@@ -11,7 +11,7 @@
 #define XEUS_SQLITE_INTERPRETER_HPP
 
 #include "xeus_sqlite_config.hpp"
-#include "xvega_bindings.hpp"
+#include "xvega_sqlite.hpp"
 
 #include <SQLiteCpp/SQLiteCpp.h>
 #include <SQLiteCpp/VariadicBind.h>

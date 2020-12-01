@@ -7,8 +7,8 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef XEUS_SQLITE_XVEGA_BINDINGS_HPP
-#define XEUS_SQLITE_XVEGA_BINDINGS_HPP
+#ifndef XEUS_SQLITE_XVEGA_SQLITE_HPP
+#define XEUS_SQLITE_XVEGA_SQLITE_HPP
 
 #include <iterator>
 #include <functional>

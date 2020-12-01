@@ -13,9 +13,8 @@
 #include <iterator>
 #include <map>
 
-#include "xeus-sqlite/xvega_bindings.hpp"
-#include "utils.hpp"
-#include "xparser.hpp"
+#include "xeus-sqlite/xvega_sqlite.hpp"
+#include "xvega-bindings/xvega-bindings.hpp"
 
 namespace nl = nlohmann;
 
