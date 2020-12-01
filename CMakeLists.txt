@@ -74,7 +74,6 @@ find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
 find_package(SQLite3 REQUIRED)
 find_package(xvega REQUIRED)
 find_package(xvega-bindings REQUIRED)
-find_package(Soci REQUIRED MODULE)
 find_package(SQLiteCpp REQUIRED)
 find_package(tabulate REQUIRED)
 find_package(Threads REQUIRED)
@@ -219,7 +218,6 @@ macro(xsql_create_target target_name linkage output_name)
       ${XSQL_XEUS_TARGET}
       xvega
       SQLiteCpp
-      ${SOCI_LIBRARY}
       SQLite::SQLite3
     )
 

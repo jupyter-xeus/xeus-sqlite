@@ -18,6 +18,7 @@
 namespace xeus_sqlite
 {
 
+//TODO: move this test to xvega-bindings test dir
 TEST(xeus_sqlite_interpreter, sanitize_string_check)
 {
     std::string code = "\n\n Some inp\nut\n";
