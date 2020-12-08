@@ -16,14 +16,11 @@
 #include <vector>
 #include <tuple>
 
-#include "xvega-bindings/xvega-bindings.hpp"
+#include "xvega-bindings/xvega_bindings.hpp"
 #include "xeus/xinterpreter.hpp"
 #include "tabulate/table.hpp"
 
 #include "xeus-sqlite/xeus_sqlite_interpreter.hpp"
-
-#include "soci/soci.h"
-#include "soci/sqlite3/soci-sqlite3.h"
 
 #include <SQLiteCpp/VariadicBind.h>
 #include <SQLiteCpp/SQLiteCpp.h>
@@ -445,7 +442,7 @@ namespace xeus_sqlite
     {
         nl::json result;
         result["implementation"] = "xsqlite";
-        result["implementation_version"] = "0.1.0";
+        result["implementation_version"] = XSQLITE_VERSION;
 
         /* The jupyter-console banner for xeus-sqlite is the following:
             _  _ ____ _  _ ____    ____ ____ _    _ ___ ____

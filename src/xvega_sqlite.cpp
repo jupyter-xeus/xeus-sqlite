@@ -14,7 +14,7 @@
 #include <map>
 
 #include "xeus-sqlite/xvega_sqlite.hpp"
-#include "xvega-bindings/xvega-bindings.hpp"
+#include "xvega-bindings/xvega_bindings.hpp"
 
 namespace nl = nlohmann;
 
