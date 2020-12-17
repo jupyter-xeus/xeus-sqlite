@@ -21,6 +21,7 @@ set(CMAKE_FIND_ROOT_PATH_MODE_PACKAGE ONLY)
 set(CMAKE_FIND_FRAMEWORK NEVER)
 set(CMAKE_FIND_APPBUNDLE NEVER)
 set(CMAKE_PROGRAM_PATH ${CMAKE_PREFIX_PATH})
+set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
 # Versioning
 # ==========
@@ -68,10 +69,11 @@ OPTION(XSQL_BUILD_TESTS "xeus-sqlite test suite" OFF)
 
 # Be sure to use recent versions
 set(xeus_REQUIRED_VERSION 0.23.10)
+set(xvega_bindings_REQUIRED_VERSION 0.0.3)
 
 find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
 find_package(SQLite3 REQUIRED)
-find_package(xvega REQUIRED)
+find_package(xvega-bindings ${xvega_bindings_REQUIRED_VERSION} REQUIRED)
 find_package(SQLiteCpp REQUIRED)
 find_package(tabulate REQUIRED)
 find_package(Threads REQUIRED)
@@ -87,15 +89,13 @@ set(XEUS_SQLITE_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 # xeus-sqlite source files
 set(XEUS_SQLITE_SRC
     ${XEUS_SQLITE_SRC_DIR}/xeus_sqlite_interpreter.cpp
-    ${XEUS_SQLITE_SRC_DIR}/xvega_bindings.cpp
-    ${XEUS_SQLITE_SRC_DIR}/utils.cpp
+    ${XEUS_SQLITE_SRC_DIR}/xvega_sqlite.cpp
 )
 
 set(XEUS_SQLITE_HEADERS
-    include/xeus-sqlite/xeus_sqlite_interpreter.hpp
-    include/xeus-sqlite/xvega_bindings.hpp
     include/xeus-sqlite/xeus_sqlite_config.hpp
-    include/xeus-sqlite/utils.hpp
+    include/xeus-sqlite/xeus_sqlite_interpreter.hpp
+    include/xeus-sqlite/xvega_sqlite.hpp
 )
 
 set(XSQLITE_SRC ${XEUS_SQLITE_SRC_DIR}/main.cpp)

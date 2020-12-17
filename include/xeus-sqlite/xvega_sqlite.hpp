@@ -7,8 +7,8 @@
 * The full license is in the file LICENSE, distributed with this software. *
 ****************************************************************************/
 
-#ifndef XEUS_SQLITE_XVEGA_BINDINGS_HPP
-#define XEUS_SQLITE_XVEGA_BINDINGS_HPP
+#ifndef XEUS_SQLITE_XVEGA_SQLITE_HPP
+#define XEUS_SQLITE_XVEGA_SQLITE_HPP
 
 #include <iterator>
 #include <functional>
@@ -31,10 +31,6 @@ namespace xeus_sqlite
 
         virtual ~xv_sqlite();
 
-        //TODO: either these classes can be moved to the cpp
-        //or the relevant hpp parts on cpp moved here. I'm not sure what's the
-        //best appproach
-        static nl::json process_xvega_input(std::vector<std::string>, xv::df_type);
         static std::pair<std::vector<std::string>, std::vector<std::string>>
                split_xv_sqlite_input(std::vector<std::string>);
     };
