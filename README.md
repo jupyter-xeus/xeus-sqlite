@@ -5,6 +5,8 @@
 
 `xeus-sqlite` is a Jupyter kernel for SQL based on the native implementation of the Jupyter protocol [xeus](https://github.com/jupyter-xeus/xeus).
 
+`xeus-sqlite` now supports [vega](vega.github.io/) visualizations thanks to [xvega](https://github.com/Quantstack/xvega).
+
 ## Usage
 
 Launch the Jupyter notebook with `jupyter notebook` or Jupyter lab with `jupyter lab` and launch a new SQL notebook by selecting the **xsqlite** kernel.
