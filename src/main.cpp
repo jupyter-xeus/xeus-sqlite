@@ -14,8 +14,21 @@
 #include "xeus/xkernel_configuration.hpp"
 
 #include "xeus-sqlite/xeus_sqlite_interpreter.hpp"
+#include "xeus-sqlite/xeus_sqlite_config.hpp"
 
-std::string extract_filename(int& argc, char* argv[])
+bool should_print_version(int argc, char* argv[])
+{
+    for (int i = 0; i < argc; ++i)
+    {
+        if (std::string(argv[i]) == "--version")
+        {
+            return true;
+        }
+    }
+    return false;
+}
+
+std::string extract_filename(int argc, char* argv[])
 {
     std::string res = "";
     for (int i = 0; i < argc; ++i)
@@ -36,6 +49,12 @@ std::string extract_filename(int& argc, char* argv[])
 
 int main(int argc, char* argv[])
 {
+    if (should_print_version(argc, argv))
+    {
+        std::clog << "xsqlite " << XSQLITE_VERSION << std::endl;
+        return 0;
+    }
+
     // Load configuration file
     std::string file_name = extract_filename(argc, argv);
 
@@ -100,4 +119,3 @@ int main(int argc, char* argv[])
 
     return 0;
 }
-
