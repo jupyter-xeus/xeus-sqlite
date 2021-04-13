@@ -13,27 +13,27 @@ Launch the Jupyter notebook with `jupyter notebook` or Jupyter lab with `jupyter
 
 ## Installation
 
-xeus-sqlite has been packaged for the conda package manager.
+xeus-sqlite has been packaged for the mamba (or conda) package manager.
 
-To ensure that the installation works, it is preferable to install xeus-sqlite in a fresh conda environment.
+To ensure that the installation works, it is preferable to install xeus-sqlite in a fresh environment.
 
-To ensure that the installation works, it is preferable to install `xeus` in a fresh conda environment. It is also needed to use
-a [miniconda](https://conda.io/miniconda.html) installation because with the full [anaconda](https://www.anaconda.com/)
+To ensure that the installation works, it is preferable to install `xeus` in a fresh environment. It is also needed to use
+a [miniforge](https://github.com/conda-forge/miniforge#mambaforge) or [miniconda](https://conda.io/miniconda.html) installation because with the full [anaconda](https://www.anaconda.com/)
 you may have a conflict.
 
-The safest usage is to create an environment named xeus-sqlite with your miniconda installation
+The safest usage is to create an environment named xeus-sqlite
 
 ```
-conda create -n xeus-sqlite
-conda activate xeus-sqlite
+mamba create -n xeus-sqlite
+source activate xeus-sqlite
 ```
 
-### Installing from conda
+### Installing from conda-forge 
 
-To install xeus-sqlite with the conda package manager
+To install xeus-sqlite with the mamba (or conda) package manager
 
 ```
-conda install xeus-sqlite jupyterlab -c conda-forge
+mamba install xeus-sqlite jupyterlab -c conda-forge
 ```
 
 ### Installing from source
@@ -41,7 +41,7 @@ conda install xeus-sqlite jupyterlab -c conda-forge
 To install the xeus-sqlite dependencies
 
 ```bash
-conda install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.3 xvega xproperty jupyterlab -c conda-forge
+mamba install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.3 xvega xproperty jupyterlab -c conda-forge
 ```
 
 Then you can compile the sources
