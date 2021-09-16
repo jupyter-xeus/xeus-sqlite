@@ -6,9 +6,9 @@ dependencies:
   - cmake
   # host dependencies
   - nlohmann_json
-  - xtl=0.7.0
+  - xtl=0.7.2
   - cppzmq
-  - xeus=1.0.0
+  - xeus=2.0.0
   - sqlite
   - sqlitecpp
   - cpp-tabulate=1.3
