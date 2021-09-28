@@ -41,7 +41,7 @@ mamba install xeus-sqlite jupyterlab -c conda-forge
 To install the xeus-sqlite dependencies
 
 ```bash
-mamba install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.3 xvega xproperty jupyterlab -c conda-forge
+mamba install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.3 xvega xproperty xtl cppzmq xproperty jupyterlab -c conda-forge
 ```
 
 Then you can compile the sources
