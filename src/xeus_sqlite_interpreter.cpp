@@ -238,7 +238,7 @@ namespace xeus_sqlite
         }
         else
         {
-            throw std::runtime_error("Load a database to run this command.");
+            throw SQLite::Exception("Load a database to run this command.");
         }
     }
 
@@ -251,6 +251,10 @@ namespace xeus_sqlite
                                         const std::string& code,
                                         xv::df_type& xv_sqlite_df)
     {
+        if (m_db == nullptr)
+        {
+            throw SQLite::Exception("Please load a database to perform operations");
+        }
         SQLite::Statement query(*m_db, code);
         nl::json pub_data;
 
@@ -260,6 +264,7 @@ namespace xeus_sqlite
         /* Builds text/html output */
         std::stringstream html_table("");
 
+        /* The error handling on SQLite commands are being taken care of by SQLiteCpp*/
         if (query.getColumnCount() != 0)
         {
             std::vector<std::variant<
@@ -329,8 +334,8 @@ namespace xeus_sqlite
             pub_data["text/html"] = html_table.str();
 
             publish_execution_result(execution_counter,
-                                        std::move(pub_data),
-                                        nl::json::object());
+                                     std::move(pub_data),
+                                     nl::json::object());
         }
         else
         {
@@ -346,6 +351,7 @@ namespace xeus_sqlite
                                                bool /*allow_stdin*/)
     {
         std::vector<std::string> traceback;
+        nl::json jresult;
         std::string sanitized_code = xv_bindings::sanitize_string(code);
         std::vector<std::string> tokenized_input = xv_bindings::tokenizer(sanitized_code);
 
@@ -402,27 +408,23 @@ namespace xeus_sqlite
             {
                 process_SQLite_input(execution_counter, m_db, code, xv_sqlite_df);
             }
-
-            nl::json jresult;
             jresult["status"] = "ok";
             jresult["payload"] = nl::json::array();
             jresult["user_expressions"] = nl::json::object();
-            return jresult;
         }
-
-        catch (const std::runtime_error& err)
+        catch (const std::exception& err)
         {
-            nl::json jresult;
             jresult["status"] = "error";
             jresult["ename"] = "Error";
             jresult["evalue"] = err.what();
             traceback.push_back((std::string)jresult["ename"] + ": " + (std::string)err.what());
             publish_execution_error(jresult["ename"], jresult["evalue"], traceback);
             traceback.clear();
-            return jresult;
         }
+        return jresult;
     }
 
+<<<<<<< HEAD
     nl::json interpreter::complete_request_impl(const std::string& raw_code,
                                                 int cursor_pos)
     {
@@ -625,6 +627,9 @@ namespace xeus_sqlite
     {
         nl::json jresult;
         jresult["status"] = "ok";
+        jresult["found"] = false;
+        jresult["data"] = nl::json::object();
+        jresult["metadata"] = nl::json::object();
         return jresult;
     };
 
@@ -632,6 +637,7 @@ namespace xeus_sqlite
     {
         nl::json jresult;
         jresult["status"] = "complete";
+        jresult["indent"] = "";
         return jresult;
     };
 
@@ -658,7 +664,7 @@ namespace xeus_sqlite
         banner.append(SQLite::VERSION);
 
         result["banner"] = banner;
-        result["language_info"]["name"] = "sqlite3";
+        result["language_info"]["name"] = "sql";
         result["language_info"]["codemirror_mode"] = "sql";
         result["language_info"]["version"] = SQLite::VERSION;
         result["language_info"]["mimetype"] = "";
