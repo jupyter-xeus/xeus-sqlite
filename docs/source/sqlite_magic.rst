@@ -6,21 +6,21 @@ Magics that allow you to operate on the database.
 LOAD
 ~~~~
 
-.. object:: %LOAD <"path-to-db/yourdatabase.db"> [R | RW]
+.. object:: %LOAD <path-to-db/yourdatabase.db> [r | rw]
 
    Loads a database.
    
-   Receives two arguments, the path to the database location as a string and an option to open the database either as read and write "RW" or read only mode "R".
+   Receives two arguments, the path to the database location as a string (it can be either the local or absolute path) and an option to open the database either as read and write "RW" or read only mode "R".
    If the optional argument is not set it will default to read and write mode.
 
 CREATE
 ~~~~~~
 
-.. object:: %CREATE <"path-to-db/yourdatabase.db">
+.. object:: %CREATE <path-to-db/yourdatabase.db> name_of_databse
 
    Creates a database in read and write mode.
 
-   Receives one argument, a string that's the path for the database.
+   Receives two arguments, a string that's the path to where it will create your database database and a string for the name of the database.
 
 DELETE
 ~~~~~~
@@ -34,7 +34,7 @@ DELETE
 TABLE_EXISTS
 ~~~~~~~~~~~~
 
-.. object:: %TABLE_EXISTS "table_name"
+.. object:: %TABLE_EXISTS table_name
 
    Checks if a table exists.
 
@@ -77,7 +77,7 @@ IS_UNENCRYPTED
 LOAD_EXTENSION
 ~~~~~~~~~~~~~~
 
-.. object:: %LOAD_EXTENSION <"extension">
+.. object:: %LOAD_EXTENSION <extension>
 
    Load a module into the current sqlite database instance.
 
@@ -86,7 +86,7 @@ LOAD_EXTENSION
 REKEY
 ~~~~~
 
-.. object:: %REKEY <"key">
+.. object:: %REKEY <key>
 
    Reset the key for the current sqlite database instance.
    This is the equivalent of the sqlite3_rekey call and should thus be called after the database has been opened with a valid key. To decrypt a database, call this method with an empty string.
@@ -96,7 +96,7 @@ REKEY
 SET_KEY
 ~~~~~~~
 
-.. object:: %SET_KEY <"key">
+.. object:: %SET_KEY <key>
 
    Set the key for the current sqlite database instance.
    This is the equivalent of the sqlite3_key call and should thus be called directly after opening the database.

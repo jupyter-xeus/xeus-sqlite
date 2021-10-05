@@ -424,7 +424,6 @@ namespace xeus_sqlite
         return jresult;
     }
 
-<<<<<<< HEAD
     nl::json interpreter::complete_request_impl(const std::string& raw_code,
                                                 int cursor_pos)
     {
