@@ -7,27 +7,27 @@
 Getting started
 ===============
 
-Launch Jupyter notebook with `jupyter notebook` or Jupyter lab with
-`jupyter lab` and create a new SQLite notebook by selecting the **xsqlite**
+Launch Jupyter notebook with ``jupyter notebook`` or Jupyter lab with
+``jupyter lab`` and create a new SQLite notebook by selecting the **xsqlite**
 kernel. Or launch Jupyter console with `jupyter console --kernel xsqlite`.
 
-To perform operations on `xeus-sqlite` you must have a loaded database. You can do that using the `%LOAD` or `%CREATE` magics. Magics are commands that allow you to perform operations that are not necessarily SQLite code, we give a brief example on how to use the mentioned ones here, for more extensive explanation on magics access the main page_.
+To perform operations on ``xeus-sqlite`` you must have a loaded database. You can do that using the ``%LOAD`` or ``%CREATE`` magics. Magics are commands that allow you to perform operations that are not necessarily SQLite code, we give a brief example on how to use the mentioned ones here, for more extensive explanation on magics access the main page_.
 
 Creating a new database
 -----------------------
 
 If you want to create a new database from scratch you can use: ::
 
-    %CREATE "path-to-db/yourdatabase.db"
+    %CREATE path-to-db/yourdatabase.db namedb
 
-This will create a `yourdatabase.db` file in the specified location.
+This will create a ``yourdatabase.db`` file in the specified location.
 
 Loading a new database
 ----------------------
 
 If you already have a database you can load it with: ::
 
-    %LOAD "path-to-db/yourdatabase.db"
+    %LOAD path-to-db/yourdatabase.db
 
 Usage
 -----
@@ -36,11 +36,11 @@ Now you can run normal SQLite code and the changes will take place on this datab
 
    Warning: the changes made while in the jupyter interface are permanent to your database.
 
-To change the database you're working with simply run the `%LOAD` or `%CREATE` magic with a new target.
+To change the database you're working with simply run the ``%LOAD`` or ``%CREATE`` magic with a new target.
 
-Recommendations
----------------
+Notes
+-----
 
-It's recommended to use words from the syntax in upper case and arguments in lower case simply to improve readability. The input strings are sanitized and it doesn't matter if the input is written in upper or lower case, **with the only exception** of column names in SQLite code (and all the other places where they're referenced).
+It's recommended to use words from the syntax in upper case and arguments in lower case simply to improve readability. The input strings are sanitized and it doesn't matter if the input is written in upper or lower case, **with the exception** of names (like column names, tables names, etc) and the reading options to load a database that should receive the ``[r w rw]`` arguments in small letters.
 
 .. _page: api
