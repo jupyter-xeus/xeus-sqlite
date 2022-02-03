@@ -63,6 +63,13 @@ OPTION(XSQL_USE_SHARED_XEUS_SQLITE "Link xsqlite with the xeus-sqlite shared lib
 
 OPTION(XSQL_DOWNLOAD_GTEST "build gtest from downloaded sources" OFF)
 OPTION(XSQL_BUILD_TESTS "xeus-sqlite test suite" OFF)
+OPTION(XSQL_EMSCRIPTEN_WASM_BUILD "Build for wasm with emscripten" OFF)
+
+if(XSQL_EMSCRIPTEN_WASM_BUILD)
+    # for the emscripten build we need a FindSQLite3.cmake since
+    # we install sqlite in a non-standart way
+    set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_emscripten;${CMAKE_MODULE_PATH}")
+endif()
 
 # Dependencies
 # ============
@@ -90,6 +97,7 @@ set(XEUS_SQLITE_SRC_DIR ${CMAKE_CURRENT_SOURCE_DIR}/src)
 set(XEUS_SQLITE_SRC
     ${XEUS_SQLITE_SRC_DIR}/xeus_sqlite_interpreter.cpp
     ${XEUS_SQLITE_SRC_DIR}/xvega_sqlite.cpp
+    ${XEUS_SQLITE_SRC_DIR}/xlite.cpp
 )
 
 set(XEUS_SQLITE_HEADERS
@@ -109,6 +117,25 @@ set(CMAKE_BUILD_TYPE Release CACHE STRING "Choose the type of build." FORCE)
 string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE)
 
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib; ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
+
+
+if(XSQL_EMSCRIPTEN_WASM_BUILD)
+    add_compile_definitions(XSQL_EMSCRIPTEN_WASM_BUILD)
+    include(XeusEmscriptenWasmFlags)
+
+    # fetch
+    set(XEUS_EMSCRIPTEN_WASM_FLAGS "${XEUS_EMSCRIPTEN_WASM_FLAGS} -s  FETCH=1  -s NO_EXIT_RUNTIME=1")
+
+    # async
+    set(XEUS_EMSCRIPTEN_WASM_FLAGS "${XEUS_EMSCRIPTEN_WASM_FLAGS} --bind --std=c++17")
+    set(XEUS_EMSCRIPTEN_WASM_FLAGS "${XEUS_EMSCRIPTEN_WASM_FLAGS} -lidbfs.js")
+    set(XEUS_EMSCRIPTEN_WASM_FLAGS "${XEUS_EMSCRIPTEN_WASM_FLAGS} -s ASYNCIFY=1 -s 'ASYNCIFY_IMPORTS=[\"async_ems_init_idbfs\", \"async_ems_sync_db\"]'")
+    set(XEUS_EMSCRIPTEN_WASM_FLAGS "${XEUS_EMSCRIPTEN_WASM_FLAGS} -s 'ASYNCIFY_STACK_SIZE=20480'")
+    set(XEUS_EMSCRIPTEN_WASM_FLAGS "${XEUS_EMSCRIPTEN_WASM_FLAGS} -s  FORCE_FILESYSTEM=1")
+    set(EMSCRIPTEN_FEATURES "${EMSCRIPTEN_FEATURES} -s \"EXTRA_EXPORTED_RUNTIME_METHODS=[ENV']\"")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${XEUS_EMSCRIPTEN_WASM_FLAGS} -fno-stack-protector")
+    set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS}  ${XEUS_EMSCRIPTEN_WASM_FLAGS} ---proxy-to-worker")
+endif()
 
 macro(xsql_set_common_options target_name)
     if (CMAKE_CXX_COMPILER_ID MATCHES "Clang" OR
@@ -221,8 +248,10 @@ macro(xsql_create_target target_name linkage output_name)
       SQLite::SQLite3
     )
 
-    # find_package(Threads) # TODO: add Threads as a dependence of xeus-static?
-    target_link_libraries(${target_name} PRIVATE ${CMAKE_THREAD_LIBS_INIT})
+    if(NOT XSQL_EMSCRIPTEN_WASM_BUILD)
+        # find_package(Threads) # TODO: add Threads as a dependence of xeus-static?
+        target_link_libraries(${target_name} PRIVATE ${CMAKE_THREAD_LIBS_INIT})
+    endif()
 endmacro()
 
 # xeus-sqlite
@@ -278,6 +307,12 @@ endif()
 
 if(XSQL_BUILD_TESTS)
     add_subdirectory(test)
+endif()
+
+if(XSQL_EMSCRIPTEN_WASM_BUILD)
+    add_executable(xeus_kernel src/main_emscripten_kernel.cpp )
+    target_link_libraries(xeus_kernel  xeus-static xeus-sqlite-static)
+    target_compile_features(xeus_kernel PRIVATE cxx_std_17)
 endif()
 
 # Installation
