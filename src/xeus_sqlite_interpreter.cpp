@@ -25,6 +25,17 @@
 #include <SQLiteCpp/VariadicBind.h>
 #include <SQLiteCpp/SQLiteCpp.h>
 
+#ifdef XSQL_EMSCRIPTEN_WASM_BUILD
+// implemented in xlite.cpp
+namespace xeus_lite
+{
+    void fetch(const std::string url, const std::string filename);
+    void ems_init_idbfs(const std::string & path);
+    void ems_sync_db();
+}
+#endif
+
+
 namespace xeus_sqlite
 {
 
@@ -35,6 +46,11 @@ namespace xeus_sqlite
     inline static bool is_identifier(char c)
     {
         return std::isalpha(c) || std::isdigit(c) || c == '_';
+    }
+
+    interpreter::interpreter()
+    {
+        xeus::register_interpreter(this);
     }
 
     void interpreter::load_db(const std::vector<std::string> tokenized_input)
@@ -72,7 +88,7 @@ namespace xeus_sqlite
     void interpreter::create_db(const std::vector<std::string> tokenized_input)
     {
         m_bd_is_loaded = true;
-        m_db_path = tokenized_input[2];
+        m_db_path = tokenized_input[1];
 
         /* Creates the file */
         std::ofstream(m_db_path.c_str()).close();
@@ -193,6 +209,21 @@ namespace xeus_sqlite
         {
             return create_db(tokenized_input);
         }
+        #ifdef XSQL_EMSCRIPTEN_WASM_BUILD
+        else if (xv_bindings::case_insentive_equals(tokenized_input[0], "FETCH"))
+        {   
+            return xeus_lite::fetch(tokenized_input[1] /*url*/, tokenized_input[2] /*filename*/);
+        }
+        else if (xv_bindings::case_insentive_equals(tokenized_input[0], "PUSH_TO_IDBFS"))
+        {
+            return xeus_lite::ems_sync_db();
+        }
+        else if (xv_bindings::case_insentive_equals(tokenized_input[0], "SET_IDBFS_DIR"))
+        {
+            return xeus_lite::ems_init_idbfs(tokenized_input[1]);
+        }
+        #endif
+
         if (m_bd_is_loaded)
         {
             if (xv_bindings::case_insentive_equals(tokenized_input[0], "DELETE"))

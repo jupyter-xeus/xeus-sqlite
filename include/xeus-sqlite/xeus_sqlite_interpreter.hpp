@@ -29,7 +29,7 @@ namespace xeus_sqlite
 
     public:
 
-        interpreter() = default;
+        interpreter();
         virtual ~interpreter() = default;
 
     private:
