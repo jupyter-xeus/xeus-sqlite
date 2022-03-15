@@ -75,7 +75,7 @@ endif()
 # ============
 
 # Be sure to use recent versions
-set(xeus_REQUIRED_VERSION 2.0.0)
+set(xeus_REQUIRED_VERSION 2.4.0)
 set(xvega_bindings_REQUIRED_VERSION 0.0.3)
 
 find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
@@ -118,23 +118,8 @@ string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE)
 
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib; ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 
-
 if(XSQL_EMSCRIPTEN_WASM_BUILD)
     add_compile_definitions(XSQL_EMSCRIPTEN_WASM_BUILD)
-    include(XeusEmscriptenWasmFlags)
-
-    # fetch
-    set(XEUS_EMSCRIPTEN_WASM_FLAGS "${XEUS_EMSCRIPTEN_WASM_FLAGS} -s  FETCH=1  -s NO_EXIT_RUNTIME=1")
-
-    # async
-    set(XEUS_EMSCRIPTEN_WASM_FLAGS "${XEUS_EMSCRIPTEN_WASM_FLAGS} --bind --std=c++17")
-    set(XEUS_EMSCRIPTEN_WASM_FLAGS "${XEUS_EMSCRIPTEN_WASM_FLAGS} -lidbfs.js")
-    set(XEUS_EMSCRIPTEN_WASM_FLAGS "${XEUS_EMSCRIPTEN_WASM_FLAGS} -s ASYNCIFY=1 -s 'ASYNCIFY_IMPORTS=[\"async_ems_init_idbfs\", \"async_ems_sync_db\"]'")
-    set(XEUS_EMSCRIPTEN_WASM_FLAGS "${XEUS_EMSCRIPTEN_WASM_FLAGS} -s 'ASYNCIFY_STACK_SIZE=20480'")
-    set(XEUS_EMSCRIPTEN_WASM_FLAGS "${XEUS_EMSCRIPTEN_WASM_FLAGS} -s  FORCE_FILESYSTEM=1")
-    set(EMSCRIPTEN_FEATURES "${EMSCRIPTEN_FEATURES} -s \"EXTRA_EXPORTED_RUNTIME_METHODS=[ENV']\"")
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${XEUS_EMSCRIPTEN_WASM_FLAGS} -fno-stack-protector")
-    set(CMAKE_LINKER_FLAGS "${CMAKE_LINKER_FLAGS}  ${XEUS_EMSCRIPTEN_WASM_FLAGS} ---proxy-to-worker")
 endif()
 
 macro(xsql_set_common_options target_name)
@@ -311,8 +296,15 @@ endif()
 
 if(XSQL_EMSCRIPTEN_WASM_BUILD)
     add_executable(xeus_kernel src/main_emscripten_kernel.cpp )
-    target_link_libraries(xeus_kernel  xeus-static xeus-sqlite-static)
+    target_link_libraries(xeus_kernel xeus-static xeus-sqlite-static)
     target_compile_features(xeus_kernel PRIVATE cxx_std_17)
+    target_link_options(xeus_kernel
+        PUBLIC "SHELL: -s FETCH=1"
+        PUBLIC "SHELL: -s NO_EXIT_RUNTIME=1"
+        PUBLIC "SHELL: -s 'ASYNCIFY_IMPORTS=[\"async_ems_init_idbfs\", \"async_ems_sync_db\"]'"
+        PUBLIC "SHELL: -s FORCE_FILESYSTEM=1"
+    )
+    target_link_libraries(xeus_kernel idbfs.js)
 endif()
 
 # Installation

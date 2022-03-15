@@ -83,7 +83,7 @@ namespace xeus_lite
             auto & interpreter = xeus::get_interpreter();
             std::cout<<s.str()<<"\n";
             interpreter.publish_stream("stdout", s.str());
-            auto userData = reinterpret_cast<fetch_user_data *>(fetch->userData);
+            auto userData = reinterpret_cast<detail::fetch_user_data *>(fetch->userData);
             userData->done = true;
             emscripten_fetch_close(fetch);
         };
