@@ -12,8 +12,8 @@
 
 // Project version
 #define XSQLITE_VERSION_MAJOR 0
-#define XSQLITE_VERSION_MINOR 5
-#define XSQLITE_VERSION_PATCH 2
+#define XSQLITE_VERSION_MINOR 6
+#define XSQLITE_VERSION_PATCH 0
 
 // Composing the version string from major, minor and patch
 #define XSQLITE_CONCATENATE(A, B) XSQLITE_CONCATENATE_IMPL(A, B)

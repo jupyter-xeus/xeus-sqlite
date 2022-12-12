@@ -68,15 +68,20 @@ mamba install sphinx breathe doxygen sphinx_rtd_theme
 
 ``xeus-sqlite`` depends on
 
-- [xeus](https://github.com/jupyter-xeus/xeus)
+- [xeus-zmq](https://github.com/jupyter-xeus/xeus-zmq)
 - [SQLite](https://github.com/sqlite/sqlite)
 - [SQLiteCPP](https://github.com/SRombauts/SQLiteCpp)
 - [Tabulate](https://github.com/p-ranav/tabulate)
 - [XVega](https://github.com/Quantstack/xvega)
 
+| `xeus-sqlite`|    `xeus-zmq`   |     `SQLite`    |   `SQLiteCPP`   |   `tabulate`    | `nlohmann_json` | `xvega` |`xvega-bindings`|
+|--------------|-----------------|-----------------|-----------------|-----------------|-----------------|-----------|----------------|
+|    master    | >=1.0.2, <2.0.0 | >=3.30.1, <4    | >=3.0.0, <4     | >=1.3.0,<2.0    | >=3.0.0         | >= 0.0.10 | >= 0.0.3       |
+
+Prior to version 0.6, `xeus-sqlite`  was depending on `xeus` instead of `xeus-zmq`:
+
 | `xeus-sqlite`|      `xeus`     |     `SQLite`    |   `SQLiteCPP`   |   `tabulate`    | `nlohmann_json` | `xvega` |`xvega-bindings`|
 |--------------|-----------------|-----------------|-----------------|-----------------|-----------------|-----------|----------------|
-|    master    | >=2.4.0, <3.0.0 | >=3.30.1, <4    | >=3.0.0, <4     | >=1.3.0,<2.0    | >=3.0.0         | >= 0.0.10 | >= 0.0.3       |
 |    0.5.2     | >=2.4.0, <3.0.0 | >=3.30.1, <4    | >=3.0.0, <4     | >=1.3.0,<2.0    | >=3.0.0         | >= 0.0.10 | >= 0.0.3       |
 |    0.5.1     | >=2.0.0, <3.0.0 | >=3.30.1, <4    | >=3.0.0, <4     | >=1.3.0,<2.0    | >=3.0.0         | >= 0.0.10 | >= 0.0.3       |
 |    0.3.0     | >=1.0.0, <2.0.0 | >=3.30.1, <4    | >=3.0.0, <4     | >=1.3.0,<2.0    | >=3.0.0         | >= 0.0.10 | >= 0.0.3       |
