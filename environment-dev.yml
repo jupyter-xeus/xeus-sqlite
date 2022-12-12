@@ -8,7 +8,7 @@ dependencies:
   - nlohmann_json
   - xtl
   - cppzmq
-  - xeus=2.4.0
+  - xeus-zmq=1.0.2
   - sqlite
   - sqlitecpp
   - cpp-tabulate=1.3

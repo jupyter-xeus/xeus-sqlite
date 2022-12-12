@@ -51,9 +51,6 @@ configure_file (
 # Build options
 # =============
 
-OPTION(XSQL_DISABLE_ARCH_NATIVE "disable -march=native flag" OFF)
-OPTION(XSQL_DISABLE_TUNE_GENERIC "disable -mtune=generic flag" OFF)
-
 OPTION(XSQL_BUILD_STATIC "Build xeus-sqlite static library" ON)
 OPTION(XSQL_BUILD_SHARED "Split xsqlite build into executable and library" ON)
 OPTION(XSQL_BUILD_XSQLITE_EXECUTABLE "Build the xsqlite executable" ON)
@@ -75,7 +72,7 @@ endif()
 # ============
 
 # Be sure to use recent versions
-set(xeus_REQUIRED_VERSION 2.4.0)
+set(xeus_REQUIRED_VERSION 3.0.3)
 set(xvega_bindings_REQUIRED_VERSION 0.0.3)
 
 find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
@@ -129,14 +126,6 @@ macro(xsql_set_common_options target_name)
 
         target_compile_options(${target_name} PUBLIC -Wunused-parameter -Wextra -Wreorder)
     
-        # Mtune generic/native
-        if (XSQL_DISABLE_ARCH_NATIVE AND NOT XSQL_DISABLE_TUNE_GENERIC)
-            target_compile_options(${target_name} PUBLIC -mtune=generic)
-        elseif (XSQL_DISABLE_TUNE_GENERIC)
-        else ()
-            target_compile_options(${target_name} PUBLIC -march=native)
-        endif ()
-
         # C++17 flag
         CHECK_CXX_COMPILER_FLAG("-std=c++17" HAS_CPP17_FLAG)
         if (HAS_CPP17_FLAG)
@@ -265,8 +254,10 @@ endif ()
 # =======
 
 if (XSQL_BUILD_XSQLITE_EXECUTABLE)
+    find_package(xeus-zmq 1.0.2 REQUIRED)
     add_executable(xsqlite ${XSQLITE_SRC})
     set_target_properties(xsqlite PROPERTIES ENABLE_EXPORTS 1)
+    target_link_libraries(xsqlite PRIVATE xeus-zmq)
 
     xsql_set_common_options(xsqlite)
 
@@ -295,8 +286,9 @@ if(XSQL_BUILD_TESTS)
 endif()
 
 if(XSQL_EMSCRIPTEN_WASM_BUILD)
+    find_package(xeus-lite REQUIRED)
     add_executable(xeus_kernel src/main_emscripten_kernel.cpp )
-    target_link_libraries(xeus_kernel xeus-static xeus-sqlite-static)
+    target_link_libraries(xeus_kernel PRIVATE xeus-sqlite-static xeus-lite)
     target_compile_features(xeus_kernel PRIVATE cxx_std_17)
     target_link_options(xeus_kernel
         PUBLIC "SHELL: -s FETCH=1"

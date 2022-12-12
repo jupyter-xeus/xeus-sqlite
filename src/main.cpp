@@ -20,7 +20,7 @@
 
 #include "xeus/xkernel.hpp"
 #include "xeus/xkernel_configuration.hpp"
-#include "xeus/xserver_shell_main.hpp"
+#include "xeus-zmq/xserver_shell_main.hpp"
 
 #include "xeus-sqlite/xeus_sqlite_interpreter.hpp"
 #include "xeus-sqlite/xeus_sqlite_config.hpp"
