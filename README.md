@@ -13,6 +13,8 @@ Launch the Jupyter notebook with `jupyter notebook` or Jupyter lab with `jupyter
 
 ## Installation
 
+xeus-sqlite has been packaged for the mamba (or conda) package manager on the **Linux** and **OS X** platforms. At the moment, we are not providing packages for the **Windows** platform.
+
 xeus-sqlite has been packaged for the mamba (or conda) package manager.
 
 To ensure that the installation works, it is preferable to install xeus-sqlite in a fresh environment.
