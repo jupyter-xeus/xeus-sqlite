@@ -72,16 +72,14 @@ endif()
 # ============
 
 # Be sure to use recent versions (minimum requirements)
-set(xeus_REQUIRED_VERSION 3.1.1)
 set(xvega_bindings_REQUIRED_VERSION 0.0.10)
 set(tabulate_REQUIRED_VERSION 1.5)
 
-find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
 find_package(SQLite3 REQUIRED)
-find_package(xvega-bindings ${xvega_bindings_REQUIRED_VERSION} REQUIRED)
 find_package(SQLiteCpp REQUIRED)
-find_package(tabulate ${tabulate_REQUIRED_VERSION} REQUIRED)
 find_package(Threads REQUIRED)
+find_package(xvega-bindings ${xvega_bindings_REQUIRED_VERSION} REQUIRED)
+find_package(tabulate ${tabulate_REQUIRED_VERSION} REQUIRED)
 
 add_definitions(-DSQLITE_ENABLE_EXPLAIN_COMMENTS=1 -DSQLITE_DEBUG=1 -DSQLITE_MEMDEBUG=1)
 
