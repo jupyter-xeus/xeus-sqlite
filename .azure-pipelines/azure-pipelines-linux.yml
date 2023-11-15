@@ -9,10 +9,10 @@ jobs:
           xsql_use_shared_xeus: 0
           xsql_use_shared_xeus_sqlite: 0
     pool:
-      vmImage: ubuntu-20.04
+      vmImage: ubuntu-22.04
     timeoutInMinutes: 30
     steps:
-          
+
       - bash: echo "##vso[task.prependpath]$CONDA/bin"
         displayName: Add conda to PATH
 
