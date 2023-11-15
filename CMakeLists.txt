@@ -254,7 +254,7 @@ endif ()
 # =======
 
 if (XSQL_BUILD_XSQLITE_EXECUTABLE)
-    find_package(xeus-zmq 1.0.2 REQUIRED)
+    find_package(xeus-zmq 1.1.1 REQUIRED)
     add_executable(xsqlite ${XSQLITE_SRC})
     set_target_properties(xsqlite PROPERTIES ENABLE_EXPORTS 1)
     target_link_libraries(xsqlite PRIVATE xeus-zmq)

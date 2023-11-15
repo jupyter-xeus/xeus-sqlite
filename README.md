@@ -28,7 +28,7 @@ mamba create -n xeus-sqlite
 source activate xeus-sqlite
 ```
 
-### Installing from conda-forge 
+### Installing from conda-forge
 
 To install xeus-sqlite with the mamba (or conda) package manager
 
@@ -76,7 +76,7 @@ mamba install sphinx breathe doxygen sphinx_rtd_theme
 
 | `xeus-sqlite`|    `xeus-zmq`   |     `SQLite`    |   `SQLiteCPP`   |   `tabulate`    | `nlohmann_json` | `xvega`   |`xvega-bindings`|
 |--------------|-----------------|-----------------|-----------------|-----------------|-----------------|-----------|----------------|
-|    main      | >=1.0.2, <2.0.0 | >=3.30.1, <4    | >=3.0.0, <4     | >=1.5.0         | >=3.0.0         | >= 0.0.10 | >= 0.0.3       |
+|    main      | >=1.1.1, <2.0.0 | >=3.30.1, <4    | >=3.0.0, <4     | >=1.5.0         | >=3.0.0         | >= 0.0.10 | >= 0.0.3       |
 
 Prior to version 0.6, `xeus-sqlite`  was depending on `xeus` instead of `xeus-zmq`:
 
