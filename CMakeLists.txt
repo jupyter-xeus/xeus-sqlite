@@ -73,7 +73,7 @@ endif()
 
 # Be sure to use recent versions
 set(xeus_REQUIRED_VERSION 3.0.3)
-set(xvega_bindings_REQUIRED_VERSION 0.0.3)
+set(xvega_bindings_REQUIRED_VERSION 0.0.10)
 
 find_package(xeus ${xeus_REQUIRED_VERSION} REQUIRED)
 find_package(SQLite3 REQUIRED)
