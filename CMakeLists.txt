@@ -71,8 +71,8 @@ endif()
 # Dependencies
 # ============
 
-# Be sure to use recent versions
-set(xeus_REQUIRED_VERSION 3.0.3)
+# Be sure to use recent versions (minimum requirements)
+set(xeus_REQUIRED_VERSION 3.1.1)
 set(xvega_bindings_REQUIRED_VERSION 0.0.10)
 set(tabulate_REQUIRED_VERSION 1.5)
 
