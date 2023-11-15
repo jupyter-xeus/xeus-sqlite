@@ -298,10 +298,7 @@ namespace xeus_sqlite
         /* The error handling on SQLite commands are being taken care of by SQLiteCpp*/
         if (query.getColumnCount() != 0)
         {
-            std::vector<std::variant<
-                            std::string,
-                            const char*,
-                            tabulate::Table>> col_names;
+            tabulate::Table::Row_t col_names;
 
             /* Builds text/html output */
             html_table << "<table>\n<tr>\n";
@@ -333,10 +330,7 @@ namespace xeus_sqlite
                 /* Builds text/html output */
                 html_table << "<tr>\n";
 
-                std::vector<std::variant<
-                                std::string,
-                                const char*,
-                                tabulate::Table>> row;
+                tabulate::Table::Row_t row;
 
                 for (int col = 0; col < query.getColumnCount(); col++) {
                     std::string col_name;

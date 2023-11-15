@@ -70,11 +70,11 @@ You can install ``xeus-sqlite`` from source with cmake. This requires that you h
 
 .. code::
 
-    conda install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.3 xvega xproperty jupyterlab -c conda-forge
+    conda install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.5 xvega xproperty jupyterlab -c conda-forge
 
 .. code::
 
-    mamba install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.3 xvega xproperty jupyterlab -c conda-forge
+    mamba install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.5 xvega xproperty jupyterlab -c conda-forge
 
 .. code::
 
