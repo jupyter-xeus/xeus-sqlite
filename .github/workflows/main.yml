@@ -1,0 +1,72 @@
+name: CI
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+defaults:
+  run:
+    shell: bash -l {0}
+
+
+jobs:
+  test-unix:
+
+    runs-on: ${{ matrix.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-20.04, ubuntu-22.04, macos-11, macos-12]
+        build_type: [static_build, shared_build]
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Get number of CPU cores
+        uses: SimenB/github-actions-cpu-cores@v2
+
+      - name: Install micromamba
+        uses: mamba-org/setup-micromamba@v1
+        with:
+          environment-file: environment-dev.yml
+
+      - name: Make build directory
+        run: mkdir build
+
+      - name: Static build option
+        if: matrix.build_type == 'static_build'
+        run: |
+          CMAKE_EXTRA_ARGS="$CMAKE_EXTRA_ARGS -DXSQL_BUILD_SHARED=OFF -DXSQL_USE_SHARED_XEUS_SQLITE=OFF"
+          echo "CMAKE_EXTRA_ARGS=$CMAKE_EXTRA_ARGS" >> $GITHUB_ENV
+
+      - name: Shared build option
+        if: matrix.build_type == 'shared_build'
+        run: |
+          CMAKE_EXTRA_ARGS="$CMAKE_EXTRA_ARGS -DXSQL_BUILD_STATIC=OFF"
+          echo "CMAKE_EXTRA_ARGS=$CMAKE_EXTRA_ARGS" >> $GITHUB_ENV
+
+      - name: Configure cmake
+        run: |
+          cmake .. \
+            -D CMAKE_PREFIX_PATH=$CONDA_PREFIX \
+            -D CMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+            -D XSQL_DOWNLOAD_GTEST=ON \
+            -D CMAKE_INSTALL_LIBDIR=lib \
+            -D CMAKE_C_COMPILER=$CC \
+            -D CMAKE_CXX_COMPILER=$CXX \
+            ${{ env.CMAKE_EXTRA_ARGS }}
+        working-directory: build
+
+      - name: Install
+        run: make -j ${{ steps.cpu-cores.outputs.count }} install
+        working-directory: build
+
+      - name: Test xeus-sqlite (C++)
+        run: ./test_xeus_sqlite
+        working-directory: build/test
