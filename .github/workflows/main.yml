@@ -27,7 +27,7 @@ jobs:
 
     steps:
       - name: Checkout
-      - uses: actions/checkout@v4
+        uses: actions/checkout@v4
 
       - name: Get number of CPU cores
         uses: SimenB/github-actions-cpu-cores@v2
