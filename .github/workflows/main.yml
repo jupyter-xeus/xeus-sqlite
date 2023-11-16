@@ -26,6 +26,7 @@ jobs:
         build_type: [static_build, shared_build]
 
     steps:
+      - name: Checkout
       - uses: actions/checkout@v4
 
       - name: Get number of CPU cores
