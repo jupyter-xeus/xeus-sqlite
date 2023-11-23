@@ -60,9 +60,8 @@ OPTION(XSQL_USE_SHARED_XEUS_SQLITE "Link xsqlite with the xeus-sqlite shared lib
 
 OPTION(XSQL_DOWNLOAD_GTEST "build gtest from downloaded sources" OFF)
 OPTION(XSQL_BUILD_TESTS "xeus-sqlite test suite" OFF)
-OPTION(XSQL_EMSCRIPTEN_WASM_BUILD "Build for wasm with emscripten" OFF)
 
-if(XSQL_EMSCRIPTEN_WASM_BUILD)
+if(EMSCRIPTEN)
     # for the emscripten build we need a FindSQLite3.cmake since
     # we install sqlite in a non-standart way
     set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_emscripten;${CMAKE_MODULE_PATH}")
@@ -114,7 +113,7 @@ string(TOUPPER "${CMAKE_BUILD_TYPE}" CMAKE_BUILD_TYPE)
 
 set(CMAKE_INSTALL_RPATH "${CMAKE_INSTALL_PREFIX}/lib; ${CMAKE_INSTALL_PREFIX}/${CMAKE_INSTALL_LIBDIR}")
 
-if(XSQL_EMSCRIPTEN_WASM_BUILD)
+if(EMSCRIPTEN)
     add_compile_definitions(XSQL_EMSCRIPTEN_WASM_BUILD)
 endif()
 
@@ -218,10 +217,9 @@ macro(xsql_create_target target_name linkage output_name)
       ${XSQL_XEUS_TARGET}
       xvega
       SQLiteCpp
-      SQLite::SQLite3
     )
 
-    if(NOT XSQL_EMSCRIPTEN_WASM_BUILD)
+    if(NOT EMSCRIPTEN)
         # find_package(Threads) # TODO: add Threads as a dependence of xeus-static?
         target_link_libraries(${target_name} PRIVATE ${CMAKE_THREAD_LIBS_INIT})
     endif()
@@ -284,18 +282,23 @@ if(XSQL_BUILD_TESTS)
     add_subdirectory(test)
 endif()
 
-if(XSQL_EMSCRIPTEN_WASM_BUILD)
-    find_package(xeus-lite REQUIRED)
+if(EMSCRIPTEN)
+find_package(xeus-lite REQUIRED)
+    include(WasmBuildOptions)
     add_executable(xeus_kernel src/main_emscripten_kernel.cpp )
     target_link_libraries(xeus_kernel PRIVATE xeus-sqlite-static xeus-lite)
     target_compile_features(xeus_kernel PRIVATE cxx_std_17)
+
+    xeus_wasm_compile_options(xeus_kernel)
+    xeus_wasm_link_options(xeus_kernel "web,worker")
+    
     target_link_options(xeus_kernel
         PUBLIC "SHELL: -s FETCH=1"
         PUBLIC "SHELL: -s NO_EXIT_RUNTIME=1"
         PUBLIC "SHELL: -s 'ASYNCIFY_IMPORTS=[\"async_ems_init_idbfs\", \"async_ems_sync_db\"]'"
         PUBLIC "SHELL: -s FORCE_FILESYSTEM=1"
     )
-    target_link_libraries(xeus_kernel idbfs.js)
+    # target_link_libraries(xeus_kernel idbfs.js)
 endif()
 
 # Installation
