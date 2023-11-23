@@ -283,22 +283,22 @@ if(XSQL_BUILD_TESTS)
 endif()
 
 if(EMSCRIPTEN)
-find_package(xeus-lite REQUIRED)
+    find_package(xeus-lite REQUIRED)
     include(WasmBuildOptions)
-    add_executable(xeus_kernel src/main_emscripten_kernel.cpp )
-    target_link_libraries(xeus_kernel PRIVATE xeus-sqlite-static xeus-lite)
-    target_compile_features(xeus_kernel PRIVATE cxx_std_17)
+    add_executable(xsqlite src/main_emscripten_kernel.cpp )
+    target_link_libraries(xsqlite PRIVATE xeus-sqlite-static xeus-lite)
+    target_compile_features(xsqlite PRIVATE cxx_std_17)
 
-    xeus_wasm_compile_options(xeus_kernel)
-    xeus_wasm_link_options(xeus_kernel "web,worker")
+    xeus_wasm_compile_options(xsqlite)
+    xeus_wasm_link_options(xsqlite "web,worker")
     
-    target_link_options(xeus_kernel
+    target_link_options(xsqlite
         PUBLIC "SHELL: -s FETCH=1"
         PUBLIC "SHELL: -s NO_EXIT_RUNTIME=1"
         PUBLIC "SHELL: -s 'ASYNCIFY_IMPORTS=[\"async_ems_init_idbfs\", \"async_ems_sync_db\"]'"
         PUBLIC "SHELL: -s FORCE_FILESYSTEM=1"
     )
-    # target_link_libraries(xeus_kernel idbfs.js)
+    # target_link_libraries(xsqlite idbfs.js)
 endif()
 
 # Installation
@@ -326,7 +326,9 @@ endif ()
 if (XSQL_BUILD_XSQLITE_EXECUTABLE)
     install(TARGETS xsqlite
             RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})
+endif()
 
+if (XSQL_BUILD_XSQLITE_EXECUTABLE OR EMSCRIPTEN)
     # Configuration and data directories for jupyter and xeus_sqlite
     set(XJUPYTER_DATA_DIR "share/jupyter" CACHE STRING "Jupyter data directory")
 
@@ -371,3 +373,11 @@ if (XSQL_BUILD_SHARED)
             FILE ${PROJECT_NAME}Targets.cmake
             DESTINATION ${XEUS_SQLITE_CMAKECONFIG_INSTALL_DIR})
 endif ()
+
+if(EMSCRIPTEN)
+    install(FILES
+            "$<TARGET_FILE_DIR:xsqlite>/xsqlite.js"
+            "$<TARGET_FILE_DIR:xsqlite>/xsqlite.wasm"
+            DESTINATION ${XJUPYTER_DATA_DIR}/kernels/xsqlite)
+
+endif()
