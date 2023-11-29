@@ -5,5 +5,8 @@
         "-f",
         "{connection_file}"
     ],
-    "language": "sqlite"
+    "language": "sqlite",
+    "metadata":{
+        "wasm_name" : "xsqlite"
+    }
 }
