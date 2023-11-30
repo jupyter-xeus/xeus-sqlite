@@ -77,6 +77,7 @@ set(tabulate_REQUIRED_VERSION 1.5)
 find_package(SQLite3 REQUIRED)
 find_package(SQLiteCpp REQUIRED)
 find_package(Threads REQUIRED)
+find_package(xvega REQUIRED)
 find_package(xvega-bindings ${xvega_bindings_REQUIRED_VERSION} REQUIRED)
 find_package(tabulate ${tabulate_REQUIRED_VERSION} REQUIRED)
 
@@ -213,9 +214,10 @@ macro(xsql_create_target target_name linkage output_name)
         set(XSQL_XEUS_TARGET xeus-static)
     endif ()
 
+    message("XVEGA_STATIC_LIBRARY= ${XVEGA_STATIC_LIBRARY}")
     target_link_libraries(${target_name} PUBLIC 
       ${XSQL_XEUS_TARGET}
-      xvega
+      ${XVEGA_STATIC_LIBRARY}
       SQLiteCpp
     )
 
