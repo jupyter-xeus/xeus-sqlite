@@ -378,6 +378,5 @@ if(EMSCRIPTEN)
     install(FILES
             "$<TARGET_FILE_DIR:xsqlite>/xsqlite.js"
             "$<TARGET_FILE_DIR:xsqlite>/xsqlite.wasm"
-            DESTINATION ${XJUPYTER_DATA_DIR}/kernels/xsqlite)
-
+            DESTINATION ${CMAKE_INSTALL_BINDIR})
 endif()
