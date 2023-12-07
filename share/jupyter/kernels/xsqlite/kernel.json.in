@@ -7,6 +7,5 @@
     ],
     "language": "sqlite",
     "metadata":{
-        "wasm_name" : "xsqlite"
     }
 }
