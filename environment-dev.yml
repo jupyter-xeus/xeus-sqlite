@@ -13,7 +13,7 @@ dependencies:
   - sqlite
   - sqlitecpp
   - cpp-tabulate=1.5
-  - xvega=0.0.10
+  - xvega
   - xproperty>=0.12.0
   - xvega-bindings=0.0.10
   # Test dependencies
