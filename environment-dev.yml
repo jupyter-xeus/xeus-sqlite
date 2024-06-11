@@ -7,15 +7,15 @@ dependencies:
   - cxx-compiler
   # Host dependencies
   - nlohmann_json
-  - xtl
   - cppzmq
-  - xeus-zmq=1.1.1
+  - xeus>=5.0.0,<=6.0
+  - xeus-zmq>=3.0.0,<=4.0
   - sqlite
   - sqlitecpp
   - cpp-tabulate=1.5
-  - xvega=0.0.10
-  - xproperty=0.11.0
-  - xvega-bindings=0.0.10
+  - xvega>=0.1.0
+  - xproperty>=0.12.0
+  - xvega-bindings>=0.1.0
   # Test dependencies
   - pytest
   - jupyter_kernel_test
