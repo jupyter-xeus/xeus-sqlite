@@ -77,8 +77,10 @@ set(tabulate_REQUIRED_VERSION 1.5)
 find_package(SQLite3 REQUIRED)
 find_package(SQLiteCpp REQUIRED)
 find_package(Threads REQUIRED)
+find_package(xvega REQUIRED)
 find_package(xvega-bindings ${xvega_bindings_REQUIRED_VERSION} REQUIRED)
 find_package(tabulate ${tabulate_REQUIRED_VERSION} REQUIRED)
+find_package(nlohmann_json REQUIRED)
 
 add_definitions(-DSQLITE_ENABLE_EXPLAIN_COMMENTS=1 -DSQLITE_DEBUG=1 -DSQLITE_MEMDEBUG=1)
 
@@ -213,10 +215,12 @@ macro(xsql_create_target target_name linkage output_name)
         set(XSQL_XEUS_TARGET xeus-static)
     endif ()
 
+    message("XVEGA_STATIC_LIBRARY= ${XVEGA_STATIC_LIBRARY}")
     target_link_libraries(${target_name} PUBLIC 
       ${XSQL_XEUS_TARGET}
-      xvega
+      ${XVEGA_STATIC_LIBRARY}
       SQLiteCpp
+      nlohmann_json::nlohmann_json
     )
 
     if(NOT EMSCRIPTEN)
@@ -286,7 +290,7 @@ if(EMSCRIPTEN)
     find_package(xeus-lite REQUIRED)
     include(WasmBuildOptions)
     add_executable(xsqlite src/main_emscripten_kernel.cpp )
-    target_link_libraries(xsqlite PRIVATE xeus-sqlite-static xeus-lite)
+    target_link_libraries(xsqlite PRIVATE xeus-sqlite-static xeus-lite  nlohmann_json::nlohmann_json)
     target_compile_features(xsqlite PRIVATE cxx_std_17)
 
     xeus_wasm_compile_options(xsqlite)
@@ -298,7 +302,6 @@ if(EMSCRIPTEN)
         PUBLIC "SHELL: -s 'ASYNCIFY_IMPORTS=[\"async_ems_init_idbfs\", \"async_ems_sync_db\"]'"
         PUBLIC "SHELL: -s FORCE_FILESYSTEM=1"
     )
-    # target_link_libraries(xsqlite idbfs.js)
 endif()
 
 # Installation
@@ -379,4 +382,5 @@ if(EMSCRIPTEN)
             "$<TARGET_FILE_DIR:xsqlite>/xsqlite.js"
             "$<TARGET_FILE_DIR:xsqlite>/xsqlite.wasm"
             DESTINATION ${CMAKE_INSTALL_BINDIR})
+
 endif()
