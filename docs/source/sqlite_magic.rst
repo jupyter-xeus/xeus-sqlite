@@ -44,6 +44,7 @@ GET_INFO
 .. object:: %GET_INFO
 
    Get the following information about the loaded database:
+
    * Magic header string
    * Page size bytes
    * File format write version
