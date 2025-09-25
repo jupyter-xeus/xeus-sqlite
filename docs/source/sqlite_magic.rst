@@ -16,11 +16,11 @@ LOAD
 CREATE
 ~~~~~~
 
-.. object:: %CREATE <path-to-db/yourdatabase.db> name_of_databse
+.. object:: %CREATE <path-to-db/yourdatabase.db> name_of_database
 
    Creates a database in read and write mode.
 
-   Receives two arguments, a string that's the path to where it will create your database database and a string for the name of the database.
+   Receives two arguments: a string that's the path to where it will create the database, and a string for the name of the database.
 
 DELETE
 ~~~~~~
