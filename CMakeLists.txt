@@ -294,6 +294,8 @@ if(EMSCRIPTEN)
     
     target_link_options(xsqlite
         PUBLIC "SHELL: -s MAIN_MODULE=1"
+        PUBLIC "SHELL: -s WASM_BIGINT=1"
+        PUBLIC "SHELL: --post-js ${CMAKE_CURRENT_SOURCE_DIR}/src/post.js"
         PUBLIC "SHELL: -s FETCH=1"
         PUBLIC "SHELL: -s NO_EXIT_RUNTIME=1"
         PUBLIC "SHELL: -s 'ASYNCIFY_IMPORTS=[\"async_ems_init_idbfs\", \"async_ems_sync_db\"]'"
