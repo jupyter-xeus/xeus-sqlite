@@ -65,6 +65,12 @@ if(EMSCRIPTEN)
     # for the emscripten build we need a FindSQLite3.cmake since
     # we install sqlite in a non-standart way
     set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_emscripten;${CMAKE_MODULE_PATH}")
+
+    # overwriteProp.cmake
+    set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE) # does not need to be global :)
+    set(CMAKE_SHARED_LIBRARY_CREATE_C_FLAGS "-s SIDE_MODULE=1")
+    set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS "-s SIDE_MODULE=1")
+
 endif()
 
 # Dependencies
@@ -76,7 +82,9 @@ set(tabulate_REQUIRED_VERSION 1.5)
 
 find_package(SQLite3 REQUIRED)
 find_package(SQLiteCpp REQUIRED)
-find_package(Threads REQUIRED)
+if(NOT EMSCRIPTEN)
+    find_package(Threads REQUIRED)
+endif()
 find_package(xvega-bindings ${xvega_bindings_REQUIRED_VERSION} REQUIRED)
 find_package(tabulate ${tabulate_REQUIRED_VERSION} REQUIRED)
 
@@ -213,11 +221,22 @@ macro(xsql_create_target target_name linkage output_name)
         set(XSQL_XEUS_TARGET xeus-static)
     endif ()
 
-    target_link_libraries(${target_name} PUBLIC 
-      ${XSQL_XEUS_TARGET}
-      xvega
-      SQLiteCpp
-    )
+    if(EMSCRIPTEN)
+        target_link_libraries(${target_name} PUBLIC
+          ${XSQL_XEUS_TARGET}
+          ${XVEGA_STATIC_LIBRARY}
+          SQLiteCpp
+        )
+
+        # fpic
+        target_compile_options(${target_name} PUBLIC -fPIC)
+    else()
+        target_link_libraries(${target_name} PUBLIC
+          ${XSQL_XEUS_TARGET}
+          xvega
+          SQLiteCpp
+        )
+    endif()
 
     if(NOT EMSCRIPTEN)
         # find_package(Threads) # TODO: add Threads as a dependence of xeus-static?
@@ -250,7 +269,7 @@ endif ()
 # xsqlite
 # =======
 
-if (XSQL_BUILD_XSQLITE_EXECUTABLE)
+if (XSQL_BUILD_XSQLITE_EXECUTABLE AND NOT EMSCRIPTEN)
     find_package(xeus-zmq 1.1.1 REQUIRED)
     add_executable(xsqlite ${XSQLITE_SRC})
     set_target_properties(xsqlite PROPERTIES ENABLE_EXPORTS 1)
@@ -293,6 +312,9 @@ if(EMSCRIPTEN)
     xeus_wasm_link_options(xsqlite "web,worker")
     
     target_link_options(xsqlite
+        PUBLIC "SHELL: -s MAIN_MODULE=1"
+        PUBLIC "SHELL: -s WASM_BIGINT=1"
+        PUBLIC "SHELL: --post-js ${CMAKE_CURRENT_SOURCE_DIR}/src/post.js"
         PUBLIC "SHELL: -s FETCH=1"
         PUBLIC "SHELL: -s NO_EXIT_RUNTIME=1"
         PUBLIC "SHELL: -s 'ASYNCIFY_IMPORTS=[\"async_ems_init_idbfs\", \"async_ems_sync_db\"]'"
