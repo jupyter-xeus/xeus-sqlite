@@ -76,7 +76,9 @@ set(tabulate_REQUIRED_VERSION 1.5)
 
 find_package(SQLite3 REQUIRED)
 find_package(SQLiteCpp REQUIRED)
-find_package(Threads REQUIRED)
+if(NOT EMSCRIPTEN)
+    find_package(Threads REQUIRED)
+endif()
 find_package(xvega-bindings ${xvega_bindings_REQUIRED_VERSION} REQUIRED)
 find_package(tabulate ${tabulate_REQUIRED_VERSION} REQUIRED)
 
