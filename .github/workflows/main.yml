@@ -137,7 +137,7 @@ jobs:
           export PREFIX=$MAMBA_ROOT_PREFIX/envs/xeus-sqlite-wasm-host
           # build jupyterlite
           jupyter lite build  \
-            --contents=notebooks \
+            --contents=examples \
             --XeusAddon.prefix=$PREFIX
 
 
