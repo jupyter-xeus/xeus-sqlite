@@ -221,11 +221,22 @@ macro(xsql_create_target target_name linkage output_name)
         set(XSQL_XEUS_TARGET xeus-static)
     endif ()
 
-    target_link_libraries(${target_name} PUBLIC 
-      ${XSQL_XEUS_TARGET}
-      xvega
-      SQLiteCpp
-    )
+    if(EMSCRIPTEN)
+        target_link_libraries(${target_name} PUBLIC
+          ${XSQL_XEUS_TARGET}
+          ${XVEGA_STATIC_LIBRARY}
+          SQLiteCpp
+        )
+
+        # fpic
+        target_compile_options(${target_name} PUBLIC -fPIC)
+    else()
+        target_link_libraries(${target_name} PUBLIC
+          ${XSQL_XEUS_TARGET}
+          xvega
+          SQLiteCpp
+        )
+    endif()
 
     if(NOT EMSCRIPTEN)
         # find_package(Threads) # TODO: add Threads as a dependence of xeus-static?
