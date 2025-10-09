@@ -116,6 +116,15 @@ jobs:
             -DCMAKE_PREFIX_PATH=$PREFIX                       \
             -DCMAKE_INSTALL_PREFIX=$PREFIX                    \
             -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ON            \
+            -Dtabulate_DIR=$PREFIX/lib/cmake/tabulate         \
+            -DXSQL_BUILD_XSQLITE_EXECUTABLE=OFF               \
+            -DXSQL_BUILD_SHARED=OFF                           \
+            -DXSQL_BUILD_STATIC=ON                            \
+            -DXSQL_USE_SHARED_XEUS=ON                         \
+            -DXSQL_USE_SHARED_XEUS_SQLITE=OFF                 \
+            -DXVEGA_STATIC_LIBRARY=$PREFIX/lib/libxvega.a     \
+            -DCMAKE_FIND_ROOT_PATH_MODE_PACKAGE=ON            \
+
             ..
 
           make -j${{ steps.cpu-cores.outputs.count }} install

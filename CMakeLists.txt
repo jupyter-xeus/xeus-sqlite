@@ -65,6 +65,12 @@ if(EMSCRIPTEN)
     # for the emscripten build we need a FindSQLite3.cmake since
     # we install sqlite in a non-standart way
     set(CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake_emscripten;${CMAKE_MODULE_PATH}")
+
+    # overwriteProp.cmake
+    set_property(GLOBAL PROPERTY TARGET_SUPPORTS_SHARED_LIBS TRUE) # does not need to be global :)
+    set(CMAKE_SHARED_LIBRARY_CREATE_C_FLAGS "-s SIDE_MODULE=1")
+    set(CMAKE_SHARED_LIBRARY_CREATE_CXX_FLAGS "-s SIDE_MODULE=1")
+
 endif()
 
 # Dependencies
@@ -252,7 +258,7 @@ endif ()
 # xsqlite
 # =======
 
-if (XSQL_BUILD_XSQLITE_EXECUTABLE)
+if (XSQL_BUILD_XSQLITE_EXECUTABLE AND NOT EMSCRIPTEN)
     find_package(xeus-zmq 1.1.1 REQUIRED)
     add_executable(xsqlite ${XSQLITE_SRC})
     set_target_properties(xsqlite PROPERTIES ENABLE_EXPORTS 1)
