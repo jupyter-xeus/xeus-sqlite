@@ -293,6 +293,7 @@ if(EMSCRIPTEN)
     xeus_wasm_link_options(xsqlite "web,worker")
     
     target_link_options(xsqlite
+        PUBLIC "SHELL: -s MAIN_MODULE=1"
         PUBLIC "SHELL: -s FETCH=1"
         PUBLIC "SHELL: -s NO_EXIT_RUNTIME=1"
         PUBLIC "SHELL: -s 'ASYNCIFY_IMPORTS=[\"async_ems_init_idbfs\", \"async_ems_sync_db\"]'"
