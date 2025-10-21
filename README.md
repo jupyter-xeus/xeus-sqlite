@@ -2,6 +2,8 @@
 [![GithubActions](https://github.com/jupyter-xeus/xeus-sqlite/actions/workflows/main.yml/badge.svg)](https://github.com/jupyter-xeus/xeus-sqlite/actions/workflows/main.yml)
 [![Documentation Status](https://readthedocs.org/projects/xeus-sqlite/badge/?version=latest)](https://xeus-sqlite.readthedocs.io/en/latest/?badge=latest)
 [![Binder](https://mybinder.org/badge_logo.svg)](https://mybinder.org/v2/gh/jupyter-xeus/xeus-sqlite/stable?filepath=examples/Simple%20operations.ipynb)
+[![lite-badge](https://jupyterlite.rtfd.io/en/latest/_static/badge.svg)](https://jupyter-xeus.github.io/xeus-sqlite/lab/index.html?path=Simple+operations.ipynb)
+
 
 `xeus-sqlite` is a Jupyter kernel for SQL based on the native implementation of the Jupyter protocol [xeus](https://github.com/jupyter-xeus/xeus).
 
