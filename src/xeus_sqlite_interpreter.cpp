@@ -97,6 +97,16 @@ namespace xeus_sqlite
         m_db = std::make_unique<SQLite::Database>(m_db_path,
                                                     SQLite::OPEN_READWRITE |
                                                     SQLite::OPEN_CREATE);
+        
+    #ifdef XSQL_EMSCRIPTEN_WASM_BUILD
+        // Force SQlite to write a well formed db to FS
+        m_db->exec("CREATE TABLE __xeus_sqlite_init (id INTEGER);");
+        m_db.reset();
+        m_db = std::make_unique<SQLite::Database>(m_db_path, SQLite::OPEN_READWRITE);
+        m_db->exec("DROP TABLE __xeus_sqlite_init;");
+        m_db.reset();
+        m_db = std::make_unique<SQLite::Database>(m_db_path, SQLite::OPEN_READWRITE); 
+    #endif
     }
 
     void interpreter::delete_db()
