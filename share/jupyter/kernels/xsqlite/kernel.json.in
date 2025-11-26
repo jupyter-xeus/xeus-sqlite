@@ -1,5 +1,5 @@
 {
-    "display_name": "xsqlite",
+    "display_name": "SQLite (xsqlite)",
     "argv": [
         "@CMAKE_INSTALL_FULL_BINDIR@/xsqlite",
         "-f",
