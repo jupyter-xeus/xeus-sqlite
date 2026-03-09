@@ -13,10 +13,12 @@
 #include <memory>
 #include <sstream>
 #include <stack>
+#include <string>
 #include <vector>
 #include <tuple>
 
 #include "xvega-bindings/xvega_bindings.hpp"
+#include "xeus/xhelper.hpp"
 #include "xeus/xinterpreter.hpp"
 #include "tabulate/table.hpp"
 
@@ -442,16 +444,12 @@ namespace xeus_sqlite
             {
                 process_SQLite_input(execution_counter, m_db, code, xv_sqlite_df);
             }
-            jresult["status"] = "ok";
-            jresult["payload"] = nl::json::array();
-            jresult["user_expressions"] = nl::json::object();
+            jresult = xeus::create_successful_reply();
         }
         catch (const std::exception& err)
         {
-            jresult["status"] = "error";
-            jresult["ename"] = "Error";
-            jresult["evalue"] = err.what();
-            traceback.push_back((std::string)jresult["ename"] + ": " + (std::string)err.what());
+            traceback.push_back("Error: " + (std::string)err.what());
+            jresult = xeus::create_error_reply("Error", err.what(), traceback);
             publish_execution_error(jresult["ename"], jresult["evalue"], traceback);
             traceback.clear();
         }
@@ -612,15 +610,12 @@ namespace xeus_sqlite
             "WITHOUT",
         };
 
-        nl::json result;
-
-
         nl::json matches = nl::json::array();
+        int cursor_start = 0;
 
         // first we get  a substring from string[0:curser_pos+1]std
         // and discard the right side of the curser pos
         const auto code = raw_code.substr(0, cursor_pos);
-
 
         // keyword matches
         // ............................
@@ -634,7 +629,7 @@ namespace xeus_sqlite
                     break;
                 }
             }
-            result["cursor_start"] =  pos == -1 ? 0 : pos +1;
+            cursor_start =  pos + 1;
             auto to_match = pos == -1 ? code : code.substr(pos+1, code.size() -(pos+1));
 
             // check for kw matches
@@ -647,10 +642,7 @@ namespace xeus_sqlite
             }
         }
 
-        result["status"] = "ok";
-        result["cursor_end"] = cursor_pos;
-        result["matches"] =matches;
-
+        nl::json result = xeus::create_complete_reply(matches, cursor_start, cursor_pos);
         return result;
     };
 
@@ -658,28 +650,18 @@ namespace xeus_sqlite
                                                int /*cursor_pos*/,
                                                int /*detail_level*/)
     {
-        nl::json jresult;
-        jresult["status"] = "ok";
-        jresult["found"] = false;
-        jresult["data"] = nl::json::object();
-        jresult["metadata"] = nl::json::object();
+        nl::json jresult = xeus::create_inspect_reply(false);
         return jresult;
     };
 
     nl::json interpreter::is_complete_request_impl(const std::string& /*code*/)
     {
-        nl::json jresult;
-        jresult["status"] = "complete";
-        jresult["indent"] = "";
+        nl::json jresult = xeus::create_is_complete_reply("complete");
         return jresult;
     };
 
     nl::json interpreter::kernel_info_request_impl()
     {
-        nl::json result;
-        result["implementation"] = "xsqlite";
-        result["implementation_version"] = XSQLITE_VERSION;
-
         /* The jupyter-console banner for xeus-sqlite is the following:
             _  _ ____ _  _ ____    ____ ____ _    _ ___ ____
              \/  |___ |  | [__  __ [__  |  | |    |  |  |___
@@ -696,18 +678,29 @@ namespace xeus_sqlite
               "  SQLite version: ";
         banner.append(SQLite::VERSION);
 
-        result["banner"] = banner;
-        result["language_info"]["name"] = "sql";
-        result["language_info"]["codemirror_mode"] = "sql";
-        result["language_info"]["version"] = SQLite::VERSION;
-        result["language_info"]["mimetype"] = "";
-        result["language_info"]["file_extension"] = "";
-        result["status"] = "ok";
-        return result;
+        nl::json rep = xeus::create_info_reply(
+            "xsqlite",
+            XSQLITE_VERSION,
+            "sql",
+            SQLite::VERSION,
+            "", // language mimetype
+            "", // language file file_extension
+            "", // pygments lexer
+            std::string("sql"),
+            "",
+            banner
+        );
+
+        return rep;
     }
 
-    void interpreter::shutdown_request_impl()
+    nl::json interpreter::shutdown_request_impl(bool /*restart*/)
     {
+        return xeus::create_shutdown_reply(false);
     }
 
+    nl::json interpreter::interrupt_request_impl()
+    {
+        return xeus::create_interrupt_reply();
+    }
 }
