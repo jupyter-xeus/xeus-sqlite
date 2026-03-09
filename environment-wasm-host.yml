@@ -9,7 +9,6 @@ dependencies:
   - cpp-tabulate
   - xvega
   - xvega-bindings
-  - xeus-lite
-  - xeus
-  - xtl
+  - xeus-lite >=5.0,<6.0
+  - xeus >=6.0,<7.0
   - sqlitecpp

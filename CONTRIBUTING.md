@@ -16,7 +16,7 @@ The Xeus team organizes public video meetings. The schedule for future meetings 
 
 ```bash
 # create a new conda environment
-conda create -n xeus-sqlite -c conda-forge -c defaults xtl nlohmann_json cppzmq xeus
+conda create -n xeus-sqlite -c conda-forge -c defaults nlohmann_json cppzmq xeus
 conda activate xeus-sqlite
 
 # download xeus-sqlite from your GitHub fork

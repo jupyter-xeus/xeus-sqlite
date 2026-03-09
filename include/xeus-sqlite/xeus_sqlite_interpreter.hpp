@@ -51,7 +51,8 @@ namespace xeus_sqlite
                                       int detail_level) override;
         nl::json is_complete_request_impl(const std::string& code) override;
         nl::json kernel_info_request_impl() override;
-        void shutdown_request_impl() override;
+        nl::json shutdown_request_impl(bool restart) override;
+        nl::json interrupt_request_impl() override;
 
         /**
          * Parses magic and calls the correct function.

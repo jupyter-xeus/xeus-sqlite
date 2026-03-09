@@ -34,11 +34,6 @@ The safest usage is to create an environment named `xeus-sqlite` with your minic
 
 .. code::
 
-    conda create -n xeus-sqlite
-    conda activate xeus-sqlite # Or `source activate xeus-sqlite` for conda < 4.6
-
-.. code::
-
     mamba create -n xeus-sqlite
     mamba activate xeus-sqlite
 
@@ -46,17 +41,9 @@ Then you can install in this freshly created environment `xeus-sqlite` and its d
 
 .. code::
 
-    conda install xeus-sqlite notebook -c conda-forge
-
-.. code::
-
     mamba install xeus-sqlite notebook -c conda-forge
 
 or, if you prefer to use JupyterLab_
-
-.. code::
-
-    conda install xeus-sqlite jupyterlab -c conda-forge
 
 .. code::
 
@@ -67,14 +54,9 @@ From Source
 
 You can install ``xeus-sqlite`` from source with cmake. This requires that you have all the dependencies installed in the same prefix.
 
-
 .. code::
 
-    conda install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.5 xvega xproperty jupyterlab -c conda-forge
-
-.. code::
-
-    mamba install cmake nlohmann_json xtl cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.5 xvega xproperty jupyterlab -c conda-forge
+    mamba install cmake nlohmann_json cppzmq xeus sqlite sqlitecpp cpp-tabulate=1.5 xvega xproperty jupyterlab -c conda-forge
 
 .. code::
 

@@ -7,5 +7,6 @@
     ],
     "language": "sqlite",
     "metadata":{
-    }
+    },
+    "kernel_protocol_version": "5.6.0"
 }
