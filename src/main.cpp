@@ -18,6 +18,7 @@
 #include <unistd.h>
 #endif
 
+#include "xeus/xhelper.hpp"
 #include "xeus/xkernel.hpp"
 #include "xeus/xkernel_configuration.hpp"
 
@@ -47,40 +48,9 @@ void stop_handler(int /*sig*/)
     exit(0);
 }
 
-bool should_print_version(int argc, char* argv[])
-{
-    for (int i = 0; i < argc; ++i)
-    {
-        if (std::string(argv[i]) == "--version")
-        {
-            return true;
-        }
-    }
-    return false;
-}
-
-std::string extract_filename(int argc, char* argv[])
-{
-    std::string res = "";
-    for (int i = 0; i < argc; ++i)
-    {
-        if ((std::string(argv[i]) == "-f") && (i + 1 < argc))
-        {
-            res = argv[i + 1];
-            for (int j = i; j < argc - 2; ++j)
-            {
-                argv[j] = argv[j + 2];
-            }
-            argc -= 2;
-            break;
-        }
-    }
-    return res;
-}
-
 int main(int argc, char* argv[])
 {
-    if (should_print_version(argc, argv))
+    if (xeus::should_print_version(argc, argv))
     {
         std::clog << "xsqlite " << XSQLITE_VERSION << std::endl;
         return 0;
@@ -97,7 +67,7 @@ int main(int argc, char* argv[])
     signal(SIGINT, stop_handler);
 
     // Load configuration file
-    std::string file_name = extract_filename(argc, argv);
+    std::string file_name = xeus::extract_filename(argc, argv);
 
     std::unique_ptr<xeus::xcontext> context = xeus::make_zmq_context();
 
