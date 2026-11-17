@@ -1,11 +1,11 @@
 name: xeus-sqlite-wasm-host
 channels:
-  - https://prefix.dev/emscripten-forge-dev
+  - https://prefix.dev/emscripten-forge/4x
   - https://prefix.dev/conda-forge
 dependencies:
   - nlohmann_json >= 3.12
   - nlohmann_json-abi
-  - xproperty < 0.13
+  - xproperty >=0.13.1,<0.14
   - cpp-tabulate
   - xvega
   - xvega-bindings

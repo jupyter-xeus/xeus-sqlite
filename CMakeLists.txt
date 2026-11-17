@@ -77,7 +77,7 @@ endif()
 # ============
 
 # Be sure to use recent versions (minimum requirements)
-set(xvega_bindings_REQUIRED_VERSION 0.0.10)
+set(xvega_bindings_REQUIRED_VERSION 0.2.0)
 set(tabulate_REQUIRED_VERSION 1.5)
 
 find_package(SQLite3 REQUIRED)
