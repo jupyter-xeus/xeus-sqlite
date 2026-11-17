@@ -57,7 +57,7 @@ jobs:
           cmake .. \
             -D CMAKE_PREFIX_PATH=$CONDA_PREFIX \
             -D CMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
-            -D XSQL_DOWNLOAD_GTEST=ON \
+            -D XSQL_BUILD_TESTS=ON \
             -D CMAKE_INSTALL_LIBDIR=lib \
             ${{ env.CMAKE_EXTRA_ARGS }}
         working-directory: build
