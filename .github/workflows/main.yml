@@ -22,7 +22,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        os: [ubuntu-22.04, ubuntu-24.04, macos-14, macos-15]
+        os: [ubuntu-22.04, ubuntu-24.04, macos-15, macos-26]
         build_type: [static_build, shared_build]
 
     steps:
@@ -57,10 +57,8 @@ jobs:
           cmake .. \
             -D CMAKE_PREFIX_PATH=$CONDA_PREFIX \
             -D CMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
-            -D XSQL_DOWNLOAD_GTEST=ON \
+            -D XSQL_BUILD_TESTS=ON \
             -D CMAKE_INSTALL_LIBDIR=lib \
-            -D CMAKE_C_COMPILER=$CC \
-            -D CMAKE_CXX_COMPILER=$CXX \
             ${{ env.CMAKE_EXTRA_ARGS }}
         working-directory: build
 
